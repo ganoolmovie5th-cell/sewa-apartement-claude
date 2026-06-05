@@ -27,6 +27,7 @@ export interface Listing {
   ownerAvatar: string;
   rating: number;
   reviews: number;
+  ratingSource?: string;
   featured: boolean;
   verified: boolean;
   available: boolean;

@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, Target, Eye, Heart, Users, Building2, Star, TrendingUp } from "lucide-react";
+import { ArrowRight, Target, Eye, Heart, Users, Building2 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { STATS } from "@/lib/data";
 import CountUp from "react-countup";

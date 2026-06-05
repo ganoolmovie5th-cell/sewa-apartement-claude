@@ -1,6 +1,6 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2, Users, Building2, Shield, Zap } from "lucide-react";
 import { HOW_IT_WORKS_TENANT, HOW_IT_WORKS_OWNER, FAQS } from "@/lib/data";
@@ -130,11 +130,22 @@ export default function HowItWorksPage() {
                   <span className="font-semibold text-white text-sm">{t(faq.q)}</span>
                   <ChevronDown size={16} className={cn("text-white/40 flex-shrink-0 transition-transform duration-300", openFaq === i ? "rotate-180" : "")} />
                 </button>
-                {openFaq === i && (
-                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="px-5 pb-5">
-                    <p className="text-white/60 text-sm leading-relaxed">{t(faq.a)}</p>
-                  </motion.div>
-                )}
+                <AnimatePresence initial={false}>
+                  {openFaq === i && (
+                    <motion.div
+                      key="faq-answer"
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.25, ease: "easeInOut" }}
+                      className="overflow-hidden"
+                    >
+                      <div className="px-5 pb-5">
+                        <p className="text-white/60 text-sm leading-relaxed">{t(faq.a)}</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </motion.div>
             ))}
           </div>

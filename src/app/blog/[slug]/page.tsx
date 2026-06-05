@@ -30,6 +30,16 @@ interface BlogPost {
   tags?: string[];
 }
 
+// Sanitize HTML — strip script/iframe/event handlers sebelum inject ke DOM
+function sanitizeHtml(html: string): string {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+    .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, "")
+    .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, "")
+    .replace(/javascript:/gi, "")
+    .replace(/data:text\/html/gi, "");
+}
+
 // Very simple markdown → HTML (bold, headings, lists, paragraphs)
 function renderMarkdown(md: string): string {
   if (!md) return "";
@@ -146,7 +156,7 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
   }
 
   const publishDate = post.publishedAt ?? post.date ?? "";
-  const contentHtml = post.content ? renderMarkdown(t(post.content)) : null;
+  const contentHtml = post.content ? sanitizeHtml(renderMarkdown(t(post.content))) : null;
 
   // Static content fallback (seed posts that have no .content field)
   const staticContent = (post as any).content

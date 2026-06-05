@@ -34,6 +34,7 @@ export default function RegisterPage() {
     e.preventDefault();
     setLoading(true);
     await new Promise((r) => setTimeout(r, 1500));
+    setLoading(false);
     setStep(4);
   };
 
@@ -86,7 +87,7 @@ export default function RegisterPage() {
               </div>
             </div>
             <div className="font-heading font-extrabold text-white leading-none">
-              Sewa<span className="gradient-text-gold">Terlengkap</span>
+              Sewa<span className="gradient-text-gold">Apartement</span>
             </div>
           </div>
 
@@ -200,7 +201,7 @@ export default function RegisterPage() {
                 <div className="flex items-center gap-3">
                   <Building2 className="text-primary-400" size={20} />
                   <div>
-                    <p className="text-white font-semibold text-sm">{form.name || lang === "id" ? "Nama Pemilik" : "Owner Name"}</p>
+                    <p className="text-white font-semibold text-sm">{form.name || (lang === "id" ? "Nama Pemilik" : "Owner Name")}</p>
                     <p className="text-white/50 text-xs">{form.email}</p>
                   </div>
                 </div>

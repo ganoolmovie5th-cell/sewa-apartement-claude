@@ -148,6 +148,17 @@ export default function DashboardPage() {
   const [submitting, setSubmitting] = useState(false);
   const [submitted,  setSubmitted]  = useState(false);
 
+  // ── Memory leak prevention: track & cancel all pending timers ──────
+  const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const safeTimeout = (fn: () => void, ms: number) => {
+    const id = setTimeout(fn, ms);
+    timers.current.push(id);
+    return id;
+  };
+  useEffect(() => {
+    return () => { timers.current.forEach(clearTimeout); };
+  }, []);
+
   // ── Auth guard ──────────────────────────────────────────────────────
   useEffect(() => {
     const s = getSession();
@@ -175,7 +186,7 @@ export default function DashboardPage() {
     await new Promise(r => setTimeout(r, 1000));
     setProfileSaving(false);
     setProfileSaved(true);
-    setTimeout(() => setProfileSaved(false), 2500);
+    safeTimeout(() => setProfileSaved(false), 2500);
   };
 
   const handleConfirmDeleteListing = () => {
@@ -209,7 +220,7 @@ export default function DashboardPage() {
     ));
     setEditSaving(false);
     setEditSaved(true);
-    setTimeout(() => { setEditSaved(false); setEditingListing(null); }, 1500);
+    safeTimeout(() => { setEditSaved(false); setEditingListing(null); }, 1500);
   };
 
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -257,7 +268,7 @@ export default function DashboardPage() {
     await new Promise(r => setTimeout(r, 1500));
     setSubmitting(false);
     setSubmitted(true);
-    setTimeout(() => { setSubmitted(false); setActiveTab("listings"); }, 2000);
+    safeTimeout(() => { setSubmitted(false); setActiveTab("listings"); }, 2000);
   };
 
   return (
@@ -479,7 +490,7 @@ export default function DashboardPage() {
                 await new Promise(r => setTimeout(r, 1500));
                 setSubmitting(false);
                 setSubmitted(true);
-                setTimeout(() => { setSubmitted(false); setActiveTab("listings"); }, 3000);
+                safeTimeout(() => { setSubmitted(false); setActiveTab("listings"); }, 3000);
               }} className="space-y-6">
 
                 {/* ── STEP 1: Info Dasar ── */}

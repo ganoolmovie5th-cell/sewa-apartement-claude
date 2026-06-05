@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Search, SlidersHorizontal, X, MapPin, ChevronDown, Grid3X3, List, ArrowUpDown } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import PropertyCard from "@/components/ui/PropertyCard";
-import { SAMPLE_LISTINGS, CITIES, APARTMENT_TYPES, PRICE_RANGES, AMENITIES, RENT_DURATIONS } from "@/lib/data";
+import { SAMPLE_LISTINGS, CITIES, APARTMENT_TYPES, PRICE_RANGES, AMENITIES } from "@/lib/data";
 import { useLanguage } from "@/hooks/useLanguage";
 import { cn } from "@/lib/utils";
 

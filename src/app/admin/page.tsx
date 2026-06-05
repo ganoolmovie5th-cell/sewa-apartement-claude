@@ -64,6 +64,17 @@ export default function AdminPage() {
     setSession(s);
   }, [router]);
 
+  // ── Memory leak: cancel pending timers on unmount ──────────────────
+  const adminTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const safeTimeout = (fn: () => void, ms: number) => {
+    const id = setTimeout(fn, ms);
+    adminTimers.current.push(id);
+    return id;
+  };
+  useEffect(() => {
+    return () => { adminTimers.current.forEach(clearTimeout); };
+  }, []);
+
   if (!session) {
     return (
       <div className="page-dark min-h-screen flex items-center justify-center">
@@ -100,11 +111,11 @@ export default function AdminPage() {
       l.verified ? "Ya" : "Tidak",
       l.ownerPhone,
     ]);
-    setTimeout(() => {
+    safeTimeout(() => {
       downloadCSV(`listings-sewaapartement-${new Date().toISOString().split("T")[0]}.csv`, rows, headers);
       setActionLoading(null);
       setActionDone("export-listing");
-      setTimeout(() => setActionDone(null), 3000);
+      safeTimeout(() => setActionDone(null), 3000);
     }, 800);
   }
 
@@ -115,11 +126,11 @@ export default function AdminPage() {
       o.id, o.name, o.email, o.phone,
       String(o.listings), o.verified ? "Ya" : "Tidak", o.joined,
     ]);
-    setTimeout(() => {
+    safeTimeout(() => {
       downloadCSV(`owners-sewaapartement-${new Date().toISOString().split("T")[0]}.csv`, rows, headers);
       setActionLoading(null);
       setActionDone("export-owner");
-      setTimeout(() => setActionDone(null), 3000);
+      safeTimeout(() => setActionDone(null), 3000);
     }, 800);
   }
 
@@ -136,12 +147,12 @@ export default function AdminPage() {
     const a    = document.createElement("a");
     a.href     = url;
     a.download = `backup-sewaapartement-${new Date().toISOString().split("T")[0]}.json`;
-    setTimeout(() => {
+    safeTimeout(() => {
       a.click();
       URL.revokeObjectURL(url);
       setActionLoading(null);
       setActionDone("backup");
-      setTimeout(() => setActionDone(null), 3000);
+      safeTimeout(() => setActionDone(null), 3000);
     }, 1000);
   }
 
@@ -154,14 +165,14 @@ export default function AdminPage() {
     //  solusi: buka tab WA per owner dengan pesan pre-filled)
     const verifiedOwners = owners.filter(o => o.verified);
 
-    setTimeout(() => {
+    safeTimeout(() => {
       setActionLoading(null);
       setActionDone("notif");
       setShowNotifModal(false);
 
       // Buka WA link untuk setiap owner terverifikasi (maks 3 sekaligus agar tidak diblokir browser)
       verifiedOwners.slice(0, 3).forEach((owner, i) => {
-        setTimeout(() => {
+        safeTimeout(() => {
           const msg = `Halo ${owner.name}! 👋\n\n${notifMsg}\n\n_— Admin SewaApartement.id_`;
           window.open(`https://wa.me/${owner.phone}?text=${encodeURIComponent(msg)}`, "_blank");
         }, i * 800);
@@ -176,7 +187,7 @@ export default function AdminPage() {
       }
 
       setNotifMsg("");
-      setTimeout(() => setActionDone(null), 4000);
+      safeTimeout(() => setActionDone(null), 4000);
     }, 1200);
   }
   const toggleListing = (id: string) =>
