@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
@@ -11,7 +11,10 @@ import {
   CheckSquare, Square, Phone, Info, Save, CheckCircle2,
 } from "lucide-react";
 import { SAMPLE_LISTINGS, formatPrice } from "@/lib/data";
+import { useRouter } from "next/navigation";
+import { getSession } from "@/lib/auth";
 import { useLanguage } from "@/hooks/useLanguage";
+
 import { cn } from "@/lib/utils";
 
 type Tab = "overview" | "listings" | "add" | "profile";
@@ -106,8 +109,49 @@ const FACILITY_GROUPS = [
 
 export default function DashboardPage() {
   const { lang } = useLanguage();
+  const router   = useRouter();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [myListings, setMyListings] = useState(SAMPLE_LISTINGS.slice(0, 3).map(l => ({ ...l, active: true })));
+
+  // ── Auth guard ──────────────────────────────────────────────────────
+  const [session, setSession] = useState<any>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+  useEffect(() => {
+    const s = getSession();
+    if (!s || s.role !== "owner") {
+      router.replace("/auth/login");
+      return;
+    }
+    setSession(s);
+    setAuthChecked(true);
+  }, [router]);
+
+  if (!authChecked) {
+    return (
+      <div className="page-dark min-h-screen flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  // ── Profile edit state ──────────────────────────────────────────────
+  const [profileForm, setProfileForm] = useState({
+    name:  mockOwner.name,
+    email: mockOwner.email,
+    phone: mockOwner.phone,
+    bio:   "",
+  });
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileSaved,  setProfileSaved]  = useState(false);
+
+  const handleProfileSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setProfileSaving(true);
+    await new Promise(r => setTimeout(r, 1000));
+    setProfileSaving(false);
+    setProfileSaved(true);
+    setTimeout(() => setProfileSaved(false), 2500);
+  };
 
   // ── Confirm delete ──────────────────────────────────────────────────
   const [confirmDeleteListing, setConfirmDeleteListing] = useState<{ id: string; title: string } | null>(null);
@@ -723,47 +767,180 @@ export default function DashboardPage() {
         {activeTab === "profile" && (
           <div className="max-w-2xl space-y-6">
             <h1 className="font-heading font-bold text-white text-2xl">{lang === "id" ? "Profil Saya" : "My Profile"}</h1>
+
+            {/* Success banner */}
+            <AnimatePresence>
+              {profileSaved && (
+                <motion.div initial={{ opacity: 0, y: -8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                  className="flex items-center gap-2.5 p-4 glass rounded-xl border border-green-500/30 bg-green-600/10 text-green-400 text-sm font-medium">
+                  <CheckCircle2 size={16} />
+                  {lang === "id" ? "✅ Profil berhasil diperbarui!" : "✅ Profile updated successfully!"}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <div className="glass rounded-2xl p-6 sm:p-8">
+              {/* Avatar */}
               <div className="flex items-center gap-5 mb-8">
-                <div className="relative">
-                  <div className="relative w-20 h-20 rounded-2xl overflow-hidden">
+                <div className="relative flex-shrink-0">
+                  <div className="relative w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-primary-500/30">
                     <Image src={mockOwner.avatar} alt={mockOwner.name} fill className="object-cover" sizes="80px" />
                   </div>
-                  <button className="absolute -bottom-1 -right-1 w-7 h-7 bg-primary-600 rounded-lg flex items-center justify-center border-2 border-dark-800">
+                  <button
+                    type="button"
+                    className="absolute -bottom-1 -right-1 w-7 h-7 bg-primary-600 hover:bg-primary-500 rounded-lg flex items-center justify-center border-2 border-dark-800 transition-colors"
+                    onClick={() => {
+                      const input = document.createElement("input");
+                      input.type = "file";
+                      input.accept = "image/*";
+                      input.click();
+                    }}
+                  >
                     <Edit3 size={12} className="text-white" />
                   </button>
                 </div>
                 <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="font-bold text-white text-xl">{mockOwner.name}</h2>
-                    {mockOwner.verified && <BadgeCheck size={18} className="text-primary-400" />}
+                  <h2 className="font-bold text-white text-xl">{profileForm.name || mockOwner.name}</h2>
+                  <p className="text-white/50 text-sm">{profileForm.email || mockOwner.email}</p>
+                  <div className="flex items-center gap-2 mt-1.5">
+                    {mockOwner.verified && (
+                      <span className="flex items-center gap-1 text-primary-400 text-xs">
+                        <BadgeCheck size={12} /> {lang === "id" ? "Terverifikasi" : "Verified"}
+                      </span>
+                    )}
+                    <span className="text-white/30 text-xs">
+                      · {lang === "id" ? "Bergabung sejak" : "Member since"} {mockOwner.joinDate}
+                    </span>
                   </div>
-                  <p className="text-white/50 text-sm">{mockOwner.email}</p>
-                  <p className="text-white/30 text-xs mt-1">{lang === "id" ? "Bergabung sejak" : "Member since"} {mockOwner.joinDate}</p>
                 </div>
               </div>
 
-              <div className="space-y-4">
-                {[
-                  { label: { id: "Nama Lengkap", en: "Full Name" }, value: mockOwner.name },
-                  { label: { id: "Email", en: "Email" }, value: mockOwner.email },
-                  { label: { id: "No. WhatsApp", en: "WhatsApp" }, value: mockOwner.phone },
-                ].map((field, i) => (
-                  <div key={i} className="flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
-                    <div>
-                      <p className="text-white/40 text-xs mb-0.5">{lang === "id" ? field.label.id : field.label.en}</p>
-                      <p className="text-white text-sm font-medium">{field.value}</p>
+              {/* Form */}
+              <form onSubmit={handleProfileSave} className="space-y-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="form-group">
+                    <label className="form-label">{lang === "id" ? "Nama Lengkap" : "Full Name"} *</label>
+                    <input
+                      required
+                      value={profileForm.name}
+                      onChange={e => setProfileForm({ ...profileForm, name: e.target.value })}
+                      className="input-field"
+                    />
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Email *</label>
+                    <input
+                      required
+                      type="email"
+                      value={profileForm.email}
+                      onChange={e => setProfileForm({ ...profileForm, email: e.target.value })}
+                      className="input-field"
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">
+                    {lang === "id" ? "No. WhatsApp (ditampilkan ke calon penyewa)" : "WhatsApp Number (shown to tenants)"} *
+                  </label>
+                  <div className="relative">
+                    <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+                    <input
+                      required
+                      value={profileForm.phone}
+                      onChange={e => setProfileForm({ ...profileForm, phone: e.target.value })}
+                      placeholder="628xxxxxxxxxx"
+                      className="input-field pl-9"
+                    />
+                  </div>
+                  <p className="text-white/30 text-xs mt-1">
+                    {lang === "id"
+                      ? "Nomor ini akan muncul di semua listing Anda sebagai kontak utama."
+                      : "This number will appear on all your listings as the primary contact."}
+                  </p>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">{lang === "id" ? "Bio Singkat (Opsional)" : "Short Bio (Optional)"}</label>
+                  <textarea
+                    rows={3}
+                    value={profileForm.bio}
+                    onChange={e => setProfileForm({ ...profileForm, bio: e.target.value })}
+                    placeholder={lang === "id"
+                      ? "cth: Pemilik 3 unit apartemen di Jakarta dan BSD. Respon cepat dan ramah."
+                      : "e.g: Owner of 3 apartment units in Jakarta and BSD. Quick response and friendly."}
+                    className="input-field resize-none"
+                  />
+                </div>
+
+                {/* Stats summary */}
+                <div className="grid grid-cols-3 gap-3 pt-2">
+                  {[
+                    { value: myListings.length, label: lang === "id" ? "Listing Aktif" : "Active Listings" },
+                    { value: "1.247",           label: lang === "id" ? "Total Dilihat" : "Total Views" },
+                    { value: "89",              label: lang === "id" ? "Kontak Masuk" : "Inquiries" },
+                  ].map((s, i) => (
+                    <div key={i} className="glass rounded-xl p-3 text-center">
+                      <div className="font-heading font-black text-primary-400 text-xl">{s.value}</div>
+                      <p className="text-white/40 text-xs mt-0.5">{s.label}</p>
                     </div>
-                    <button className="text-primary-400 hover:text-primary-300 text-xs font-medium">
-                      {lang === "id" ? "Edit" : "Edit"}
-                    </button>
+                  ))}
+                </div>
+
+                <div className="flex gap-3 pt-2">
+                  <button type="button" onClick={() => setProfileForm({ name: mockOwner.name, email: mockOwner.email, phone: mockOwner.phone, bio: "" })}
+                    className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 hover:text-white text-sm font-semibold transition-all">
+                    {lang === "id" ? "Reset" : "Reset"}
+                  </button>
+                  <button type="submit" disabled={profileSaving}
+                    className="flex-1 btn-primary py-3 flex items-center justify-center gap-2 disabled:opacity-70">
+                    {profileSaving
+                      ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      : <Save size={15} />
+                    }
+                    {profileSaving
+                      ? lang === "id" ? "Menyimpan..." : "Saving..."
+                      : lang === "id" ? "Simpan Profil" : "Save Profile"
+                    }
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Change password card */}
+            <div className="glass rounded-2xl p-6">
+              <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
+                🔒 {lang === "id" ? "Ubah Password" : "Change Password"}
+              </h3>
+              <div className="space-y-3">
+                {[
+                  { label: lang === "id" ? "Password Lama" : "Current Password", type: "password", placeholder: "••••••••" },
+                  { label: lang === "id" ? "Password Baru" : "New Password",     type: "password", placeholder: "Min. 8 karakter" },
+                  { label: lang === "id" ? "Konfirmasi Password Baru" : "Confirm New Password", type: "password", placeholder: "Ulangi password baru" },
+                ].map((f, i) => (
+                  <div key={i} className="form-group">
+                    <label className="form-label">{f.label}</label>
+                    <input type={f.type} placeholder={f.placeholder} className="input-field" />
                   </div>
                 ))}
+                <button className="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white text-sm font-semibold transition-all mt-1">
+                  {lang === "id" ? "Update Password" : "Update Password"}
+                </button>
               </div>
+            </div>
 
-              <button className="mt-6 btn-primary w-full py-3 flex items-center justify-center gap-2">
-                <Settings size={16} />
-                {lang === "id" ? "Simpan Perubahan" : "Save Changes"}
+            {/* Danger zone */}
+            <div className="glass rounded-2xl p-6 border border-red-500/20">
+              <h3 className="font-semibold text-red-400 mb-3 flex items-center gap-2">
+                ⚠️ {lang === "id" ? "Zona Berbahaya" : "Danger Zone"}
+              </h3>
+              <p className="text-white/50 text-sm mb-4">
+                {lang === "id"
+                  ? "Menghapus akun akan menghapus semua listing dan data Anda secara permanen."
+                  : "Deleting your account will permanently remove all your listings and data."}
+              </p>
+              <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600/10 border border-red-500/30 hover:bg-red-600/20 text-red-400 text-sm font-semibold transition-all">
+                {lang === "id" ? "Hapus Akun" : "Delete Account"}
               </button>
             </div>
           </div>

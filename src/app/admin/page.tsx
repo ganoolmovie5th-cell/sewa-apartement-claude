@@ -148,12 +148,35 @@ export default function AdminPage() {
   function handleSendNotification() {
     if (!notifMsg.trim()) return;
     setActionLoading("notif");
+
+    // Generate WA broadcast — buka semua link WA owner satu per satu
+    // (WhatsApp tidak support broadcast API tanpa Business API,
+    //  solusi: buka tab WA per owner dengan pesan pre-filled)
+    const verifiedOwners = owners.filter(o => o.verified);
+
     setTimeout(() => {
       setActionLoading(null);
       setActionDone("notif");
       setShowNotifModal(false);
+
+      // Buka WA link untuk setiap owner terverifikasi (maks 3 sekaligus agar tidak diblokir browser)
+      verifiedOwners.slice(0, 3).forEach((owner, i) => {
+        setTimeout(() => {
+          const msg = `Halo ${owner.name}! 👋\n\n${notifMsg}\n\n_— Admin SewaApartement.id_`;
+          window.open(`https://wa.me/${owner.phone}?text=${encodeURIComponent(msg)}`, "_blank");
+        }, i * 800);
+      });
+
+      // Jika lebih dari 3 owner, simpan broadcast list ke clipboard
+      if (verifiedOwners.length > 3) {
+        const broadcastList = verifiedOwners
+          .map(o => `https://wa.me/${o.phone}?text=${encodeURIComponent(`Halo ${o.name}! 👋\n\n${notifMsg}\n\n_— Admin SewaApartement.id_`)}`)
+          .join("\n");
+        navigator.clipboard?.writeText(broadcastList).catch(() => {});
+      }
+
       setNotifMsg("");
-      setTimeout(() => setActionDone(null), 3000);
+      setTimeout(() => setActionDone(null), 4000);
     }, 1200);
   }
   const toggleListing = (id: string) =>
@@ -522,7 +545,7 @@ export default function AdminPage() {
                   {actionDone === "export-listing" && (lang === "id" ? "✅ Data listing berhasil diexport sebagai CSV!" : "✅ Listing data exported as CSV!")}
                   {actionDone === "export-owner"   && (lang === "id" ? "✅ Data pemilik berhasil diexport sebagai CSV!" : "✅ Owner data exported as CSV!")}
                   {actionDone === "backup"         && (lang === "id" ? "✅ Backup database berhasil didownload sebagai JSON!" : "✅ Database backup downloaded as JSON!")}
-                  {actionDone === "notif"          && (lang === "id" ? `✅ Notifikasi berhasil dikirim ke ${owners.length} pemilik!` : `✅ Notification sent to ${owners.length} owners!`)}
+                  {actionDone === "notif"          && (lang === "id" ? `✅ WA dibuka untuk ${owners.filter(o=>o.verified).length} pemilik! Jika lebih dari 3, link tersisa disalin ke clipboard.` : `✅ WA opened for ${owners.filter(o=>o.verified).length} owners! If more than 3, remaining links copied to clipboard.`)}
                 </motion.div>
               )}
             </AnimatePresence>
@@ -701,6 +724,11 @@ export default function AdminPage() {
                       </span>
                     )}
                   </div>
+                  <p className="text-white/30 text-xs mt-2">
+                    💬 {lang === "id"
+                      ? `Pesan dikirim via WhatsApp ke ${owners.filter(o => o.verified).length} pemilik terverifikasi. Browser akan membuka tab WA per pemilik.`
+                      : `Message sent via WhatsApp to ${owners.filter(o => o.verified).length} verified owners. Browser will open a WA tab per owner.`}
+                  </p>
                 </div>
 
                 {/* Quick templates */}

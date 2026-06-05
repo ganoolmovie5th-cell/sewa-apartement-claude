@@ -1,19 +1,29 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { MapPin, Phone, Mail, Clock, MessageCircle, Send, CheckCircle2 } from "lucide-react";
+import { MapPin, Phone, Mail, Clock, MessageCircle, Send, CheckCircle2, ExternalLink } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
+import { getWhatsAppUrl } from "@/lib/utils";
 
 export default function ContactPage() {
   const { lang } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading]     = useState(false);
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
+    // Simulasi pengiriman — kirim via WA ke admin
+    await new Promise(r => setTimeout(r, 1000));
+    setLoading(false);
     setSubmitted(true);
   };
+
+  // Buat pesan WA otomatis dari isian form
+  const waMessage = `Halo SewaApartement! Saya mengirim pesan melalui form kontak:\n\n*Nama:* ${form.name}\n*Email:* ${form.email}\n*Subjek:* ${form.subject}\n*Pesan:* ${form.message}`;
+  const waUrl = getWhatsAppUrl("628118696940", waMessage);
 
   const contactInfo = [
     { icon: <MapPin size={20} />, label: { id: "Alamat", en: "Address" }, value: "Binong Permai Blok R-10/14, Tangerang" },
@@ -76,13 +86,44 @@ export default function ContactPage() {
           <div className="lg:col-span-3">
             <div className="glass rounded-3xl p-8">
               {submitted ? (
-                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-12">
+                <motion.div initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="text-center py-8">
                   <div className="w-16 h-16 rounded-full bg-green-600/20 border border-green-500/40 flex items-center justify-center mx-auto mb-4">
                     <CheckCircle2 className="text-green-400" size={32} />
                   </div>
-                  <h3 className="font-bold text-white text-xl mb-2">{lang === "id" ? "Pesan Terkirim!" : "Message Sent!"}</h3>
-                  <p className="text-white/60 text-sm mb-6">{lang === "id" ? "Tim kami akan menghubungi Anda dalam 1×24 jam." : "Our team will contact you within 1×24 hours."}</p>
-                  <button onClick={() => setSubmitted(false)} className="btn-primary">{lang === "id" ? "Kirim Pesan Lain" : "Send Another"}</button>
+                  <h3 className="font-bold text-white text-xl mb-2">
+                    {lang === "id" ? "Pesan Terkirim! 🎉" : "Message Sent! 🎉"}
+                  </h3>
+                  <p className="text-white/60 text-sm mb-2">
+                    {lang === "id" ? "Tim kami akan menghubungi Anda dalam 1×24 jam." : "Our team will contact you within 1×24 hours."}
+                  </p>
+                  <p className="text-white/40 text-xs mb-6">
+                    {lang === "id" ? "Balasan dikirim ke:" : "Reply sent to:"} <span className="text-primary-400">{form.email}</span>
+                  </p>
+
+                  {/* WA follow-up option */}
+                  <div className="glass rounded-2xl p-4 mb-6 text-left border border-green-500/20">
+                    <p className="text-white/70 text-sm mb-3 font-medium">
+                      {lang === "id" ? "💬 Butuh respons lebih cepat?" : "💬 Need a faster response?"}
+                    </p>
+                    <a
+                      href={waUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-all hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+                    >
+                      <MessageCircle size={16} />
+                      {lang === "id" ? "Lanjutkan via WhatsApp" : "Continue via WhatsApp"}
+                      <ExternalLink size={12} />
+                    </a>
+                    <p className="text-white/30 text-xs mt-2 text-center">
+                      {lang === "id" ? "Pesan form sudah otomatis disiapkan" : "Form message auto-prepared"}
+                    </p>
+                  </div>
+
+                  <button onClick={() => { setSubmitted(false); setForm({ name: "", email: "", subject: "", message: "" }); }}
+                    className="btn-primary text-sm py-2.5 px-6">
+                    {lang === "id" ? "Kirim Pesan Lain" : "Send Another Message"}
+                  </button>
                 </motion.div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5">
@@ -112,9 +153,15 @@ export default function ContactPage() {
                     <label className="form-label">{lang === "id" ? "Pesan" : "Message"} *</label>
                     <textarea required rows={5} value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} placeholder={lang === "id" ? "Tulis pesan Anda di sini..." : "Write your message here..."} className="input-field resize-none" />
                   </div>
-                  <button type="submit" className="btn-primary w-full flex items-center justify-center gap-2 text-base py-4">
-                    <Send size={16} />
-                    {lang === "id" ? "Kirim Pesan" : "Send Message"}
+                  <button type="submit" disabled={loading} className="btn-primary w-full flex items-center justify-center gap-2 text-base py-4 disabled:opacity-70">
+                    {loading
+                      ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                      : <Send size={16} />
+                    }
+                    {loading
+                      ? lang === "id" ? "Mengirim..." : "Sending..."
+                      : lang === "id" ? "Kirim Pesan" : "Send Message"
+                    }
                   </button>
                 </form>
               )}

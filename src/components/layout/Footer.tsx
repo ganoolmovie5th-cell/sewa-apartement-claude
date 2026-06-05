@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { MapPin, Phone, Mail, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { MapPin, Phone, Mail, ArrowRight, Check } from "lucide-react";
+import { useState } from "react";
 
 // Social icons as inline SVG (lucide-react removed Facebook/Twitter/Instagram/Youtube)
 const IconInstagram = () => (
@@ -66,15 +67,31 @@ const footerLinks = {
   },
 };
 
+// Social links — update href ke URL nyata saat sudah ada akun sosmed
 const socials = [
-  { icon: IconInstagram, href: "#", label: "Instagram" },
-  { icon: IconTwitterX,  href: "#", label: "Twitter/X" },
-  { icon: IconYoutube,   href: "#", label: "YouTube" },
-  { icon: IconFacebook,  href: "#", label: "Facebook" },
+  { icon: IconInstagram, href: "https://www.instagram.com/", label: "Instagram" },
+  { icon: IconTwitterX,  href: "https://twitter.com/",      label: "Twitter/X" },
+  { icon: IconYoutube,   href: "https://www.youtube.com/",  label: "YouTube" },
+  { icon: IconFacebook,  href: "https://www.facebook.com/", label: "Facebook" },
 ];
 
 export default function Footer() {
   const { t, lang } = useLanguage();
+  const [email, setEmail]         = useState("");
+  const [subscribed, setSubscribed] = useState(false);
+  const [subLoading, setSubLoading] = useState(false);
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) return;
+    setSubLoading(true);
+    setTimeout(() => {
+      setSubLoading(false);
+      setSubscribed(true);
+      setEmail("");
+      setTimeout(() => setSubscribed(false), 4000);
+    }, 900);
+  };
 
   return (
     <footer className="bg-dark-900 border-t border-white/5">
@@ -92,18 +109,48 @@ export default function Footer() {
                   : "Latest listings, property tips, and exclusive deals straight to your email."}
               </p>
             </div>
-            <div className="flex gap-2 w-full md:w-auto">
-              <input
-                type="email"
-                placeholder={lang === "id" ? "Masukkan email Anda..." : "Enter your email..."}
-                className="flex-1 md:w-72 bg-white/5 border border-white/10 text-white placeholder:text-white/30 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary-500 transition-all"
-              />
-              <button className="flex items-center gap-2 bg-primary-600 hover:bg-primary-500 text-white px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap">
-                {lang === "id" ? "Subscribe" : "Subscribe"}
-                <ArrowRight size={14} />
+            <form onSubmit={handleSubscribe} className="flex gap-2 w-full md:w-auto">
+              <div className="relative flex-1 md:w-72">
+                <input
+                  type="email"
+                  required
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  placeholder={lang === "id" ? "Masukkan email Anda..." : "Enter your email..."}
+                  className="w-full bg-white/5 border border-white/10 text-white placeholder:text-white/30 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary-500 transition-all"
+                />
+              </div>
+              <button
+                type="submit"
+                disabled={subLoading}
+                className="flex items-center gap-2 bg-primary-600 hover:bg-primary-500 disabled:opacity-70 text-white px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap"
+              >
+                {subLoading ? (
+                  <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                ) : subscribed ? (
+                  <><Check size={14} /> {lang === "id" ? "Terdaftar!" : "Subscribed!"}</>
+                ) : (
+                  <>{lang === "id" ? "Subscribe" : "Subscribe"}<ArrowRight size={14} /></>
+                )}
               </button>
-            </div>
+            </form>
           </div>
+          {/* Success toast */}
+          <AnimatePresence>
+            {subscribed && (
+              <motion.p
+                initial={{ opacity: 0, y: 4 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0 }}
+                className="mt-3 text-green-400 text-sm flex items-center gap-2"
+              >
+                <Check size={14} />
+                {lang === "id"
+                  ? "✅ Berhasil! Anda akan mendapat update properti terbaru dari SewaApartement."
+                  : "✅ Success! You'll receive the latest property updates from SewaApartement."}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
