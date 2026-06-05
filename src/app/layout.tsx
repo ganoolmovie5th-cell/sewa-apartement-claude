@@ -1,0 +1,90 @@
+import type { Metadata, Viewport } from "next";
+import "./globals.css";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
+
+export const metadata: Metadata = {
+  title: {
+    default: "SewaTerlengkap – Sewa Apartemen JABODETABEK #1",
+    template: "%s | SewaTerlengkap",
+  },
+  description:
+    "Platform marketplace sewa apartemen terlengkap di JABODETABEK. Temukan apartemen untuk mahasiswa, pekerja, dan keluarga di Jakarta, Bogor, Depok, Tangerang, Bekasi.",
+  keywords: [
+    "sewa apartemen",
+    "apartemen jakarta",
+    "apartemen murah",
+    "sewa apartemen jabodetabek",
+    "apartemen tangerang",
+    "apartemen bekasi",
+    "apartemen depok",
+    "kost jakarta",
+    "rent apartment jakarta",
+  ],
+  authors: [{ name: "SewaTerlengkap" }],
+  creator: "SewaTerlengkap",
+  openGraph: {
+    type: "website",
+    locale: "id_ID",
+    alternateLocale: "en_US",
+    url: "https://sewaterlengkap.vercel.app",
+    siteName: "SewaTerlengkap",
+    title: "SewaTerlengkap – Sewa Apartemen JABODETABEK #1",
+    description:
+      "Platform marketplace sewa apartemen terlengkap di JABODETABEK. Ribuan pilihan untuk mahasiswa, pekerja, dan keluarga.",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "SewaTerlengkap – Marketplace Sewa Apartemen JABODETABEK",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "SewaTerlengkap – Sewa Apartemen JABODETABEK #1",
+    description: "Platform marketplace sewa apartemen terlengkap di JABODETABEK.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#0a0f1e",
+  width: "device-width",
+  initialScale: 1,
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html lang="id" className="dark">
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body className="bg-dark-900 text-white antialiased">
+        <Navbar />
+        <main>{children}</main>
+        <Footer />
+      </body>
+    </html>
+  );
+}

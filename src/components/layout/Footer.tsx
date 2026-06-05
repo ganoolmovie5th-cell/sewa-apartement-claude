@@ -1,0 +1,184 @@
+"use client";
+
+import Link from "next/link";
+import { motion } from "framer-motion";
+import { MapPin, Phone, Mail, Instagram, Twitter, Youtube, Facebook, ArrowRight } from "lucide-react";
+import { useLanguage } from "@/hooks/useLanguage";
+
+const footerLinks = {
+  company: {
+    title: { id: "Perusahaan", en: "Company" },
+    links: [
+      { href: "/about", label: { id: "Tentang Kami", en: "About Us" } },
+      { href: "/blog", label: { id: "Blog & Artikel", en: "Blog & Articles" } },
+      { href: "/careers", label: { id: "Karir", en: "Careers" } },
+      { href: "/press", label: { id: "Press Kit", en: "Press Kit" } },
+    ],
+  },
+  explore: {
+    title: { id: "Jelajahi", en: "Explore" },
+    links: [
+      { href: "/listings?city=jakarta", label: { id: "Apartemen Jakarta", en: "Jakarta Apartments" } },
+      { href: "/listings?city=tangerang", label: { id: "Apartemen Tangerang", en: "Tangerang Apartments" } },
+      { href: "/listings?city=bekasi", label: { id: "Apartemen Bekasi", en: "Bekasi Apartments" } },
+      { href: "/listings?city=depok", label: { id: "Apartemen Depok", en: "Depok Apartments" } },
+      { href: "/listings?city=bogor", label: { id: "Apartemen Bogor", en: "Bogor Apartments" } },
+    ],
+  },
+  owners: {
+    title: { id: "Untuk Pemilik", en: "For Owners" },
+    links: [
+      { href: "/how-it-works", label: { id: "Cara Pasang Iklan", en: "How to List" } },
+      { href: "/auth/register", label: { id: "Daftar Gratis", en: "Register Free" } },
+      { href: "/dashboard", label: { id: "Dashboard Pemilik", en: "Owner Dashboard" } },
+      { href: "/contact", label: { id: "Bantuan", en: "Support" } },
+    ],
+  },
+  legal: {
+    title: { id: "Legal", en: "Legal" },
+    links: [
+      { href: "/privacy", label: { id: "Kebijakan Privasi", en: "Privacy Policy" } },
+      { href: "/terms", label: { id: "Syarat & Ketentuan", en: "Terms & Conditions" } },
+      { href: "/cookies", label: { id: "Kebijakan Cookie", en: "Cookie Policy" } },
+    ],
+  },
+};
+
+const socials = [
+  { icon: Instagram, href: "#", label: "Instagram" },
+  { icon: Twitter, href: "#", label: "Twitter/X" },
+  { icon: Youtube, href: "#", label: "YouTube" },
+  { icon: Facebook, href: "#", label: "Facebook" },
+];
+
+export default function Footer() {
+  const { t, lang } = useLanguage();
+
+  return (
+    <footer className="bg-dark-900 border-t border-white/5">
+      {/* Newsletter Section */}
+      <div className="border-b border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div>
+              <h3 className="text-white font-heading font-bold text-xl mb-1">
+                {lang === "id" ? "Dapatkan Update Terbaru" : "Get Latest Updates"}
+              </h3>
+              <p className="text-white/50 text-sm">
+                {lang === "id"
+                  ? "Listing terbaru, tips properti, dan penawaran eksklusif langsung ke email Anda."
+                  : "Latest listings, property tips, and exclusive deals straight to your email."}
+              </p>
+            </div>
+            <div className="flex gap-2 w-full md:w-auto">
+              <input
+                type="email"
+                placeholder={lang === "id" ? "Masukkan email Anda..." : "Enter your email..."}
+                className="flex-1 md:w-72 bg-white/5 border border-white/10 text-white placeholder:text-white/30 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary-500 transition-all"
+              />
+              <button className="flex items-center gap-2 bg-primary-600 hover:bg-primary-500 text-white px-5 py-3 rounded-xl text-sm font-semibold transition-all whitespace-nowrap">
+                {lang === "id" ? "Subscribe" : "Subscribe"}
+                <ArrowRight size={14} />
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Footer */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-10">
+          {/* Brand */}
+          <div className="lg:col-span-2">
+            <Link href="/" className="flex items-center gap-3 mb-5">
+              <div className="relative w-10 h-10">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl rotate-6" />
+                <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
+                  <span className="text-white font-black text-sm">ST</span>
+                </div>
+              </div>
+              <div>
+                <div className="font-heading font-extrabold text-white text-xl leading-none">
+                  Sewa<span className="gradient-text-gold">Terlengkap</span>
+                </div>
+                <div className="text-white/40 text-xs">JABODETABEK</div>
+              </div>
+            </Link>
+            <p className="text-white/50 text-sm leading-relaxed mb-6">
+              {lang === "id"
+                ? "Platform marketplace sewa apartemen terlengkap di JABODETABEK. Ribuan pilihan untuk mahasiswa, pekerja kantoran, dan keluarga."
+                : "The most complete apartment rental marketplace platform in JABODETABEK. Thousands of options for students, office workers, and families."}
+            </p>
+
+            {/* Contact */}
+            <div className="space-y-2.5">
+              <div className="flex items-center gap-2.5 text-white/50 text-sm">
+                <MapPin size={14} className="text-primary-400 flex-shrink-0" />
+                <span>Sudirman Park, Jakarta Pusat 10220</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-white/50 text-sm">
+                <Phone size={14} className="text-primary-400 flex-shrink-0" />
+                <span>+62 21 1234 5678</span>
+              </div>
+              <div className="flex items-center gap-2.5 text-white/50 text-sm">
+                <Mail size={14} className="text-primary-400 flex-shrink-0" />
+                <span>hello@sewaterlengkap.id</span>
+              </div>
+            </div>
+
+            {/* Socials */}
+            <div className="flex items-center gap-2 mt-6">
+              {socials.map((social) => (
+                <a
+                  key={social.label}
+                  href={social.href}
+                  aria-label={social.label}
+                  className="w-9 h-9 rounded-lg bg-white/5 hover:bg-primary-600/30 border border-white/10 hover:border-primary-500/50 flex items-center justify-center text-white/50 hover:text-white transition-all duration-200"
+                >
+                  <social.icon size={15} />
+                </a>
+              ))}
+            </div>
+          </div>
+
+          {/* Links */}
+          {Object.entries(footerLinks).map(([key, section]) => (
+            <div key={key}>
+              <h4 className="text-white font-semibold text-sm mb-4">{t(section.title)}</h4>
+              <ul className="space-y-2.5">
+                {section.links.map((link) => (
+                  <li key={link.href}>
+                    <Link
+                      href={link.href}
+                      className="text-white/50 hover:text-white text-sm transition-colors duration-200 hover:translate-x-0.5 inline-block"
+                    >
+                      {t(link.label)}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Bar */}
+      <div className="border-t border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-white/30 text-xs">
+            <p>
+              © 2024 SewaTerlengkap. {lang === "id" ? "Hak Cipta Dilindungi." : "All Rights Reserved."}
+            </p>
+            <div className="flex items-center gap-4">
+              <span className="flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                {lang === "id" ? "Semua sistem berjalan normal" : "All systems operational"}
+              </span>
+              <span>🇮🇩 {lang === "id" ? "Dibuat dengan ❤️ di Indonesia" : "Made with ❤️ in Indonesia"}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+}
