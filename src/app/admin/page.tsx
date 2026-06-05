@@ -1,15 +1,16 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { useEffect, useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   LayoutDashboard, Users, Building2, ShieldCheck, LogOut,
-  Eye, Trash2, ToggleLeft, ToggleRight, BadgeCheck, BadgeX,
-  TrendingUp, MessageCircle, Search, Filter, ChevronRight,
+  Eye, Trash2, ToggleLeft, ToggleRight, BadgeCheck,
+  MessageCircle, Search, ChevronRight,
   MapPin, Star, AlertTriangle, CheckCircle2, Settings,
+  Download, Database, Bell, Send, CheckCircle,
 } from "lucide-react";
 import { SAMPLE_LISTINGS, formatPrice } from "@/lib/data";
 import { getSession, clearSession } from "@/lib/auth";
@@ -41,6 +42,12 @@ export default function AdminPage() {
   const [searchListing, setSearchListing] = useState("");
   const [searchOwner, setSearchOwner] = useState("");
 
+  // ── Settings action states ──────────────────────────────────────────
+  const [actionLoading, setActionLoading]   = useState<string | null>(null);
+  const [actionDone, setActionDone]         = useState<string | null>(null);
+  const [showNotifModal, setShowNotifModal] = useState(false);
+  const [notifMsg, setNotifMsg]             = useState("");
+
   useEffect(() => {
     const s = getSession();
     if (!s || s.role !== "admin") {
@@ -59,6 +66,89 @@ export default function AdminPage() {
   }
 
   const handleLogout = () => { clearSession(); router.push("/auth/login"); };
+
+  // ── Helpers: CSV export ─────────────────────────────────────────────
+  function downloadCSV(filename: string, rows: string[][], headers: string[]) {
+    const csv = [headers, ...rows]
+      .map((r) => r.map((c) => `"${String(c).replace(/"/g, '""')}"`).join(","))
+      .join("\n");
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = filename;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
+  function handleExportListings() {
+    setActionLoading("export-listing");
+    const headers = ["ID","Judul","Lokasi","Kota","Tipe","Harga","Satuan","Kamar","Luas","Lantai","Rating","Ulasan","Status","Verified","Owner WA"];
+    const rows = listings.map((l) => [
+      l.id, l.title, l.location, l.city, l.type,
+      String(l.price), l.priceUnit, String(l.bedrooms),
+      String(l.size), String(l.floor),
+      String(l.rating), String(l.reviews),
+      l.active ? "Aktif" : "Nonaktif",
+      l.verified ? "Ya" : "Tidak",
+      l.ownerPhone,
+    ]);
+    setTimeout(() => {
+      downloadCSV(`listings-sewaapartement-${new Date().toISOString().split("T")[0]}.csv`, rows, headers);
+      setActionLoading(null);
+      setActionDone("export-listing");
+      setTimeout(() => setActionDone(null), 3000);
+    }, 800);
+  }
+
+  function handleExportOwners() {
+    setActionLoading("export-owner");
+    const headers = ["ID","Nama","Email","No. HP","Listings","Verified","Bergabung"];
+    const rows = owners.map((o) => [
+      o.id, o.name, o.email, o.phone,
+      String(o.listings), o.verified ? "Ya" : "Tidak", o.joined,
+    ]);
+    setTimeout(() => {
+      downloadCSV(`owners-sewaapartement-${new Date().toISOString().split("T")[0]}.csv`, rows, headers);
+      setActionLoading(null);
+      setActionDone("export-owner");
+      setTimeout(() => setActionDone(null), 3000);
+    }, 800);
+  }
+
+  function handleBackup() {
+    setActionLoading("backup");
+    const data = {
+      exportedAt: new Date().toISOString(),
+      platform:   "SewaApartement.id",
+      listings:   listings,
+      owners:     owners,
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement("a");
+    a.href     = url;
+    a.download = `backup-sewaapartement-${new Date().toISOString().split("T")[0]}.json`;
+    setTimeout(() => {
+      a.click();
+      URL.revokeObjectURL(url);
+      setActionLoading(null);
+      setActionDone("backup");
+      setTimeout(() => setActionDone(null), 3000);
+    }, 1000);
+  }
+
+  function handleSendNotification() {
+    if (!notifMsg.trim()) return;
+    setActionLoading("notif");
+    setTimeout(() => {
+      setActionLoading(null);
+      setActionDone("notif");
+      setShowNotifModal(false);
+      setNotifMsg("");
+      setTimeout(() => setActionDone(null), 3000);
+    }, 1200);
+  }
   const toggleListing = (id: string) =>
     setListings((p) => p.map((l) => l.id === id ? { ...l, active: !l.active } : l));
   const verifyListing = (id: string) =>
@@ -392,45 +482,262 @@ export default function AdminPage() {
         {/* ═══════════ SETTINGS ═══════════ */}
         {activeTab === "settings" && (
           <div className="max-w-2xl space-y-6">
-            <h1 className="font-heading font-bold text-white text-2xl">{lang === "id" ? "Pengaturan Platform" : "Platform Settings"}</h1>
+            <h1 className="font-heading font-bold text-white text-2xl">
+              {lang === "id" ? "Pengaturan Platform" : "Platform Settings"}
+            </h1>
 
-            <div className="glass rounded-2xl p-6 space-y-5">
-              <h2 className="font-semibold text-white border-b border-white/10 pb-3">{lang === "id" ? "Informasi Admin" : "Admin Info"}</h2>
+            {/* Success toast */}
+            <AnimatePresence>
+              {actionDone && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="flex items-center gap-2.5 p-4 glass rounded-xl border border-green-500/30 bg-green-600/10 text-green-400 text-sm font-medium"
+                >
+                  <CheckCircle size={16} />
+                  {actionDone === "export-listing" && (lang === "id" ? "✅ Data listing berhasil diexport sebagai CSV!" : "✅ Listing data exported as CSV!")}
+                  {actionDone === "export-owner"   && (lang === "id" ? "✅ Data pemilik berhasil diexport sebagai CSV!" : "✅ Owner data exported as CSV!")}
+                  {actionDone === "backup"         && (lang === "id" ? "✅ Backup database berhasil didownload sebagai JSON!" : "✅ Database backup downloaded as JSON!")}
+                  {actionDone === "notif"          && (lang === "id" ? `✅ Notifikasi berhasil dikirim ke ${owners.length} pemilik!` : `✅ Notification sent to ${owners.length} owners!`)}
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Admin Info */}
+            <div className="glass rounded-2xl p-6 space-y-4">
+              <h2 className="font-semibold text-white border-b border-white/10 pb-3">
+                {lang === "id" ? "Informasi Admin" : "Admin Information"}
+              </h2>
               {[
-                { label: "Nama", value: session.name },
+                { label: lang === "id" ? "Nama" : "Name", value: session.name },
                 { label: "Email", value: session.email },
-                { label: "Role", value: "Administrator" },
+                { label: "Role", value: "Super Administrator" },
+                { label: lang === "id" ? "Total Listing" : "Total Listings", value: `${listings.length} listing` },
+                { label: lang === "id" ? "Total Pemilik" : "Total Owners", value: `${owners.length} pemilik` },
               ].map((f, i) => (
-                <div key={i} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
+                <div key={i} className="flex items-center justify-between p-3 bg-white/5 rounded-xl border border-white/5">
                   <div>
-                    <p className="text-white/40 text-xs">{f.label}</p>
+                    <p className="text-white/40 text-xs mb-0.5">{f.label}</p>
                     <p className="text-white text-sm font-medium">{f.value}</p>
                   </div>
                 </div>
               ))}
             </div>
 
+            {/* Platform Actions */}
             <div className="glass rounded-2xl p-6 space-y-4">
-              <h2 className="font-semibold text-white border-b border-white/10 pb-3">{lang === "id" ? "Aksi Platform" : "Platform Actions"}</h2>
+              <h2 className="font-semibold text-white border-b border-white/10 pb-3">
+                {lang === "id" ? "Aksi Platform" : "Platform Actions"}
+              </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {[
-                  { label: lang === "id" ? "Export Data Listing" : "Export Listing Data", icon: "📥", color: "border-primary-500/30 text-primary-400 hover:bg-primary-600/10" },
-                  { label: lang === "id" ? "Export Data Pemilik" : "Export Owner Data", icon: "👥", color: "border-primary-500/30 text-primary-400 hover:bg-primary-600/10" },
-                  { label: lang === "id" ? "Backup Database" : "Backup Database", icon: "💾", color: "border-green-500/30 text-green-400 hover:bg-green-600/10" },
-                  { label: lang === "id" ? "Kirim Notifikasi" : "Send Notification", icon: "🔔", color: "border-accent-500/30 text-accent-400 hover:bg-accent-600/10" },
-                ].map((a, i) => (
-                  <button key={i} className={`flex items-center gap-3 p-4 rounded-xl bg-white/5 border ${a.color} text-sm font-medium transition-all`}>
-                    <span className="text-lg">{a.icon}</span> {a.label}
-                  </button>
-                ))}
+
+                {/* Export Listing */}
+                <button
+                  onClick={handleExportListings}
+                  disabled={actionLoading === "export-listing"}
+                  className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-primary-500/30 text-primary-400 hover:bg-primary-600/10 text-sm font-medium transition-all disabled:opacity-60 disabled:cursor-not-allowed group"
+                >
+                  {actionLoading === "export-listing" ? (
+                    <div className="w-5 h-5 border-2 border-primary-400/30 border-t-primary-400 rounded-full animate-spin flex-shrink-0" />
+                  ) : (
+                    <Download size={18} className="flex-shrink-0 group-hover:-translate-y-0.5 transition-transform" />
+                  )}
+                  <div className="text-left">
+                    <div>{lang === "id" ? "Export Data Listing" : "Export Listing Data"}</div>
+                    <div className="text-primary-400/60 text-xs font-normal">
+                      {listings.length} listing → CSV
+                    </div>
+                  </div>
+                </button>
+
+                {/* Export Owner */}
+                <button
+                  onClick={handleExportOwners}
+                  disabled={actionLoading === "export-owner"}
+                  className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-primary-500/30 text-primary-400 hover:bg-primary-600/10 text-sm font-medium transition-all disabled:opacity-60 disabled:cursor-not-allowed group"
+                >
+                  {actionLoading === "export-owner" ? (
+                    <div className="w-5 h-5 border-2 border-primary-400/30 border-t-primary-400 rounded-full animate-spin flex-shrink-0" />
+                  ) : (
+                    <Users size={18} className="flex-shrink-0 group-hover:-translate-y-0.5 transition-transform" />
+                  )}
+                  <div className="text-left">
+                    <div>{lang === "id" ? "Export Data Pemilik" : "Export Owner Data"}</div>
+                    <div className="text-primary-400/60 text-xs font-normal">
+                      {owners.length} pemilik → CSV
+                    </div>
+                  </div>
+                </button>
+
+                {/* Backup Database */}
+                <button
+                  onClick={handleBackup}
+                  disabled={actionLoading === "backup"}
+                  className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-green-500/30 text-green-400 hover:bg-green-600/10 text-sm font-medium transition-all disabled:opacity-60 disabled:cursor-not-allowed group"
+                >
+                  {actionLoading === "backup" ? (
+                    <div className="w-5 h-5 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin flex-shrink-0" />
+                  ) : (
+                    <Database size={18} className="flex-shrink-0 group-hover:-translate-y-0.5 transition-transform" />
+                  )}
+                  <div className="text-left">
+                    <div>{lang === "id" ? "Backup Database" : "Backup Database"}</div>
+                    <div className="text-green-400/60 text-xs font-normal">
+                      {lang === "id" ? "Listings + Pemilik → JSON" : "Listings + Owners → JSON"}
+                    </div>
+                  </div>
+                </button>
+
+                {/* Kirim Notifikasi */}
+                <button
+                  onClick={() => setShowNotifModal(true)}
+                  disabled={actionLoading === "notif"}
+                  className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-accent-500/30 text-accent-400 hover:bg-accent-600/10 text-sm font-medium transition-all disabled:opacity-60 disabled:cursor-not-allowed group"
+                >
+                  {actionLoading === "notif" ? (
+                    <div className="w-5 h-5 border-2 border-accent-400/30 border-t-accent-400 rounded-full animate-spin flex-shrink-0" />
+                  ) : (
+                    <Bell size={18} className="flex-shrink-0 group-hover:animate-bounce transition-all" />
+                  )}
+                  <div className="text-left">
+                    <div>{lang === "id" ? "Kirim Notifikasi" : "Send Notification"}</div>
+                    <div className="text-accent-400/60 text-xs font-normal">
+                      {lang === "id" ? `Broadcast ke ${owners.length} pemilik` : `Broadcast to ${owners.length} owners`}
+                    </div>
+                  </div>
+                </button>
+
               </div>
             </div>
 
-            <button onClick={handleLogout} className="flex items-center gap-2 px-6 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 font-semibold text-sm transition-all">
-              <LogOut size={16} /> {lang === "id" ? "Keluar dari Admin" : "Logout from Admin"}
+            {/* Danger Zone */}
+            <button
+              onClick={handleLogout}
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 hover:bg-red-500/20 font-semibold text-sm transition-all"
+            >
+              <LogOut size={16} />
+              {lang === "id" ? "Keluar dari Admin" : "Logout from Admin"}
             </button>
           </div>
         )}
+
+        {/* ── Notification Modal ──────────────────────────────────────────── */}
+        <AnimatePresence>
+          {showNotifModal && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm"
+              onClick={(e) => e.target === e.currentTarget && setShowNotifModal(false)}
+            >
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                className="glass rounded-2xl p-6 w-full max-w-md border border-accent-500/30"
+              >
+                {/* Header */}
+                <div className="flex items-center justify-between mb-5">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-accent-600/20 border border-accent-500/30 flex items-center justify-center">
+                      <Bell className="text-accent-400" size={18} />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-white text-base">
+                        {lang === "id" ? "Kirim Notifikasi" : "Send Notification"}
+                      </h3>
+                      <p className="text-white/40 text-xs">
+                        {lang === "id"
+                          ? `Akan dikirim ke ${owners.length} pemilik terdaftar`
+                          : `Will be sent to ${owners.length} registered owners`}
+                      </p>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowNotifModal(false)}
+                    className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
+                  >
+                    ✕
+                  </button>
+                </div>
+
+                {/* Penerima */}
+                <div className="mb-4 p-3 bg-white/5 rounded-xl border border-white/5">
+                  <p className="text-white/40 text-xs mb-2">{lang === "id" ? "Penerima:" : "Recipients:"}</p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {owners.slice(0, 5).map((o) => (
+                      <span key={o.id} className="inline-flex items-center gap-1 px-2 py-0.5 bg-primary-600/20 rounded-full text-primary-300 text-xs">
+                        {o.name.split(" ")[0]}
+                      </span>
+                    ))}
+                    {owners.length > 5 && (
+                      <span className="px-2 py-0.5 bg-white/10 rounded-full text-white/40 text-xs">
+                        +{owners.length - 5} lainnya
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Quick templates */}
+                <p className="text-white/40 text-xs mb-2">{lang === "id" ? "Template cepat:" : "Quick templates:"}</p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {[
+                    lang === "id" ? "🎉 Selamat datang di SewaApartement.id! Pastikan listing Anda lengkap & terupdate." : "🎉 Welcome to SewaApartement.id! Make sure your listing is complete & updated.",
+                    lang === "id" ? "⚡ Reminder: Perbarui listing Anda agar tetap aktif dan mudah ditemukan calon penyewa." : "⚡ Reminder: Update your listing to stay active and discoverable.",
+                    lang === "id" ? "🆕 Fitur baru tersedia! Kunjungi dashboard untuk melihat update terbaru." : "🆕 New features available! Visit your dashboard to see the latest updates.",
+                  ].map((tpl, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setNotifMsg(tpl)}
+                      className="text-left text-xs px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 hover:text-white transition-all leading-relaxed"
+                    >
+                      {tpl.length > 50 ? tpl.slice(0, 50) + "…" : tpl}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Pesan */}
+                <div className="form-group mb-5">
+                  <label className="form-label">{lang === "id" ? "Isi Pesan *" : "Message *"}</label>
+                  <textarea
+                    rows={4}
+                    value={notifMsg}
+                    onChange={(e) => setNotifMsg(e.target.value)}
+                    placeholder={lang === "id"
+                      ? "Tulis pesan notifikasi untuk semua pemilik apartemen..."
+                      : "Write a notification message for all apartment owners..."}
+                    className="input-field resize-none"
+                  />
+                  <p className="text-white/30 text-xs mt-1">{notifMsg.length}/500 karakter</p>
+                </div>
+
+                {/* Actions */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setShowNotifModal(false)}
+                    className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 text-sm font-semibold transition-all"
+                  >
+                    {lang === "id" ? "Batal" : "Cancel"}
+                  </button>
+                  <button
+                    onClick={handleSendNotification}
+                    disabled={!notifMsg.trim() || actionLoading === "notif"}
+                    className="flex-1 py-3 rounded-xl bg-accent-600 hover:bg-accent-500 text-white text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {actionLoading === "notif" ? (
+                      <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      <Send size={15} />
+                    )}
+                    {lang === "id" ? "Kirim Sekarang" : "Send Now"}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </main>
     </div>
   );
