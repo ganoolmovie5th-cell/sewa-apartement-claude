@@ -6,18 +6,20 @@ import { ArrowRight } from "lucide-react";
 import { CITIES } from "@/lib/data";
 import { useLanguage } from "@/hooks/useLanguage";
 
-// Foto landmark khas tiap kota JABODETABEK
+// ──────────────────────────────────────────────────────────────────
+// Foto landmark khas JABODETABEK — semua dari Unsplash (free license)
+// ──────────────────────────────────────────────────────────────────
 const cityImages: Record<string, string> = {
-  // Jakarta: Monas / Bundaran HI / gedung Sudirman
+  // Jakarta: Gedung pencakar langit Sudirman/SCBD — skyline ikonik Jakarta
   jakarta: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=600&q=80",
-  // Bogor: Kebun Raya Bogor / alam hijau
-  bogor: "https://images.unsplash.com/photo-1584810359583-96fc3448beaa?w=600&q=80",
-  // Depok: suasana kota modern Depok
-  depok: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600&q=80",
-  // Tangerang: area modern BSD/Serpong
-  tangerang: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80",
-  // Bekasi: suasana kota modern
-  bekasi: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&q=80",
+  // Bogor: Hutan tropis hijau lebat — ciri khas "Kota Hujan" Bogor
+  bogor: "https://images.unsplash.com/photo-1448375240586-882707db888b?w=600&q=80",
+  // Depok: Kampus / gedung universitas modern — identik dengan UI & kampus
+  depok: "https://images.unsplash.com/photo-1562774053-701939374585?w=600&q=80",
+  // Tangerang: Bandara / terminal modern — ikon Soekarno-Hatta & BSD
+  tangerang: "https://images.unsplash.com/photo-1567327613485-fbc7bf196198?w=600&q=80",
+  // Bekasi: Kota industri & perumahan modern — kawasan Summarecon Bekasi
+  bekasi: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80",
 };
 
 export default function CitySection() {
