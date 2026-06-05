@@ -110,12 +110,45 @@ const FACILITY_GROUPS = [
 export default function DashboardPage() {
   const { lang } = useLanguage();
   const router   = useRouter();
-  const [activeTab, setActiveTab] = useState<Tab>("overview");
-  const [myListings, setMyListings] = useState(SAMPLE_LISTINGS.slice(0, 3).map(l => ({ ...l, active: true })));
+
+  // ── ALL hooks declared BEFORE any early return (Rules of Hooks) ─────
+  const [activeTab, setActiveTab]     = useState<Tab>("overview");
+  const [myListings, setMyListings]   = useState(SAMPLE_LISTINGS.slice(0, 3).map(l => ({ ...l, active: true })));
+  const [session, setSession]         = useState<any>(null);
+  const [authChecked, setAuthChecked] = useState(false);
+
+  // Profile
+  const [profileForm, setProfileForm]     = useState({ name: mockOwner.name, email: mockOwner.email, phone: mockOwner.phone, bio: "" });
+  const [profileSaving, setProfileSaving] = useState(false);
+  const [profileSaved,  setProfileSaved]  = useState(false);
+
+  // Confirm delete
+  const [confirmDeleteListing, setConfirmDeleteListing] = useState<{ id: string; title: string } | null>(null);
+
+  // Edit listing
+  const [editingListing, setEditingListing] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({
+    title: "", location: "", city: "", type: "", price: "",
+    priceUnit: "bulan", size: "", floor: "", bedrooms: "",
+    bathrooms: "", phone: "", description: "",
+  });
+  const [editSaving, setEditSaving] = useState(false);
+  const [editSaved,  setEditSaved]  = useState(false);
+
+  // Add listing
+  const [newListing, setNewListing] = useState({
+    title: "", location: "", city: "", type: "", price: "", size: "",
+    bedrooms: "", bathrooms: "", floor: "", totalFloors: "",
+    description: "", phone: "", priceUnit: "bulan",
+    checkedFacilities: [] as string[],
+  });
+  const [photoFiles,    setPhotoFiles]    = useState<File[]>([]);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted,  setSubmitted]  = useState(false);
 
   // ── Auth guard ──────────────────────────────────────────────────────
-  const [session, setSession] = useState<any>(null);
-  const [authChecked, setAuthChecked] = useState(false);
   useEffect(() => {
     const s = getSession();
     if (!s || s.role !== "owner") {
@@ -126,6 +159,7 @@ export default function DashboardPage() {
     setAuthChecked(true);
   }, [router]);
 
+  // ── Early return AFTER all hooks ────────────────────────────────────
   if (!authChecked) {
     return (
       <div className="page-dark min-h-screen flex items-center justify-center">
@@ -134,16 +168,7 @@ export default function DashboardPage() {
     );
   }
 
-  // ── Profile edit state ──────────────────────────────────────────────
-  const [profileForm, setProfileForm] = useState({
-    name:  mockOwner.name,
-    email: mockOwner.email,
-    phone: mockOwner.phone,
-    bio:   "",
-  });
-  const [profileSaving, setProfileSaving] = useState(false);
-  const [profileSaved,  setProfileSaved]  = useState(false);
-
+  // ── Handlers ────────────────────────────────────────────────────────
   const handleProfileSave = async (e: React.FormEvent) => {
     e.preventDefault();
     setProfileSaving(true);
@@ -153,38 +178,18 @@ export default function DashboardPage() {
     setTimeout(() => setProfileSaved(false), 2500);
   };
 
-  // ── Confirm delete ──────────────────────────────────────────────────
-  const [confirmDeleteListing, setConfirmDeleteListing] = useState<{ id: string; title: string } | null>(null);
   const handleConfirmDeleteListing = () => {
     if (!confirmDeleteListing) return;
     setMyListings(prev => prev.filter(l => l.id !== confirmDeleteListing.id));
     setConfirmDeleteListing(null);
   };
 
-  // ── Edit listing ────────────────────────────────────────────────────
-  const [editingListing, setEditingListing] = useState<string | null>(null);
-  const [editForm, setEditForm] = useState({
-    title: "", location: "", city: "", type: "", price: "",
-    priceUnit: "bulan", size: "", floor: "", bedrooms: "",
-    bathrooms: "", phone: "", description: "",
-  });
-  const [editSaving, setEditSaving] = useState(false);
-  const [editSaved, setEditSaved]   = useState(false);
-
   const openEdit = (listing: typeof myListings[0]) => {
     setEditForm({
-      title:       listing.title,
-      location:    listing.location,
-      city:        listing.city,
-      type:        listing.type,
-      price:       String(listing.price),
-      priceUnit:   listing.priceUnit,
-      size:        String(listing.size),
-      floor:       String(listing.floor),
-      bedrooms:    String(listing.bedrooms),
-      bathrooms:   String(listing.bathrooms),
-      phone:       listing.ownerPhone,
-      description: (listing as any).description?.id ?? "",
+      title: listing.title, location: listing.location, city: listing.city, type: listing.type,
+      price: String(listing.price), priceUnit: listing.priceUnit, size: String(listing.size),
+      floor: String(listing.floor), bedrooms: String(listing.bedrooms), bathrooms: String(listing.bathrooms),
+      phone: listing.ownerPhone, description: (listing as any).description?.id ?? "",
     });
     setEditingListing(listing.id);
     setEditSaved(false);
@@ -196,20 +201,10 @@ export default function DashboardPage() {
     await new Promise(r => setTimeout(r, 1000));
     setMyListings(prev => prev.map(l =>
       l.id === editingListing
-        ? {
-            ...l,
-            title:      editForm.title,
-            location:   editForm.location,
-            city:       editForm.city,
-            type:       editForm.type,
-            price:      Number(editForm.price),
-            priceUnit:  editForm.priceUnit,
-            size:       Number(editForm.size),
-            floor:      Number(editForm.floor),
-            bedrooms:   Number(editForm.bedrooms),
-            bathrooms:  Number(editForm.bathrooms),
-            ownerPhone: editForm.phone,
-          }
+        ? { ...l, title: editForm.title, location: editForm.location, city: editForm.city, type: editForm.type,
+            price: Number(editForm.price), priceUnit: editForm.priceUnit, size: Number(editForm.size),
+            floor: Number(editForm.floor), bedrooms: Number(editForm.bedrooms), bathrooms: Number(editForm.bathrooms),
+            ownerPhone: editForm.phone }
         : l
     ));
     setEditSaving(false);
@@ -217,33 +212,18 @@ export default function DashboardPage() {
     setTimeout(() => { setEditSaved(false); setEditingListing(null); }, 1500);
   };
 
-  // ── Add Listing form state ──────────────────────────────────────────
-  const [newListing, setNewListing] = useState({
-    title: "", location: "", city: "", type: "", price: "", size: "",
-    bedrooms: "", bathrooms: "", floor: "", totalFloors: "",
-    description: "", phone: "", priceUnit: "bulan",
-    checkedFacilities: [] as string[],
-  });
-  const [photoFiles, setPhotoFiles]   = useState<File[]>([]);
-  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const [submitting, setSubmitting]   = useState(false);
-  const [submitted, setSubmitted]     = useState(false);
-
-  // ── Photo handlers ─────────────────────────────────────────────────
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const newFiles = [...photoFiles, ...files].slice(0, 8);
     setPhotoFiles(newFiles);
-    const previews = newFiles.map(f => URL.createObjectURL(f));
-    setPhotoPreviews(previews);
+    setPhotoPreviews(newFiles.map(f => URL.createObjectURL(f)));
   };
+
   const removePhoto = (idx: number) => {
     setPhotoFiles(prev => prev.filter((_, i) => i !== idx));
     setPhotoPreviews(prev => prev.filter((_, i) => i !== idx));
   };
 
-  // ── Facility toggle ─────────────────────────────────────────────────
   const toggleFacility = (id: string) => {
     setNewListing(prev => ({
       ...prev,
@@ -632,6 +612,7 @@ export default function DashboardPage() {
                     <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
                       {photoPreviews.map((src, i) => (
                         <div key={i} className="relative group aspect-square rounded-xl overflow-hidden bg-dark-800">
+                          {/* eslint-disable-next-line @next/next/no-img-element */}
                           <img src={src} alt={`foto ${i+1}`} className="w-full h-full object-cover" />
                           {i === 0 && (
                             <div className="absolute top-1 left-1 bg-primary-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">

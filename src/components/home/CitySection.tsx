@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { CITIES } from "@/lib/data";
@@ -76,10 +77,12 @@ export default function CitySection() {
               <Link href={`/listings?city=${city.id}`} className="block">
                 <div className="relative overflow-hidden rounded-2xl aspect-[3/4] group">
                   {/* Image */}
-                  <img
+                  <Image
                     src={cityImages[city.id]}
                     alt={city.name}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 50vw, 20vw"
                   />
 
                   {/* Gradient Overlay */}
