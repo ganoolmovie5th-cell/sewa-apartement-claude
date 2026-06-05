@@ -8,7 +8,7 @@ import {
   LayoutDashboard, Plus, Building2, Eye, Edit3, Trash2, BadgeCheck,
   TrendingUp, MessageCircle, Settings, LogOut, ChevronRight,
   Star, MapPin, ToggleLeft, ToggleRight, Upload, X, ImagePlus,
-  CheckSquare, Square, Phone, Info,
+  CheckSquare, Square, Phone, Info, Save, CheckCircle2,
 } from "lucide-react";
 import { SAMPLE_LISTINGS, formatPrice } from "@/lib/data";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -115,6 +115,62 @@ export default function DashboardPage() {
     if (!confirmDeleteListing) return;
     setMyListings(prev => prev.filter(l => l.id !== confirmDeleteListing.id));
     setConfirmDeleteListing(null);
+  };
+
+  // ── Edit listing ────────────────────────────────────────────────────
+  const [editingListing, setEditingListing] = useState<string | null>(null);
+  const [editForm, setEditForm] = useState({
+    title: "", location: "", city: "", type: "", price: "",
+    priceUnit: "bulan", size: "", floor: "", bedrooms: "",
+    bathrooms: "", phone: "", description: "",
+  });
+  const [editSaving, setEditSaving] = useState(false);
+  const [editSaved, setEditSaved]   = useState(false);
+
+  const openEdit = (listing: typeof myListings[0]) => {
+    setEditForm({
+      title:       listing.title,
+      location:    listing.location,
+      city:        listing.city,
+      type:        listing.type,
+      price:       String(listing.price),
+      priceUnit:   listing.priceUnit,
+      size:        String(listing.size),
+      floor:       String(listing.floor),
+      bedrooms:    String(listing.bedrooms),
+      bathrooms:   String(listing.bathrooms),
+      phone:       listing.ownerPhone,
+      description: (listing as any).description?.id ?? "",
+    });
+    setEditingListing(listing.id);
+    setEditSaved(false);
+  };
+
+  const handleEditSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setEditSaving(true);
+    await new Promise(r => setTimeout(r, 1000));
+    setMyListings(prev => prev.map(l =>
+      l.id === editingListing
+        ? {
+            ...l,
+            title:      editForm.title,
+            location:   editForm.location,
+            city:       editForm.city,
+            type:       editForm.type,
+            price:      Number(editForm.price),
+            priceUnit:  editForm.priceUnit,
+            size:       Number(editForm.size),
+            floor:      Number(editForm.floor),
+            bedrooms:   Number(editForm.bedrooms),
+            bathrooms:  Number(editForm.bathrooms),
+            ownerPhone: editForm.phone,
+          }
+        : l
+    ));
+    setEditSaving(false);
+    setEditSaved(true);
+    setTimeout(() => { setEditSaved(false); setEditingListing(null); }, 1500);
   };
 
   // ── Add Listing form state ──────────────────────────────────────────
@@ -350,7 +406,9 @@ export default function DashboardPage() {
                         <Link href={`/listings/${listing.slug}`} className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg text-xs text-white/70 hover:text-white transition-all">
                           <Eye size={12} /> {lang === "id" ? "Lihat" : "View"}
                         </Link>
-                        <button className="flex items-center gap-1.5 px-3 py-1.5 bg-white/5 border border-white/10 hover:bg-white/10 rounded-lg text-xs text-white/70 hover:text-white transition-all">
+                        <button
+                          onClick={() => openEdit(listing)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-primary-600/10 border border-primary-500/30 hover:bg-primary-600/20 rounded-lg text-xs text-primary-400 hover:text-primary-300 transition-all">
                           <Edit3 size={12} /> {lang === "id" ? "Edit" : "Edit"}
                         </button>
                         <button onClick={() => toggleListingStatus(listing.id)}
@@ -711,6 +769,241 @@ export default function DashboardPage() {
           </div>
         )}
       </main>
+
+      {/* ── Edit Listing Modal ───────────────────────────────────────── */}
+      <AnimatePresence>
+        {editingListing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-start justify-center p-4 pt-16 bg-dark-900/85 backdrop-blur-sm overflow-y-auto"
+            onClick={(e) => e.target === e.currentTarget && setEditingListing(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.95, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.95, opacity: 0, y: 20 }}
+              transition={{ type: "spring", duration: 0.4 }}
+              className="glass rounded-2xl p-6 w-full max-w-2xl border border-primary-500/30 mb-8"
+              onClick={e => e.stopPropagation()}
+            >
+              {/* Header */}
+              <div className="flex items-center justify-between mb-6">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 rounded-xl bg-primary-600/20 border border-primary-500/30 flex items-center justify-center">
+                    <Edit3 className="text-primary-400" size={17} />
+                  </div>
+                  <div>
+                    <h2 className="font-heading font-bold text-white text-lg leading-none">
+                      {lang === "id" ? "Edit Listing" : "Edit Listing"}
+                    </h2>
+                    <p className="text-white/40 text-xs mt-0.5">
+                      {lang === "id" ? "Perubahan disimpan ke listing Anda" : "Changes saved to your listing"}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setEditingListing(null)}
+                  className="w-8 h-8 rounded-lg bg-white/5 hover:bg-white/10 flex items-center justify-center text-white/40 hover:text-white transition-all"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+
+              {/* Success state */}
+              {editSaved ? (
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  className="py-12 text-center"
+                >
+                  <div className="w-16 h-16 bg-green-600/20 border-2 border-green-500/40 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle2 className="text-green-400" size={30} />
+                  </div>
+                  <h3 className="font-bold text-white text-lg mb-1">
+                    {lang === "id" ? "Listing Berhasil Diperbarui!" : "Listing Updated Successfully!"}
+                  </h3>
+                  <p className="text-white/50 text-sm">
+                    {lang === "id" ? "Perubahan sudah disimpan." : "Changes have been saved."}
+                  </p>
+                </motion.div>
+              ) : (
+                <form onSubmit={handleEditSave} className="space-y-4">
+                  {/* Title */}
+                  <div className="form-group">
+                    <label className="form-label">{lang === "id" ? "Judul Listing" : "Listing Title"} *</label>
+                    <input
+                      required
+                      value={editForm.title}
+                      onChange={e => setEditForm({ ...editForm, title: e.target.value })}
+                      className="input-field"
+                    />
+                  </div>
+
+                  {/* City + Type */}
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "Kota" : "City"} *</label>
+                      <select
+                        required
+                        value={editForm.city}
+                        onChange={e => setEditForm({ ...editForm, city: e.target.value })}
+                        className="input-field appearance-none cursor-pointer"
+                      >
+                        {["Jakarta","Bogor","Depok","Tangerang","Bekasi"].map(c => (
+                          <option key={c} value={c.toLowerCase()} className="bg-dark-800">{c}</option>
+                        ))}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "Tipe Unit" : "Unit Type"} *</label>
+                      <select
+                        required
+                        value={editForm.type}
+                        onChange={e => setEditForm({ ...editForm, type: e.target.value })}
+                        className="input-field appearance-none cursor-pointer"
+                      >
+                        {[{v:"studio",l:"Studio"},{v:"1br",l:"1 Bedroom"},{v:"2br",l:"2 Bedrooms"},{v:"3br",l:"3 Bedrooms"},{v:"penthouse",l:"Penthouse"}].map(t => (
+                          <option key={t.v} value={t.v} className="bg-dark-800">{t.l}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="form-group">
+                    <label className="form-label">{lang === "id" ? "Lokasi Lengkap" : "Full Location"} *</label>
+                    <input
+                      required
+                      value={editForm.location}
+                      onChange={e => setEditForm({ ...editForm, location: e.target.value })}
+                      className="input-field"
+                    />
+                  </div>
+
+                  {/* Price + KT + KM + Luas + Lantai */}
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="form-group col-span-2">
+                      <label className="form-label">{lang === "id" ? "Harga" : "Price"} *</label>
+                      <div className="flex gap-2">
+                        <input
+                          required
+                          type="number"
+                          min="1"
+                          value={editForm.price}
+                          onChange={e => setEditForm({ ...editForm, price: e.target.value })}
+                          className="input-field flex-1"
+                        />
+                        <select
+                          value={editForm.priceUnit}
+                          onChange={e => setEditForm({ ...editForm, priceUnit: e.target.value })}
+                          className="input-field w-24 appearance-none cursor-pointer flex-shrink-0"
+                        >
+                          <option value="hari" className="bg-dark-800">/hari</option>
+                          <option value="bulan" className="bg-dark-800">/bulan</option>
+                          <option value="tahun" className="bg-dark-800">/tahun</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Luas (m²)</label>
+                      <input
+                        type="number"
+                        min="1"
+                        value={editForm.size}
+                        onChange={e => setEditForm({ ...editForm, size: e.target.value })}
+                        className="input-field"
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "Lantai" : "Floor"}</label>
+                      <input
+                        type="number"
+                        min="1"
+                        value={editForm.floor}
+                        onChange={e => setEditForm({ ...editForm, floor: e.target.value })}
+                        className="input-field"
+                      />
+                    </div>
+                  </div>
+
+                  {/* KT + KM + Phone */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "Kamar Tidur" : "Bedrooms"}</label>
+                      <select
+                        value={editForm.bedrooms}
+                        onChange={e => setEditForm({ ...editForm, bedrooms: e.target.value })}
+                        className="input-field appearance-none cursor-pointer"
+                      >
+                        <option value="0" className="bg-dark-800">Studio</option>
+                        {[1,2,3,4].map(n => <option key={n} value={n} className="bg-dark-800">{n} KT</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "Kamar Mandi" : "Bathrooms"}</label>
+                      <select
+                        value={editForm.bathrooms}
+                        onChange={e => setEditForm({ ...editForm, bathrooms: e.target.value })}
+                        className="input-field appearance-none cursor-pointer"
+                      >
+                        {[1,2,3,4].map(n => <option key={n} value={n} className="bg-dark-800">{n} KM</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "No. WhatsApp" : "WhatsApp"}</label>
+                      <input
+                        value={editForm.phone}
+                        onChange={e => setEditForm({ ...editForm, phone: e.target.value })}
+                        placeholder="628xxxxxxxxxx"
+                        className="input-field"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Description */}
+                  <div className="form-group">
+                    <label className="form-label">{lang === "id" ? "Deskripsi Tambahan" : "Additional Description"}</label>
+                    <textarea
+                      rows={3}
+                      value={editForm.description}
+                      onChange={e => setEditForm({ ...editForm, description: e.target.value })}
+                      placeholder={lang === "id" ? "Info tambahan yang tidak ada di fasilitas..." : "Additional info not covered by facilities..."}
+                      className="input-field resize-none"
+                    />
+                  </div>
+
+                  {/* Buttons */}
+                  <div className="flex gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={() => setEditingListing(null)}
+                      className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white text-sm font-semibold transition-all"
+                    >
+                      {lang === "id" ? "Batal" : "Cancel"}
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={editSaving}
+                      className="flex-1 py-3 rounded-xl bg-primary-600 hover:bg-primary-500 text-white text-sm font-bold transition-all flex items-center justify-center gap-2 disabled:opacity-70 hover:shadow-glow-blue"
+                    >
+                      {editSaving
+                        ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                        : <Save size={15} />
+                      }
+                      {editSaving
+                        ? lang === "id" ? "Menyimpan..." : "Saving..."
+                        : lang === "id" ? "Simpan Perubahan" : "Save Changes"
+                      }
+                    </button>
+                  </div>
+                </form>
+              )}
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Confirm Delete Listing Modal ─────────────────────────── */}
       <AnimatePresence>
