@@ -8,7 +8,7 @@ import {
   MapPin, Bed, Bath, Maximize2, Star, BadgeCheck, Phone, MessageCircle,
   Share2, Heart, ArrowLeft, Building2, Calendar, ChevronLeft, ChevronRight,
   Wifi, Car, Dumbbell, Waves, Shield, WashingMachine, UtensilsCrossed, Wind,
-  Copy, Check, Facebook, Twitter
+  Copy, Check
 } from "lucide-react";
 import { SAMPLE_LISTINGS, AMENITIES, formatPrice } from "@/lib/data";
 import { getWhatsAppUrl, cn } from "@/lib/utils";
