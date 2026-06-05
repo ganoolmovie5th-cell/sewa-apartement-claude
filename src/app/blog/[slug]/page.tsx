@@ -66,7 +66,6 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
           const data = await res.json();
           if (data && data.id) {
             setPost(data);
-            // Load related from API
             const allRes = await fetch("/api/blogs");
             if (allRes.ok) {
               const all: BlogPost[] = await allRes.json();
@@ -78,7 +77,19 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
         }
       } catch {/* fallback */}
 
-      // 2. Fallback: static seed
+      // 2. Try localStorage (AI-generated articles saved client-side)
+      try {
+        const local: BlogPost[] = JSON.parse(localStorage.getItem("sewa-ai-articles") ?? "[]");
+        const found = local.find(p => p.slug === params.slug);
+        if (found) {
+          setPost(found);
+          setRelated(local.filter(p => p.slug !== params.slug).slice(0, 2));
+          setLoading(false);
+          return;
+        }
+      } catch {/* ignore */}
+
+      // 3. Fallback: static seed
       const found = (BLOG_POSTS as any[]).find(p => p.slug === params.slug);
       if (found) {
         setPost(found);

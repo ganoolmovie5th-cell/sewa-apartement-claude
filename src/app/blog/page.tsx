@@ -76,7 +76,16 @@ export default function BlogPage() {
         if (res.ok) {
           const data = await res.json();
           if (Array.isArray(data) && data.length > 0) {
-            setPosts(data.map(normalize));
+            // Merge server data + localStorage AI articles
+            const localRaw = (() => {
+              try { return JSON.parse(localStorage.getItem("sewa-ai-articles") ?? "[]"); } catch { return []; }
+            })();
+            const serverIds = new Set(data.map((p: any) => p.id));
+            const localOnly = localRaw.filter((p: any) => !serverIds.has(p.id));
+            const merged = [...data, ...localOnly].sort(
+              (a: any, b: any) => new Date(b.publishedAt ?? b.date ?? "").getTime() - new Date(a.publishedAt ?? a.date ?? "").getTime()
+            );
+            setPosts(merged.map(normalize));
             return;
           }
         }
@@ -88,7 +97,33 @@ export default function BlogPage() {
     loadPosts().finally(() => setLoading(false));
   }, []);
 
-  // ── Manual trigger generate (demo only — needs CRON_SECRET) ─────────
+  // ── Helpers: localStorage persistence untuk artikel AI ──────────────
+  function loadLocalArticles(): BlogPost[] {
+    try {
+      const raw = localStorage.getItem("sewa-ai-articles");
+      if (!raw) return [];
+      return JSON.parse(raw);
+    } catch { return []; }
+  }
+  function saveLocalArticle(article: BlogPost) {
+    try {
+      const existing = loadLocalArticles();
+      if (!existing.find(a => a.id === article.id)) {
+        existing.push(article);
+        localStorage.setItem("sewa-ai-articles", JSON.stringify(existing));
+      }
+    } catch { /* ignore */ }
+  }
+  function mergeWithLocal(serverPosts: BlogPost[]): BlogPost[] {
+    const local = loadLocalArticles();
+    const serverIds = new Set(serverPosts.map(p => p.id));
+    const localOnly = local.filter(p => !serverIds.has(p.id));
+    return [...serverPosts, ...localOnly].sort(
+      (a, b) => new Date(b.publishedAt ?? b.date ?? "").getTime() - new Date(a.publishedAt ?? a.date ?? "").getTime()
+    );
+  }
+
+  // ── Manual trigger generate ───────────────────────────────────────────
   const handleManualGenerate = async () => {
     setGenerating(true);
     setGenMsg("");
@@ -98,14 +133,26 @@ export default function BlogPage() {
         headers: { Authorization: "Bearer sewa-cron-secret-2024" },
       });
       const data = await res.json();
-      setGenMsg(data.message || (data.success ? "Artikel baru berhasil dibuat!" : "Gagal membuat artikel."));
+
       if (data.success) {
-        // Reload posts
+        setGenMsg(data.message ?? "✅ Artikel baru berhasil dibuat!");
+        // Simpan ke localStorage untuk persistence
+        if (data.fullArticle) {
+          saveLocalArticle(normalize(data.fullArticle));
+        }
+        // Reload posts dari API + merge dengan localStorage
         const newRes = await fetch("/api/blogs");
         if (newRes.ok) {
           const newData = await newRes.json();
-          if (Array.isArray(newData)) setPosts(newData.map(normalize));
+          if (Array.isArray(newData)) {
+            setPosts(mergeWithLocal(newData.map(normalize)));
+          }
+        } else {
+          // Jika API gagal, refresh dari localStorage
+          setPosts(prev => mergeWithLocal(prev));
         }
+      } else {
+        setGenMsg(data.message ?? data.error ?? "Gagal membuat artikel.");
       }
     } catch {
       setGenMsg("Error koneksi ke server.");

@@ -1,55 +1,53 @@
 import { NextRequest, NextResponse } from "next/server";
-import { readFileSync, existsSync } from "fs";
-import { join } from "path";
+// Import seed + in-memory cache dari generate-blog
+import { SEED_BLOGS } from "@/app/api/generate-blog/route";
 
-function getBlogs() {
-  const filePath = join(process.cwd(), "data", "blogs.json");
-  if (!existsSync(filePath)) return [];
-  try {
-    const raw = readFileSync(filePath, "utf-8");
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
+// In-memory cache (shared global)
+declare global {
+  var __blogCache: any[] | undefined;
 }
 
-// GET /api/blogs — list semua artikel (bisa filter ?slug=xxx atau ?featured=true)
-export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const slug = searchParams.get("slug");
-  const featured = searchParams.get("featured");
-  const limit = searchParams.get("limit");
-  const category = searchParams.get("category");
-
-  let blogs = getBlogs();
-
-  // Sort by date desc
-  blogs.sort(
+function getAllArticles() {
+  const cached = global.__blogCache ?? [];
+  const seedIds = new Set(SEED_BLOGS.map((s: any) => s.id));
+  const cachedOnly = cached.filter((a: any) => !seedIds.has(a.id));
+  return [...SEED_BLOGS, ...cachedOnly].sort(
     (a: any, b: any) =>
       new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime()
   );
+}
+
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const slug     = searchParams.get("slug");
+  const featured = searchParams.get("featured");
+  const limit    = searchParams.get("limit");
+  const category = searchParams.get("category");
+
+  let articles = getAllArticles();
 
   if (slug) {
-    const post = blogs.find((b: any) => b.slug === slug);
+    const post = articles.find((b: any) => b.slug === slug);
     if (!post) return NextResponse.json({ error: "Not found" }, { status: 404 });
     return NextResponse.json(post);
   }
 
   if (featured === "true") {
-    blogs = blogs.filter((b: any) => b.featured);
+    articles = articles.filter((b: any) => b.featured);
   }
 
   if (category) {
-    blogs = blogs.filter(
+    const cat = category.toLowerCase();
+    articles = articles.filter(
       (b: any) =>
-        b.category?.id?.toLowerCase().includes(category.toLowerCase()) ||
-        b.category?.en?.toLowerCase().includes(category.toLowerCase())
+        b.category?.id?.toLowerCase().includes(cat) ||
+        b.category?.en?.toLowerCase().includes(cat)
     );
   }
 
   if (limit) {
-    blogs = blogs.slice(0, parseInt(limit));
+    articles = articles.slice(0, parseInt(limit));
   }
 
-  return NextResponse.json(blogs);
+  return NextResponse.json(articles);
 }
