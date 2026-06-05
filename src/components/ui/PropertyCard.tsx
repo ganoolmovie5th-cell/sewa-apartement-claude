@@ -153,7 +153,7 @@ export default function PropertyCard({ listing, variant = "default", index = 0 }
 
             {/* WhatsApp */}
             <a
-              href={getWhatsAppUrl(listing.ownerPhone)}
+              href={getWhatsAppUrl(listing.ownerPhone, undefined, listing.title)}
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-1.5 bg-green-600 hover:bg-green-500 text-white px-3 py-1.5 rounded-lg text-xs font-semibold transition-all hover:shadow-[0_0_15px_rgba(34,197,94,0.4)]"

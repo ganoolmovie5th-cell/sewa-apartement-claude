@@ -30,10 +30,26 @@ export function truncate(text: string, length: number): string {
   return text.slice(0, length) + "...";
 }
 
-export function getWhatsAppUrl(phone: string, message?: string): string {
+/**
+ * Build a WhatsApp deep-link.
+ * - apartmentName: include the listing title in the opening message
+ * - message: full override (highest priority)
+ */
+export function getWhatsAppUrl(
+  phone: string,
+  message?: string,
+  apartmentName?: string
+): string {
   const cleanPhone = phone.replace(/\D/g, "");
-  const defaultMsg = message || "Halo, saya tertarik dengan apartemen yang Anda iklankan di SewaTerlengkap. Boleh saya tanya lebih lanjut?";
-  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(defaultMsg)}`;
+  let text: string;
+  if (message) {
+    text = message;
+  } else if (apartmentName) {
+    text = `Halo, saya tertarik dengan apartemen *${apartmentName}* yang Anda iklankan di SewaApartement.id. Boleh saya tanya lebih lanjut mengenai ketersediaan dan harga?`;
+  } else {
+    text = "Halo, saya tertarik dengan apartemen yang Anda iklankan di SewaApartement.id. Boleh saya tanya lebih lanjut?";
+  }
+  return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }
 
 export function generateStars(rating: number): string[] {

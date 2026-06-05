@@ -35,7 +35,7 @@ export default function ListingDetailPage({ params }: { params: { slug: string }
     .filter((l) => l.city === listing.city && l.id !== listing.id)
     .slice(0, 3);
 
-  const whatsappMsg = `Halo ${listing.ownerName}, saya tertarik dengan apartemen "${listing.title}" yang Anda iklankan di SewaTerlengkap. Boleh saya tanya lebih lanjut?`;
+  const whatsappMsg = `Halo ${listing.ownerName}, saya tertarik dengan apartemen *${listing.title}* yang Anda iklankan di SewaApartement.id. Boleh saya tanya lebih lanjut mengenai ketersediaan dan harga?`;
 
   return (
     <div className="page-dark pt-16 md:pt-20">
