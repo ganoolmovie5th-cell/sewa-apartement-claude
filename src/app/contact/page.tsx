@@ -16,9 +16,9 @@ export default function ContactPage() {
   };
 
   const contactInfo = [
-    { icon: <MapPin size={20} />, label: { id: "Alamat", en: "Address" }, value: "Sudirman Park Tower A Lt. 12, Jl. KH Mas Mansyur, Jakarta Pusat 10220" },
-    { icon: <Phone size={20} />, label: { id: "Telepon", en: "Phone" }, value: "+62 21 1234 5678" },
-    { icon: <Mail size={20} />, label: { id: "Email", en: "Email" }, value: "hello@sewaterlengkap.id" },
+    { icon: <MapPin size={20} />, label: { id: "Alamat", en: "Address" }, value: "Binong Permai Blok R-10/14, Tangerang" },
+    { icon: <Phone size={20} />, label: { id: "Telepon", en: "Phone" }, value: "+62 811 8696 940" },
+    { icon: <Mail size={20} />, label: { id: "Email", en: "Email" }, value: "sewa-apartement-jabodetabek@gmail.com" },
     { icon: <Clock size={20} />, label: { id: "Jam Operasional", en: "Working Hours" }, value: lang === "id" ? "Senin–Jumat: 09.00–18.00 WIB" : "Mon–Fri: 09:00–18:00 WIB" },
   ];
 
@@ -62,7 +62,7 @@ export default function ContactPage() {
             </div>
 
             {/* WhatsApp */}
-            <a href="https://wa.me/6221123456789?text=Halo%20SewaTerlengkap%2C%20saya%20butuh%20bantuan." target="_blank" rel="noopener noreferrer"
+            <a href="https://wa.me/628118696940?text=Halo%20SewaApartement%2C%20saya%20butuh%20bantuan." target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-3 p-4 rounded-2xl bg-green-600/20 border border-green-500/30 hover:bg-green-600/30 transition-all group">
               <div className="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center text-white flex-shrink-0"><MessageCircle size={18} /></div>
               <div>

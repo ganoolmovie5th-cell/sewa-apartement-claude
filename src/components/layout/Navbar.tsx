@@ -52,12 +52,12 @@ export default function Navbar() {
             <div className="relative w-9 h-9">
               <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl rotate-6 group-hover:rotate-12 transition-transform duration-300" />
               <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
-                <span className="text-white font-black text-sm">ST</span>
+                <span className="text-white font-black text-sm">SA</span>
               </div>
             </div>
             <div className="hidden sm:block">
               <div className="font-heading font-extrabold text-white text-lg leading-none">
-                Sewa<span className="gradient-text-gold">Terlengkap</span>
+                Sewa<span className="gradient-text-gold">Apartement</span>
               </div>
               <div className="text-white/40 text-[10px] leading-none">JABODETABEK</div>
             </div>

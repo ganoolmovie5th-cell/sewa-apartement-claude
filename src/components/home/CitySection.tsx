@@ -6,12 +6,18 @@ import { ArrowRight } from "lucide-react";
 import { CITIES } from "@/lib/data";
 import { useLanguage } from "@/hooks/useLanguage";
 
+// Foto landmark khas tiap kota JABODETABEK
 const cityImages: Record<string, string> = {
-  jakarta: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=500&q=80",
-  bogor: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=500&q=80",
-  depok: "https://images.unsplash.com/photo-1546412414-8035e1776c9a?w=500&q=80",
-  tangerang: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=500&q=80",
-  bekasi: "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=500&q=80",
+  // Jakarta: Monas / Bundaran HI / gedung Sudirman
+  jakarta: "https://images.unsplash.com/photo-1555400038-63f5ba517a47?w=600&q=80",
+  // Bogor: Kebun Raya Bogor / alam hijau
+  bogor: "https://images.unsplash.com/photo-1584810359583-96fc3448beaa?w=600&q=80",
+  // Depok: suasana kota modern Depok
+  depok: "https://images.unsplash.com/photo-1570168007204-dfb528c6958f?w=600&q=80",
+  // Tangerang: area modern BSD/Serpong
+  tangerang: "https://images.unsplash.com/photo-1486325212027-8081e485255e?w=600&q=80",
+  // Bekasi: suasana kota modern
+  bekasi: "https://images.unsplash.com/photo-1582407947304-fd86f028f716?w=600&q=80",
 };
 
 export default function CitySection() {

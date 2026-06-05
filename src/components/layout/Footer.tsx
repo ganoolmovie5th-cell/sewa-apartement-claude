@@ -11,8 +11,8 @@ const footerLinks = {
     links: [
       { href: "/about", label: { id: "Tentang Kami", en: "About Us" } },
       { href: "/blog", label: { id: "Blog & Artikel", en: "Blog & Articles" } },
-      { href: "/careers", label: { id: "Karir", en: "Careers" } },
-      { href: "/press", label: { id: "Press Kit", en: "Press Kit" } },
+      { href: "/how-it-works", label: { id: "Cara Kerja", en: "How It Works" } },
+      { href: "/contact", label: { id: "Kontak Kami", en: "Contact Us" } },
     ],
   },
   explore: {
@@ -94,12 +94,12 @@ export default function Footer() {
               <div className="relative w-10 h-10">
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl rotate-6" />
                 <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-black text-sm">ST</span>
+                  <span className="text-white font-black text-sm">SA</span>
                 </div>
               </div>
               <div>
                 <div className="font-heading font-extrabold text-white text-xl leading-none">
-                  Sewa<span className="gradient-text-gold">Terlengkap</span>
+                  Sewa<span className="gradient-text-gold">Apartement</span>
                 </div>
                 <div className="text-white/40 text-xs">JABODETABEK</div>
               </div>
@@ -114,15 +114,15 @@ export default function Footer() {
             <div className="space-y-2.5">
               <div className="flex items-center gap-2.5 text-white/50 text-sm">
                 <MapPin size={14} className="text-primary-400 flex-shrink-0" />
-                <span>Sudirman Park, Jakarta Pusat 10220</span>
+                <span>Binong Permai Blok R-10/14, Tangerang</span>
               </div>
               <div className="flex items-center gap-2.5 text-white/50 text-sm">
                 <Phone size={14} className="text-primary-400 flex-shrink-0" />
-                <span>+62 21 1234 5678</span>
+                <span>+62 811 8696 940</span>
               </div>
               <div className="flex items-center gap-2.5 text-white/50 text-sm">
                 <Mail size={14} className="text-primary-400 flex-shrink-0" />
-                <span>hello@sewaterlengkap.id</span>
+                <span>sewa-apartement-jabodetabek@gmail.com</span>
               </div>
             </div>
 
@@ -167,7 +167,7 @@ export default function Footer() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-white/30 text-xs">
             <p>
-              © 2024 SewaTerlengkap. {lang === "id" ? "Hak Cipta Dilindungi." : "All Rights Reserved."}
+              © 2024 SewaApartement. {lang === "id" ? "Hak Cipta Dilindungi." : "All Rights Reserved."}
             </p>
             <div className="flex items-center gap-4">
               <span className="flex items-center gap-1.5">

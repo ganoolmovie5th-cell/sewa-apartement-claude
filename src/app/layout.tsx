@@ -5,13 +5,14 @@ import Footer from "@/components/layout/Footer";
 
 export const metadata: Metadata = {
   title: {
-    default: "SewaTerlengkap – Sewa Apartemen JABODETABEK #1",
-    template: "%s | SewaTerlengkap",
+    default: "SewaApartement – Sewa Apartemen JABODETABEK #1",
+    template: "%s | SewaApartement",
   },
   description:
     "Platform marketplace sewa apartemen terlengkap di JABODETABEK. Temukan apartemen untuk mahasiswa, pekerja, dan keluarga di Jakarta, Bogor, Depok, Tangerang, Bekasi.",
   keywords: [
     "sewa apartemen",
+    "sewa apartement",
     "apartemen jakarta",
     "apartemen murah",
     "sewa apartemen jabodetabek",
@@ -21,15 +22,15 @@ export const metadata: Metadata = {
     "kost jakarta",
     "rent apartment jakarta",
   ],
-  authors: [{ name: "SewaTerlengkap" }],
-  creator: "SewaTerlengkap",
+  authors: [{ name: "SewaApartement" }],
+  creator: "SewaApartement",
   openGraph: {
     type: "website",
     locale: "id_ID",
     alternateLocale: "en_US",
-    url: "https://sewaterlengkap.vercel.app",
-    siteName: "SewaTerlengkap",
-    title: "SewaTerlengkap – Sewa Apartemen JABODETABEK #1",
+    url: "https://sewa-apartement-claude.vercel.app",
+    siteName: "SewaApartement",
+    title: "SewaApartement – Sewa Apartemen JABODETABEK #1",
     description:
       "Platform marketplace sewa apartemen terlengkap di JABODETABEK. Ribuan pilihan untuk mahasiswa, pekerja, dan keluarga.",
     images: [
@@ -37,13 +38,13 @@ export const metadata: Metadata = {
         url: "/og-image.jpg",
         width: 1200,
         height: 630,
-        alt: "SewaTerlengkap – Marketplace Sewa Apartemen JABODETABEK",
+        alt: "SewaApartement – Marketplace Sewa Apartemen JABODETABEK",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "SewaTerlengkap – Sewa Apartemen JABODETABEK #1",
+    title: "SewaApartement – Sewa Apartemen JABODETABEK #1",
     description: "Platform marketplace sewa apartemen terlengkap di JABODETABEK.",
   },
   robots: {
