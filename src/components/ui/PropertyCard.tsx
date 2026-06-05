@@ -145,10 +145,17 @@ export default function PropertyCard({ listing, variant = "default", index = 0 }
 
           <div className="flex items-center gap-2">
             {/* Rating */}
-            <div className="flex items-center gap-1 text-xs text-white/60">
-              <Star size={11} className="text-accent-400 fill-accent-400" />
-              <span>{listing.rating}</span>
-              <span className="text-white/30">({listing.reviews})</span>
+            <div className="flex flex-col items-end gap-0.5">
+              <div className="flex items-center gap-1 text-xs text-white/60">
+                <Star size={11} className="text-accent-400 fill-accent-400" />
+                <span className="font-semibold text-white/80">{listing.rating}</span>
+                <span className="text-white/30">({listing.reviews})</span>
+              </div>
+              {(listing as any).ratingSource && (
+                <span className="text-[9px] text-white/25 leading-none">
+                  via {(listing as any).ratingSource}
+                </span>
+              )}
             </div>
 
             {/* WhatsApp */}
