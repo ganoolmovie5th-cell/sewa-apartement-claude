@@ -5,6 +5,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 
 const GA_ID = "G-DFKHWJ3TJZ";
+const GSC_VERIFICATION = "pEw-CXIVMv8NSSGvdlOtNwSWWdIWmsANEaYXG9lN-8o";
 
 export const metadata: Metadata = {
   title: {
@@ -27,6 +28,9 @@ export const metadata: Metadata = {
   ],
   authors: [{ name: "SewaApartement" }],
   creator: "SewaApartement",
+  verification: {
+    google: GSC_VERIFICATION,
+  },
   openGraph: {
     type: "website",
     locale: "id_ID",
