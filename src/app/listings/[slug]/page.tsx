@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   MapPin, Bed, Bath, Maximize2, Star, BadgeCheck, Phone, MessageCircle,
   Share2, Heart, ArrowLeft, Building2, Calendar, ChevronLeft, ChevronRight,
-  Wifi, Car, Dumbbell, Waves, Shield, WashingMachine, UtensilsCrossed, Wind
+  Wifi, Car, Dumbbell, Waves, Shield, WashingMachine, UtensilsCrossed, Wind,
+  Copy, Check, Facebook, Twitter
 } from "lucide-react";
 import { SAMPLE_LISTINGS, AMENITIES, formatPrice } from "@/lib/data";
 import { getWhatsAppUrl, cn } from "@/lib/utils";
@@ -30,6 +31,48 @@ export default function ListingDetailPage({ params }: { params: { slug: string }
   const listing = SAMPLE_LISTINGS.find((l) => l.slug === params.slug) || SAMPLE_LISTINGS[0];
   const [currentImage, setCurrentImage] = useState(0);
   const [wishlisted, setWishlisted] = useState(false);
+  const [copied, setCopied]         = useState(false);
+  const [showShareMenu, setShowShareMenu] = useState(false);
+
+  // Close share menu when clicking outside
+  useEffect(() => {
+    if (!showShareMenu) return;
+    const handler = () => setShowShareMenu(false);
+    document.addEventListener("click", handler);
+    return () => document.removeEventListener("click", handler);
+  }, [showShareMenu]);
+
+  const pageUrl = typeof window !== "undefined" ? window.location.href : "";
+  const shareTitle = listing.title;
+  const shareText  = `${lang === "id" ? "Lihat apartemen ini di SewaApartement.id" : "Check out this apartment on SewaApartement.id"}: ${listing.title} — ${formatPrice(listing.price)}/${listing.priceUnit}`;
+
+  const handleShare = async () => {
+    // Coba Web Share API dulu (mobile-native)
+    if (typeof navigator !== "undefined" && navigator.share) {
+      try {
+        await navigator.share({ title: shareTitle, text: shareText, url: pageUrl });
+        return;
+      } catch {
+        // User cancel atau browser tidak support — fallback ke menu
+      }
+    }
+    // Fallback: tampilkan menu share manual
+    setShowShareMenu(prev => !prev);
+  };
+
+  const handleCopyLink = () => {
+    if (typeof navigator !== "undefined" && navigator.clipboard) {
+      navigator.clipboard.writeText(pageUrl).then(() => {
+        setCopied(true);
+        setShowShareMenu(false);
+        setTimeout(() => setCopied(false), 2500);
+      });
+    }
+  };
+
+  const handleShareWA   = () => { window.open(`https://wa.me/?text=${encodeURIComponent(shareText + "\n" + pageUrl)}`, "_blank"); setShowShareMenu(false); };
+  const handleShareTW   = () => { window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(pageUrl)}`, "_blank"); setShowShareMenu(false); };
+  const handleShareFB   = () => { window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`, "_blank"); setShowShareMenu(false); };
 
   const similar = SAMPLE_LISTINGS
     .filter((l) => l.city === listing.city && l.id !== listing.id)
@@ -250,10 +293,60 @@ export default function ListingDetailPage({ params }: { params: { slug: string }
                     <Heart size={15} className={wishlisted ? "fill-red-400" : ""} />
                     {lang === "id" ? "Simpan" : "Save"}
                   </button>
-                  <button className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-white/5 border border-white/10 text-white/60 hover:text-white hover:bg-white/10 font-semibold text-sm transition-all">
-                    <Share2 size={15} />
-                    {lang === "id" ? "Bagikan" : "Share"}
-                  </button>
+
+                  {/* Share button + dropdown */}
+                  <div className="flex-1 relative">
+                    <button
+                      onClick={handleShare}
+                      className={cn(
+                        "w-full flex items-center justify-center gap-2 py-3 rounded-xl border font-semibold text-sm transition-all",
+                        copied
+                          ? "bg-green-500/20 border-green-500/50 text-green-400"
+                          : showShareMenu
+                          ? "bg-primary-600/20 border-primary-500/40 text-primary-300"
+                          : "bg-white/5 border-white/10 text-white/60 hover:text-white hover:bg-white/10"
+                      )}
+                    >
+                      {copied
+                        ? <><Check size={14} /> {lang === "id" ? "Tersalin!" : "Copied!"}</>
+                        : <><Share2 size={14} /> {lang === "id" ? "Bagikan" : "Share"}</>
+                      }
+                    </button>
+
+                    {/* Dropdown share menu */}
+                    {showShareMenu && (
+                      <div className="absolute bottom-full right-0 mb-2 w-52 glass rounded-2xl border border-white/15 shadow-glass overflow-hidden z-30">
+                        <div className="p-2 space-y-0.5">
+                          <p className="text-white/30 text-xs px-3 py-1.5 font-medium">
+                            {lang === "id" ? "Bagikan via:" : "Share via:"}
+                          </p>
+                          {/* WhatsApp */}
+                          <button onClick={handleShareWA}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-green-600/15 text-white/70 hover:text-green-400 text-sm transition-all text-left">
+                            <span className="text-base">💬</span> WhatsApp
+                          </button>
+                          {/* Twitter/X */}
+                          <button onClick={handleShareTW}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-sky-600/15 text-white/70 hover:text-sky-400 text-sm transition-all text-left">
+                            <span className="text-base">🐦</span> Twitter / X
+                          </button>
+                          {/* Facebook */}
+                          <button onClick={handleShareFB}
+                            className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-blue-600/15 text-white/70 hover:text-blue-400 text-sm transition-all text-left">
+                            <span className="text-base">📘</span> Facebook
+                          </button>
+                          {/* Copy link */}
+                          <div className="border-t border-white/5 pt-1 mt-1">
+                            <button onClick={handleCopyLink}
+                              className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/10 text-white/70 hover:text-white text-sm transition-all text-left">
+                              <Copy size={14} />
+                              {lang === "id" ? "Salin Link" : "Copy Link"}
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
 

@@ -109,6 +109,14 @@ export default function DashboardPage() {
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [myListings, setMyListings] = useState(SAMPLE_LISTINGS.slice(0, 3).map(l => ({ ...l, active: true })));
 
+  // ── Confirm delete ──────────────────────────────────────────────────
+  const [confirmDeleteListing, setConfirmDeleteListing] = useState<{ id: string; title: string } | null>(null);
+  const handleConfirmDeleteListing = () => {
+    if (!confirmDeleteListing) return;
+    setMyListings(prev => prev.filter(l => l.id !== confirmDeleteListing.id));
+    setConfirmDeleteListing(null);
+  };
+
   // ── Add Listing form state ──────────────────────────────────────────
   const [newListing, setNewListing] = useState({
     title: "", location: "", city: "", type: "", price: "", size: "",
@@ -352,7 +360,9 @@ export default function DashboardPage() {
                           {listing.active ? <ToggleRight size={14} /> : <ToggleLeft size={14} />}
                           {listing.active ? (lang === "id" ? "Nonaktifkan" : "Deactivate") : (lang === "id" ? "Aktifkan" : "Activate")}
                         </button>
-                        <button className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600/10 border border-red-500/30 hover:bg-red-600/20 rounded-lg text-xs text-red-400 transition-all">
+                        <button
+                          onClick={() => setConfirmDeleteListing({ id: listing.id, title: listing.title })}
+                          className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600/10 border border-red-500/30 hover:bg-red-600/20 rounded-lg text-xs text-red-400 transition-all">
                           <Trash2 size={12} /> {lang === "id" ? "Hapus" : "Delete"}
                         </button>
                       </div>
@@ -701,6 +711,71 @@ export default function DashboardPage() {
           </div>
         )}
       </main>
+
+      {/* ── Confirm Delete Listing Modal ─────────────────────────── */}
+      <AnimatePresence>
+        {confirmDeleteListing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm"
+            onClick={(e) => e.target === e.currentTarget && setConfirmDeleteListing(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.88, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.88, opacity: 0, y: 20 }}
+              transition={{ type: "spring", duration: 0.35 }}
+              className="glass rounded-2xl p-6 w-full max-w-sm border border-red-500/30 shadow-[0_0_60px_rgba(239,68,68,0.15)]"
+            >
+              {/* Icon */}
+              <div className="w-14 h-14 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center mx-auto mb-5">
+                <Trash2 className="text-red-400" size={26} />
+              </div>
+
+              {/* Title */}
+              <h3 className="font-heading font-bold text-white text-center text-lg mb-2">
+                {lang === "id" ? "Hapus Listing Ini?" : "Delete This Listing?"}
+              </h3>
+
+              {/* Listing name */}
+              <p className="text-center text-white/40 text-sm mb-2">
+                {lang === "id" ? "Anda akan menghapus:" : "You are about to delete:"}
+              </p>
+              <div className="mx-auto mb-5 px-4 py-2.5 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
+                <span className="text-red-300 text-sm font-semibold line-clamp-2">
+                  {confirmDeleteListing.title}
+                </span>
+              </div>
+
+              {/* Warning */}
+              <p className="text-center text-white/40 text-xs mb-6 leading-relaxed">
+                {lang === "id"
+                  ? "⚠️ Listing ini akan dihapus permanen dari dashboard Anda. Aksi ini tidak bisa dibatalkan."
+                  : "⚠️ This listing will be permanently removed from your dashboard. This action cannot be undone."}
+              </p>
+
+              {/* Buttons */}
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setConfirmDeleteListing(null)}
+                  className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white text-sm font-semibold transition-all"
+                >
+                  {lang === "id" ? "Batal" : "Cancel"}
+                </button>
+                <button
+                  onClick={handleConfirmDeleteListing}
+                  className="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)]"
+                >
+                  <Trash2 size={14} />
+                  {lang === "id" ? "Ya, Hapus" : "Yes, Delete"}
+                </button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

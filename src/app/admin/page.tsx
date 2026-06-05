@@ -48,6 +48,13 @@ export default function AdminPage() {
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [notifMsg, setNotifMsg]             = useState("");
 
+  // ── Confirm delete modal ────────────────────────────────────────────
+  const [confirmDelete, setConfirmDelete] = useState<{
+    type: "listing" | "owner" | "pending";
+    id: string;
+    name: string;
+  } | null>(null);
+
   useEffect(() => {
     const s = getSession();
     if (!s || s.role !== "admin") {
@@ -153,12 +160,28 @@ export default function AdminPage() {
     setListings((p) => p.map((l) => l.id === id ? { ...l, active: !l.active } : l));
   const verifyListing = (id: string) =>
     setListings((p) => p.map((l) => l.id === id ? { ...l, verified: true, pendingVerify: false } : l));
-  const deleteListing = (id: string) =>
-    setListings((p) => p.filter((l) => l.id !== id));
+
+  // Open confirm modal instead of direct delete
+  const askDeleteListing = (l: { id: string; title: string }) =>
+    setConfirmDelete({ type: "listing", id: l.id, name: l.title });
+  const askRejectListing = (l: { id: string; title: string }) =>
+    setConfirmDelete({ type: "pending", id: l.id, name: l.title });
+  const askDeleteOwner   = (o: { id: string; name: string }) =>
+    setConfirmDelete({ type: "owner",   id: o.id, name: o.name });
+
+  // Execute after confirmed
+  const handleConfirmDelete = () => {
+    if (!confirmDelete) return;
+    if (confirmDelete.type === "listing" || confirmDelete.type === "pending") {
+      setListings((p) => p.filter((l) => l.id !== confirmDelete.id));
+    } else {
+      setOwners((p) => p.filter((o) => o.id !== confirmDelete.id));
+    }
+    setConfirmDelete(null);
+  };
+
   const verifyOwner = (id: string) =>
     setOwners((p) => p.map((o) => o.id === id ? { ...o, verified: true } : o));
-  const deleteOwner = (id: string) =>
-    setOwners((p) => p.filter((o) => o.id !== id));
 
   const filteredListings = listings.filter(
     (l) => !searchListing || l.title.toLowerCase().includes(searchListing.toLowerCase()) || l.location.toLowerCase().includes(searchListing.toLowerCase())
@@ -297,7 +320,7 @@ export default function AdminPage() {
                         <button onClick={() => verifyListing(l.id)} className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600/20 border border-green-500/30 hover:bg-green-600/30 text-green-400 text-xs font-medium rounded-lg transition-all">
                           <BadgeCheck size={12} /> {lang === "id" ? "Verifikasi" : "Verify"}
                         </button>
-                        <button onClick={() => deleteListing(l.id)} className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600/10 border border-red-500/30 hover:bg-red-600/20 text-red-400 text-xs font-medium rounded-lg transition-all">
+                        <button onClick={() => askRejectListing(l)} className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600/10 border border-red-500/30 hover:bg-red-600/20 text-red-400 text-xs font-medium rounded-lg transition-all">
                           <Trash2 size={12} /> {lang === "id" ? "Tolak" : "Reject"}
                         </button>
                       </div>
@@ -402,7 +425,7 @@ export default function AdminPage() {
                         {l.active ? <ToggleRight size={12} /> : <ToggleLeft size={12} />}
                         {l.active ? (lang === "id" ? "Nonaktifkan" : "Deactivate") : (lang === "id" ? "Aktifkan" : "Activate")}
                       </button>
-                      <button onClick={() => deleteListing(l.id)} className="flex items-center gap-1 px-2.5 py-1.5 bg-red-600/10 border border-red-500/30 hover:bg-red-600/20 rounded-lg text-xs text-red-400 transition-all">
+                      <button onClick={() => askDeleteListing(l)} className="flex items-center gap-1 px-2.5 py-1.5 bg-red-600/10 border border-red-500/30 hover:bg-red-600/20 rounded-lg text-xs text-red-400 transition-all">
                         <Trash2 size={11} /> {lang === "id" ? "Hapus" : "Delete"}
                       </button>
                     </div>
@@ -469,7 +492,7 @@ export default function AdminPage() {
                       className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600/10 border border-green-500/30 hover:bg-green-600/20 text-green-400 text-xs font-medium rounded-lg transition-all">
                       <MessageCircle size={12} /> WA
                     </a>
-                    <button onClick={() => deleteOwner(o.id)} className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600/10 border border-red-500/30 hover:bg-red-600/20 text-red-400 text-xs rounded-lg transition-all">
+                    <button onClick={() => askDeleteOwner(o)} className="flex items-center gap-1.5 px-3 py-1.5 bg-red-600/10 border border-red-500/30 hover:bg-red-600/20 text-red-400 text-xs rounded-lg transition-all">
                       <Trash2 size={12} />
                     </button>
                   </div>
@@ -738,6 +761,82 @@ export default function AdminPage() {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* ── Confirm Delete Modal (listing / owner / pending) ─────────────── */}
+        <AnimatePresence>
+          {confirmDelete && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-dark-900/80 backdrop-blur-sm"
+              onClick={(e) => e.target === e.currentTarget && setConfirmDelete(null)}
+            >
+              <motion.div
+                initial={{ scale: 0.88, opacity: 0, y: 20 }}
+                animate={{ scale: 1, opacity: 1, y: 0 }}
+                exit={{ scale: 0.88, opacity: 0, y: 20 }}
+                transition={{ type: "spring", duration: 0.35 }}
+                className="glass rounded-2xl p-6 w-full max-w-sm border border-red-500/30 shadow-[0_0_60px_rgba(239,68,68,0.15)]"
+              >
+                {/* Icon */}
+                <div className="w-14 h-14 rounded-2xl bg-red-500/15 border border-red-500/30 flex items-center justify-center mx-auto mb-5">
+                  <Trash2 className="text-red-400" size={26} />
+                </div>
+
+                {/* Title */}
+                <h3 className="font-heading font-bold text-white text-center text-lg mb-2">
+                  {confirmDelete.type === "owner"
+                    ? lang === "id" ? "Hapus Pemilik?" : "Delete Owner?"
+                    : confirmDelete.type === "pending"
+                    ? lang === "id" ? "Tolak Listing Ini?" : "Reject This Listing?"
+                    : lang === "id" ? "Hapus Listing Ini?" : "Delete This Listing?"}
+                </h3>
+
+                {/* Name chip */}
+                <p className="text-center text-white/40 text-sm mb-1">
+                  {lang === "id" ? "Anda akan menghapus:" : "You are about to delete:"}
+                </p>
+                <div className="mx-auto mb-5 px-4 py-2 bg-red-500/10 border border-red-500/20 rounded-xl text-center">
+                  <span className="text-red-300 text-sm font-semibold line-clamp-2">
+                    {confirmDelete.name}
+                  </span>
+                </div>
+
+                {/* Warning */}
+                <p className="text-center text-white/40 text-xs mb-6 leading-relaxed">
+                  {confirmDelete.type === "owner"
+                    ? lang === "id"
+                      ? "⚠️ Data pemilik dan semua listing terkait akan dihapus permanen. Aksi ini tidak bisa dibatalkan."
+                      : "⚠️ Owner data and all related listings will be permanently deleted. This action cannot be undone."
+                    : lang === "id"
+                      ? "⚠️ Listing ini akan dihapus permanen. Aksi ini tidak bisa dibatalkan."
+                      : "⚠️ This listing will be permanently deleted. This action cannot be undone."}
+                </p>
+
+                {/* Buttons */}
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => setConfirmDelete(null)}
+                    className="flex-1 py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white text-sm font-semibold transition-all"
+                  >
+                    {lang === "id" ? "Batal" : "Cancel"}
+                  </button>
+                  <button
+                    onClick={handleConfirmDelete}
+                    className="flex-1 py-3 rounded-xl bg-red-600 hover:bg-red-500 text-white text-sm font-bold transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(239,68,68,0.4)]"
+                  >
+                    <Trash2 size={14} />
+                    {confirmDelete.type === "pending"
+                      ? lang === "id" ? "Ya, Tolak" : "Yes, Reject"
+                      : lang === "id" ? "Ya, Hapus" : "Yes, Delete"}
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
       </main>
     </div>
   );
