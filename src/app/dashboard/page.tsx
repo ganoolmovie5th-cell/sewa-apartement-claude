@@ -1,13 +1,14 @@
 "use client";
 
-import { useState } from "react";
-import { motion } from "framer-motion";
+import { useState, useRef } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import {
   LayoutDashboard, Plus, Building2, Eye, Edit3, Trash2, BadgeCheck,
-  TrendingUp, MessageCircle, Bell, Settings, LogOut, ChevronRight,
-  Star, MapPin, MoreVertical, ToggleLeft, ToggleRight, Search
+  TrendingUp, MessageCircle, Settings, LogOut, ChevronRight,
+  Star, MapPin, ToggleLeft, ToggleRight, Upload, X, ImagePlus,
+  CheckSquare, Square, Phone, Info,
 } from "lucide-react";
 import { SAMPLE_LISTINGS, formatPrice } from "@/lib/data";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -27,16 +28,122 @@ const mockOwner = {
   totalContacts: 89,
 };
 
+// ── Kelompok fasilitas lengkap ─────────────────────────────────────────
+const FACILITY_GROUPS = [
+  {
+    group: { id: "Yang Sudah Termasuk (Include)", en: "What's Included" },
+    items: [
+      { id: "inc_wifi",     icon: "📶", label: { id: "WiFi / Internet",         en: "WiFi / Internet" } },
+      { id: "inc_ipl",      icon: "🏢", label: { id: "IPL (Iuran Pengelolaan)", en: "Building Management Fee (IPL)" } },
+      { id: "inc_air",      icon: "💧", label: { id: "Tagihan Air",              en: "Water Bill" } },
+      { id: "inc_listrik",  icon: "⚡", label: { id: "Tagihan Listrik",          en: "Electricity Bill" } },
+      { id: "inc_gas",      icon: "🔥", label: { id: "Gas / Kompor Gas",         en: "Gas / Gas Stove" } },
+      { id: "inc_parkir",   icon: "🚗", label: { id: "Parkir 1 Kendaraan",       en: "1 Vehicle Parking" } },
+      { id: "inc_ac",       icon: "❄️", label: { id: "AC (sudah terpasang)",      en: "AC (already installed)" } },
+    ],
+  },
+  {
+    group: { id: "Kondisi Unit", en: "Unit Condition" },
+    items: [
+      { id: "cond_furnished_full", icon: "🛋️", label: { id: "Fully Furnished",        en: "Fully Furnished" } },
+      { id: "cond_furnished_semi", icon: "🪑", label: { id: "Semi Furnished",          en: "Semi Furnished" } },
+      { id: "cond_unfurnished",    icon: "📦", label: { id: "Unfurnished (Kosong)",    en: "Unfurnished (Empty)" } },
+      { id: "cond_baru",           icon: "✨", label: { id: "Unit Baru (Belum Pernah Dihuni)", en: "Brand New Unit" } },
+      { id: "cond_renovasi",       icon: "🔨", label: { id: "Baru Direnovasi",         en: "Newly Renovated" } },
+    ],
+  },
+  {
+    group: { id: "Fasilitas Dalam Unit", en: "In-Unit Facilities" },
+    items: [
+      { id: "u_springbed",   icon: "🛏️", label: { id: "Springbed / Kasur",   en: "Spring Bed" } },
+      { id: "u_lemari",      icon: "🚪", label: { id: "Lemari Pakaian",       en: "Wardrobe" } },
+      { id: "u_kulkas",      icon: "🧊", label: { id: "Kulkas",               en: "Refrigerator" } },
+      { id: "u_tv",          icon: "📺", label: { id: "TV / Smart TV",        en: "TV / Smart TV" } },
+      { id: "u_wh",          icon: "🚿", label: { id: "Water Heater",         en: "Water Heater" } },
+      { id: "u_mesin_cuci",  icon: "👕", label: { id: "Mesin Cuci",           en: "Washing Machine" } },
+      { id: "u_microwave",   icon: "🍳", label: { id: "Dapur / Kitchen Set",  en: "Kitchen Set" } },
+      { id: "u_meja_kerja",  icon: "💻", label: { id: "Meja Kerja / Study",   en: "Work Desk" } },
+      { id: "u_sofa",        icon: "🛋️", label: { id: "Sofa / Ruang Tamu",   en: "Sofa / Living Area" } },
+      { id: "u_meja_makan",  icon: "🍽️", label: { id: "Meja Makan",          en: "Dining Table" } },
+      { id: "u_balkon",      icon: "🌅", label: { id: "Balkon",               en: "Balcony" } },
+      { id: "u_bathtub",     icon: "🛁", label: { id: "Bathtub",              en: "Bathtub" } },
+    ],
+  },
+  {
+    group: { id: "Fasilitas Gedung", en: "Building Facilities" },
+    items: [
+      { id: "b_pool",      icon: "🏊", label: { id: "Kolam Renang",        en: "Swimming Pool" } },
+      { id: "b_gym",       icon: "🏋️", label: { id: "Gym / Fitness",       en: "Gym / Fitness" } },
+      { id: "b_security",  icon: "🔒", label: { id: "Keamanan 24 Jam",     en: "24H Security" } },
+      { id: "b_cctv",      icon: "📹", label: { id: "CCTV",                en: "CCTV" } },
+      { id: "b_lift",      icon: "🛗", label: { id: "Lift",                en: "Elevator" } },
+      { id: "b_lobby",     icon: "🏛️", label: { id: "Lobby Grand",         en: "Grand Lobby" } },
+      { id: "b_minimart",  icon: "🛒", label: { id: "Mini Market",         en: "Mini Market" } },
+      { id: "b_laundry",   icon: "🧺", label: { id: "Laundry / Dobi",      en: "Laundry / Dobi" } },
+      { id: "b_rooftop",   icon: "🌆", label: { id: "Rooftop / Sky Lounge", en: "Rooftop / Sky Lounge" } },
+      { id: "b_cowork",    icon: "💼", label: { id: "Co-working Space",    en: "Co-working Space" } },
+      { id: "b_playground",icon: "🎠", label: { id: "Playground Anak",     en: "Children's Playground" } },
+      { id: "b_jogging",   icon: "🏃", label: { id: "Jogging Track",       en: "Jogging Track" } },
+      { id: "b_bbq",       icon: "🔥", label: { id: "Area BBQ / Garden",   en: "BBQ / Garden Area" } },
+    ],
+  },
+  {
+    group: { id: "Kebijakan & Lainnya", en: "Policy & Others" },
+    items: [
+      { id: "p_pet",        icon: "🐾", label: { id: "Pet Friendly",             en: "Pet Friendly" } },
+      { id: "p_no_pet",     icon: "🚫", label: { id: "Tidak Boleh Hewan Peliharaan", en: "No Pets Allowed" } },
+      { id: "p_expat",      icon: "🌍", label: { id: "Expat Friendly",           en: "Expat Friendly" } },
+      { id: "p_mahasiswa",  icon: "🎓", label: { id: "Cocok untuk Mahasiswa",    en: "Student Friendly" } },
+      { id: "p_keluarga",   icon: "👨‍👩‍👧", label: { id: "Cocok untuk Keluarga",     en: "Family Friendly" } },
+      { id: "p_single",     icon: "👤", label: { id: "Cocok untuk Single",       en: "Good for Single" } },
+      { id: "p_no_smoke",   icon: "🚭", label: { id: "No Smoking",               en: "No Smoking" } },
+      { id: "p_dekat_mrt",  icon: "🚇", label: { id: "Dekat MRT / KRL",         en: "Near MRT / KRL" } },
+      { id: "p_dekat_tol",  icon: "🛣️", label: { id: "Dekat Pintu Tol",         en: "Near Toll Gate" } },
+      { id: "p_dekat_mall", icon: "🏬", label: { id: "Dekat Mall",              en: "Near Mall" } },
+    ],
+  },
+];
+
 export default function DashboardPage() {
   const { lang } = useLanguage();
   const [activeTab, setActiveTab] = useState<Tab>("overview");
   const [myListings, setMyListings] = useState(SAMPLE_LISTINGS.slice(0, 3).map(l => ({ ...l, active: true })));
+
+  // ── Add Listing form state ──────────────────────────────────────────
   const [newListing, setNewListing] = useState({
-    title: "", location: "", city: "", type: "", price: "", size: "", bedrooms: "", bathrooms: "",
-    floor: "", totalFloors: "", description: "", phone: "", priceUnit: "bulan",
+    title: "", location: "", city: "", type: "", price: "", size: "",
+    bedrooms: "", bathrooms: "", floor: "", totalFloors: "",
+    description: "", phone: "", priceUnit: "bulan",
+    checkedFacilities: [] as string[],
   });
-  const [submitting, setSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
+  const [photoFiles, setPhotoFiles]   = useState<File[]>([]);
+  const [photoPreviews, setPhotoPreviews] = useState<string[]>([]);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [submitting, setSubmitting]   = useState(false);
+  const [submitted, setSubmitted]     = useState(false);
+
+  // ── Photo handlers ─────────────────────────────────────────────────
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    const newFiles = [...photoFiles, ...files].slice(0, 8);
+    setPhotoFiles(newFiles);
+    const previews = newFiles.map(f => URL.createObjectURL(f));
+    setPhotoPreviews(previews);
+  };
+  const removePhoto = (idx: number) => {
+    setPhotoFiles(prev => prev.filter((_, i) => i !== idx));
+    setPhotoPreviews(prev => prev.filter((_, i) => i !== idx));
+  };
+
+  // ── Facility toggle ─────────────────────────────────────────────────
+  const toggleFacility = (id: string) => {
+    setNewListing(prev => ({
+      ...prev,
+      checkedFacilities: prev.checkedFacilities.includes(id)
+        ? prev.checkedFacilities.filter(f => f !== id)
+        : [...prev.checkedFacilities, id],
+    }));
+  };
 
   const sidebarItems = [
     { id: "overview" as Tab, icon: <LayoutDashboard size={18} />, label: { id: "Ringkasan", en: "Overview" } },
@@ -259,10 +366,10 @@ export default function DashboardPage() {
 
         {/* ============ ADD LISTING ============ */}
         {activeTab === "add" && (
-          <div className="max-w-2xl space-y-6">
+          <div className="max-w-3xl space-y-6">
             <div>
               <h1 className="font-heading font-bold text-white text-2xl">{lang === "id" ? "Tambah Listing Baru" : "Add New Listing"}</h1>
-              <p className="text-white/50 text-sm">{lang === "id" ? "Isi informasi lengkap untuk menarik lebih banyak penyewa." : "Fill in complete information to attract more tenants."}</p>
+              <p className="text-white/50 text-sm">{lang === "id" ? "Isi informasi selengkap mungkin agar menarik lebih banyak calon penyewa." : "Fill in as complete information as possible to attract more potential tenants."}</p>
             </div>
 
             {submitted ? (
@@ -270,77 +377,273 @@ export default function DashboardPage() {
                 <div className="w-16 h-16 bg-green-600/20 border-2 border-green-500/40 rounded-full flex items-center justify-center mx-auto mb-4">
                   <BadgeCheck className="text-green-400" size={32} />
                 </div>
-                <h3 className="font-bold text-white text-xl mb-2">{lang === "id" ? "Listing Berhasil Ditambahkan!" : "Listing Added Successfully!"}</h3>
-                <p className="text-white/50 text-sm">{lang === "id" ? "Listing Anda sedang diverifikasi oleh tim kami." : "Your listing is being verified by our team."}</p>
+                <h3 className="font-bold text-white text-xl mb-2">{lang === "id" ? "Listing Berhasil Ditambahkan! 🎉" : "Listing Added Successfully! 🎉"}</h3>
+                <p className="text-white/50 text-sm">{lang === "id" ? "Listing Anda sedang diverifikasi oleh tim kami. Aktif dalam 1×24 jam." : "Your listing is being verified by our team. Active within 1×24 hours."}</p>
               </motion.div>
             ) : (
-              <form onSubmit={handleAddSubmit} className="glass rounded-2xl p-6 sm:p-8 space-y-5">
-                <div className="form-group">
-                  <label className="form-label">{lang === "id" ? "Judul Listing" : "Listing Title"} *</label>
-                  <input required value={newListing.title} onChange={e => setNewListing({ ...newListing, title: e.target.value })} placeholder={lang === "id" ? "cth: Apartemen 2BR Sudirman Tower A" : "e.g: 2BR Apartment Sudirman Tower A"} className="input-field" />
-                </div>
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                setSubmitting(true);
+                await new Promise(r => setTimeout(r, 1500));
+                setSubmitting(false);
+                setSubmitted(true);
+                setTimeout(() => { setSubmitted(false); setActiveTab("listings"); }, 3000);
+              }} className="space-y-6">
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {/* ── STEP 1: Info Dasar ── */}
+                <div className="glass rounded-2xl p-6 space-y-4">
+                  <h2 className="font-semibold text-white flex items-center gap-2 pb-2 border-b border-white/10">
+                    <span className="w-6 h-6 rounded-full bg-primary-600 text-white text-xs flex items-center justify-center font-bold">1</span>
+                    {lang === "id" ? "Informasi Dasar" : "Basic Information"}
+                  </h2>
+
                   <div className="form-group">
-                    <label className="form-label">{lang === "id" ? "Kota" : "City"} *</label>
-                    <select required value={newListing.city} onChange={e => setNewListing({ ...newListing, city: e.target.value })} className="input-field appearance-none cursor-pointer">
-                      <option value="" className="bg-dark-800">{lang === "id" ? "Pilih kota" : "Select city"}</option>
-                      {["Jakarta", "Bogor", "Depok", "Tangerang", "Bekasi"].map(c => <option key={c} value={c.toLowerCase()} className="bg-dark-800">{c}</option>)}
-                    </select>
+                    <label className="form-label">{lang === "id" ? "Judul Listing" : "Listing Title"} *</label>
+                    <input required value={newListing.title} onChange={e => setNewListing({ ...newListing, title: e.target.value })}
+                      placeholder={lang === "id" ? "cth: Apartemen 2BR Fully Furnished Sudirman Tower A Lt. 28" : "e.g: 2BR Fully Furnished Apartment Sudirman Tower A 28F"}
+                      className="input-field" />
+                    <p className="text-white/30 text-xs mt-1">{lang === "id" ? "Buat judul yang informatif dan menarik." : "Make a descriptive and catchy title."}</p>
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">{lang === "id" ? "Tipe Unit" : "Unit Type"} *</label>
-                    <select required value={newListing.type} onChange={e => setNewListing({ ...newListing, type: e.target.value })} className="input-field appearance-none cursor-pointer">
-                      <option value="" className="bg-dark-800">{lang === "id" ? "Pilih tipe" : "Select type"}</option>
-                      {["Studio", "1 Bedroom", "2 Bedrooms", "3 Bedrooms", "Penthouse"].map(t => <option key={t} value={t.toLowerCase().replace(" ", "")} className="bg-dark-800">{t}</option>)}
-                    </select>
-                  </div>
-                </div>
 
-                <div className="form-group">
-                  <label className="form-label">{lang === "id" ? "Lokasi Lengkap" : "Full Location"} *</label>
-                  <input required value={newListing.location} onChange={e => setNewListing({ ...newListing, location: e.target.value })} placeholder={lang === "id" ? "cth: Sudirman, Jakarta Selatan" : "e.g: Sudirman, South Jakarta"} className="input-field" />
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  <div className="form-group col-span-2">
-                    <label className="form-label">{lang === "id" ? "Harga" : "Price"} *</label>
-                    <div className="flex gap-2">
-                      <input required type="number" value={newListing.price} onChange={e => setNewListing({ ...newListing, price: e.target.value })} placeholder="5000000" className="input-field flex-1" />
-                      <select value={newListing.priceUnit} onChange={e => setNewListing({ ...newListing, priceUnit: e.target.value })} className="input-field w-28 appearance-none cursor-pointer">
-                        <option value="hari" className="bg-dark-800">/hari</option>
-                        <option value="bulan" className="bg-dark-800">/bulan</option>
-                        <option value="tahun" className="bg-dark-800">/tahun</option>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "Kota" : "City"} *</label>
+                      <select required value={newListing.city} onChange={e => setNewListing({ ...newListing, city: e.target.value })} className="input-field appearance-none cursor-pointer">
+                        <option value="" className="bg-dark-800">{lang === "id" ? "Pilih kota" : "Select city"}</option>
+                        {["Jakarta","Bogor","Depok","Tangerang","Bekasi"].map(c => <option key={c} value={c.toLowerCase()} className="bg-dark-800">{c}</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "Tipe Unit" : "Unit Type"} *</label>
+                      <select required value={newListing.type} onChange={e => setNewListing({ ...newListing, type: e.target.value })} className="input-field appearance-none cursor-pointer">
+                        <option value="" className="bg-dark-800">{lang === "id" ? "Pilih tipe" : "Select type"}</option>
+                        {[{v:"studio",l:"Studio"},{v:"1br",l:"1 Bedroom"},{v:"2br",l:"2 Bedrooms"},{v:"3br",l:"3 Bedrooms"},{v:"penthouse",l:"Penthouse"}].map(t =>
+                          <option key={t.v} value={t.v} className="bg-dark-800">{t.l}</option>
+                        )}
                       </select>
                     </div>
                   </div>
+
                   <div className="form-group">
-                    <label className="form-label">Luas (m²) *</label>
-                    <input required type="number" value={newListing.size} onChange={e => setNewListing({ ...newListing, size: e.target.value })} placeholder="45" className="input-field" />
+                    <label className="form-label">{lang === "id" ? "Lokasi Lengkap (Nama Apart + Area/Kecamatan)" : "Full Location (Building + Area)"} *</label>
+                    <input required value={newListing.location} onChange={e => setNewListing({ ...newListing, location: e.target.value })}
+                      placeholder={lang === "id" ? "cth: Branz Simatupang, Cilandak – Jakarta Selatan" : "e.g: Branz Simatupang, Cilandak – South Jakarta"}
+                      className="input-field" />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label">Lantai *</label>
-                    <input required type="number" value={newListing.floor} onChange={e => setNewListing({ ...newListing, floor: e.target.value })} placeholder="12" className="input-field" />
+
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "KT" : "BR"}</label>
+                      <select value={newListing.bedrooms} onChange={e => setNewListing({ ...newListing, bedrooms: e.target.value })} className="input-field appearance-none cursor-pointer">
+                        <option value="0" className="bg-dark-800">Studio</option>
+                        {[1,2,3,4,5].map(n => <option key={n} value={n} className="bg-dark-800">{n} KT</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "KM" : "Bath"}</label>
+                      <select value={newListing.bathrooms} onChange={e => setNewListing({ ...newListing, bathrooms: e.target.value })} className="input-field appearance-none cursor-pointer">
+                        {[1,2,3,4].map(n => <option key={n} value={n} className="bg-dark-800">{n} KM</option>)}
+                      </select>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">Luas (m²) *</label>
+                      <input required type="number" min="1" value={newListing.size} onChange={e => setNewListing({ ...newListing, size: e.target.value })} placeholder="45" className="input-field" />
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "Lantai" : "Floor"} *</label>
+                      <input required type="number" min="1" value={newListing.floor} onChange={e => setNewListing({ ...newListing, floor: e.target.value })} placeholder="12" className="input-field" />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "Harga Sewa" : "Rental Price"} *</label>
+                      <div className="flex gap-2">
+                        <input required type="number" min="1" value={newListing.price} onChange={e => setNewListing({ ...newListing, price: e.target.value })}
+                          placeholder="5000000" className="input-field flex-1" />
+                        <select value={newListing.priceUnit} onChange={e => setNewListing({ ...newListing, priceUnit: e.target.value })} className="input-field w-28 appearance-none cursor-pointer flex-shrink-0">
+                          <option value="hari" className="bg-dark-800">/hari</option>
+                          <option value="bulan" className="bg-dark-800">/bulan</option>
+                          <option value="tahun" className="bg-dark-800">/tahun</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div className="form-group">
+                      <label className="form-label">{lang === "id" ? "No. WhatsApp Pemilik" : "Owner WhatsApp"} *</label>
+                      <div className="relative">
+                        <Phone size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+                        <input required value={newListing.phone} onChange={e => setNewListing({ ...newListing, phone: e.target.value })}
+                          placeholder="628xxxxxxxxxx" className="input-field pl-8" />
+                      </div>
+                      <p className="text-white/30 text-xs mt-1">{lang === "id" ? "Format internasional, cth: 628111234567" : "International format e.g: 628111234567"}</p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">{lang === "id" ? "No. WhatsApp untuk Dihubungi" : "WhatsApp Contact Number"} *</label>
-                  <input required value={newListing.phone} onChange={e => setNewListing({ ...newListing, phone: e.target.value })} placeholder="08xxxxxxxxxx" className="input-field" />
+                {/* ── STEP 2: Upload Foto ── */}
+                <div className="glass rounded-2xl p-6 space-y-4">
+                  <h2 className="font-semibold text-white flex items-center gap-2 pb-2 border-b border-white/10">
+                    <span className="w-6 h-6 rounded-full bg-primary-600 text-white text-xs flex items-center justify-center font-bold">2</span>
+                    {lang === "id" ? "Foto Properti" : "Property Photos"}
+                    <span className="text-white/40 text-xs font-normal ml-1">{lang === "id" ? "(maks. 8 foto)" : "(max. 8 photos)"}</span>
+                  </h2>
+
+                  {/* Upload zone */}
+                  <div
+                    onClick={() => fileInputRef.current?.click()}
+                    className={cn(
+                      "border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-200 hover:border-primary-500/70 hover:bg-primary-600/5",
+                      photoPreviews.length > 0 ? "border-primary-500/40 bg-primary-600/5" : "border-white/15 bg-white/[0.02]"
+                    )}
+                  >
+                    <ImagePlus size={32} className="mx-auto mb-3 text-white/30" />
+                    <p className="text-white/60 text-sm font-medium mb-1">
+                      {lang === "id" ? "Klik untuk pilih foto" : "Click to select photos"}
+                    </p>
+                    <p className="text-white/30 text-xs">
+                      {lang === "id"
+                        ? "JPG, PNG, WebP • Maks. 5MB per foto • Maks. 8 foto"
+                        : "JPG, PNG, WebP • Max 5MB per photo • Max 8 photos"}
+                    </p>
+                    <input
+                      ref={fileInputRef}
+                      type="file"
+                      accept="image/*"
+                      multiple
+                      className="hidden"
+                      onChange={handlePhotoChange}
+                    />
+                  </div>
+
+                  {/* Previews */}
+                  {photoPreviews.length > 0 && (
+                    <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                      {photoPreviews.map((src, i) => (
+                        <div key={i} className="relative group aspect-square rounded-xl overflow-hidden bg-dark-800">
+                          <img src={src} alt={`foto ${i+1}`} className="w-full h-full object-cover" />
+                          {i === 0 && (
+                            <div className="absolute top-1 left-1 bg-primary-600 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                              Cover
+                            </div>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removePhoto(i)}
+                            className="absolute top-1 right-1 w-5 h-5 rounded-full bg-red-600 text-white opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center"
+                          >
+                            <X size={10} />
+                          </button>
+                        </div>
+                      ))}
+                      {photoPreviews.length < 8 && (
+                        <button type="button" onClick={() => fileInputRef.current?.click()}
+                          className="aspect-square rounded-xl border-2 border-dashed border-white/15 hover:border-primary-500/50 flex items-center justify-center text-white/30 hover:text-white/60 transition-all">
+                          <Plus size={20} />
+                        </button>
+                      )}
+                    </div>
+                  )}
+                  <p className="flex items-center gap-1.5 text-white/30 text-xs">
+                    <Info size={11} />
+                    {lang === "id"
+                      ? "Foto pertama akan jadi cover. Gunakan foto landscape berkualitas tinggi untuk hasil terbaik."
+                      : "First photo will be the cover. Use high-quality landscape photos for best results."}
+                  </p>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label">{lang === "id" ? "Deskripsi Properti" : "Property Description"} *</label>
-                  <textarea required rows={4} value={newListing.description} onChange={e => setNewListing({ ...newListing, description: e.target.value })} placeholder={lang === "id" ? "Jelaskan keunggulan apartemen Anda..." : "Describe the highlights of your apartment..."} className="input-field resize-none" />
+                {/* ── STEP 3: Fasilitas & Include ── */}
+                <div className="glass rounded-2xl p-6 space-y-5">
+                  <h2 className="font-semibold text-white flex items-center gap-2 pb-2 border-b border-white/10">
+                    <span className="w-6 h-6 rounded-full bg-primary-600 text-white text-xs flex items-center justify-center font-bold">3</span>
+                    {lang === "id" ? "Fasilitas & Ketentuan" : "Facilities & Terms"}
+                  </h2>
+                  <p className="text-white/40 text-xs -mt-2 pb-1">
+                    {lang === "id"
+                      ? "Centang semua yang ada/termasuk. Semakin lengkap → semakin banyak yang tertarik."
+                      : "Check all that apply/are included. More complete → more interested tenants."}
+                  </p>
+
+                  {FACILITY_GROUPS.map((group) => (
+                    <div key={group.group.id}>
+                      <h3 className="text-white/60 text-xs font-semibold uppercase tracking-wider mb-3">
+                        {lang === "id" ? group.group.id : group.group.en}
+                      </h3>
+                      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                        {group.items.map((item) => {
+                          const checked = newListing.checkedFacilities.includes(item.id);
+                          return (
+                            <button
+                              type="button"
+                              key={item.id}
+                              onClick={() => toggleFacility(item.id)}
+                              className={cn(
+                                "flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-medium border transition-all text-left",
+                                checked
+                                  ? "bg-primary-600/20 border-primary-500/50 text-primary-300"
+                                  : "bg-white/3 border-white/8 text-white/50 hover:bg-white/8 hover:text-white/80 hover:border-white/20"
+                              )}
+                            >
+                              <span className="flex-shrink-0">{item.icon}</span>
+                              <span className="flex-1 leading-tight">{lang === "id" ? item.label.id : item.label.en}</span>
+                              {checked
+                                ? <CheckSquare size={13} className="flex-shrink-0 text-primary-400" />
+                                : <Square size={13} className="flex-shrink-0 text-white/20" />
+                              }
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
+
+                  {newListing.checkedFacilities.length > 0 && (
+                    <div className="flex items-center gap-2 pt-2 border-t border-white/5">
+                      <span className="text-white/40 text-xs">{lang === "id" ? "Dipilih:" : "Selected:"}</span>
+                      <span className="text-primary-400 text-xs font-semibold">{newListing.checkedFacilities.length} {lang === "id" ? "fasilitas" : "facilities"}</span>
+                      <button type="button" onClick={() => setNewListing(p => ({ ...p, checkedFacilities: [] }))}
+                        className="ml-auto text-white/30 hover:text-white/60 text-xs flex items-center gap-1">
+                        <X size={11} /> {lang === "id" ? "Reset" : "Clear"}
+                      </button>
+                    </div>
+                  )}
                 </div>
 
-                <div className="flex gap-3">
-                  <button type="button" onClick={() => setActiveTab("listings")} className="btn-secondary flex-1 py-3">
+                {/* ── STEP 4: Deskripsi Tambahan ── */}
+                <div className="glass rounded-2xl p-6 space-y-3">
+                  <h2 className="font-semibold text-white flex items-center gap-2 pb-2 border-b border-white/10">
+                    <span className="w-6 h-6 rounded-full bg-primary-600 text-white text-xs flex items-center justify-center font-bold">4</span>
+                    {lang === "id" ? "Deskripsi Tambahan (Opsional)" : "Additional Description (Optional)"}
+                  </h2>
+                  <p className="flex items-start gap-1.5 text-white/40 text-xs leading-relaxed">
+                    <Info size={11} className="flex-shrink-0 mt-0.5" />
+                    {lang === "id"
+                      ? "Tulis hanya info yang TIDAK ADA di pilihan fasilitas di atas — cth: view spesifik, kondisi khusus, aturan tambahan, atau keunggulan unik lainnya."
+                      : "Only write info NOT covered by the facility checkboxes above — e.g: specific view, special conditions, additional rules, or other unique highlights."}
+                  </p>
+                  <textarea
+                    rows={5}
+                    value={newListing.description}
+                    onChange={e => setNewListing({ ...newListing, description: e.target.value })}
+                    placeholder={
+                      lang === "id"
+                        ? "cth: Unit menghadap timur dengan view Gunung Salak yang indah di pagi hari. Deposit 2 bulan. Kontrak minimal 6 bulan. Ada biaya tambahan parkir motor Rp150rb/bln jika diperlukan."
+                        : "e.g: East-facing unit with beautiful Mount Salak view in the morning. 2-month deposit. Minimum 6-month contract. Additional motorcycle parking fee Rp150k/month if needed."
+                    }
+                    className="input-field resize-none"
+                  />
+                </div>
+
+                {/* ── Submit ── */}
+                <div className="flex gap-3 pb-6">
+                  <button type="button" onClick={() => setActiveTab("listings")} className="btn-secondary flex-1 py-3.5">
                     {lang === "id" ? "Batal" : "Cancel"}
                   </button>
-                  <button type="submit" disabled={submitting} className="btn-primary flex-1 py-3 flex items-center justify-center gap-2 disabled:opacity-70">
-                    {submitting ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> : <Plus size={16} />}
-                    {submitting ? (lang === "id" ? "Menyimpan..." : "Saving...") : (lang === "id" ? "Pasang Listing" : "Post Listing")}
+                  <button type="submit" disabled={submitting}
+                    className="btn-primary flex-2 flex-1 py-3.5 flex items-center justify-center gap-2 disabled:opacity-70">
+                    {submitting
+                      ? <><div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" /> {lang === "id" ? "Mengirim..." : "Submitting..."}</>
+                      : <><Upload size={16} /> {lang === "id" ? "Pasang Listing Sekarang" : "Post Listing Now"}</>
+                    }
                   </button>
                 </div>
               </form>
