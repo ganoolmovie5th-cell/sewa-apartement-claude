@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+
+const GA_ID = "G-DFKHWJ3TJZ";
 
 export const metadata: Metadata = {
   title: {
@@ -73,6 +76,21 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className="dark">
+      {/* Google Analytics */}
+      <Script
+        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${GA_ID}', {
+            page_path: window.location.pathname,
+          });
+        `}
+      </Script>
       <body className="bg-dark-900 text-white antialiased">
         <Navbar />
         <main>{children}</main>
