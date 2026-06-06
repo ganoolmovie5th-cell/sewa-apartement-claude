@@ -30,15 +30,62 @@ const mockOwners = [
   { id: "o8", name: "Nita Rahayu",      email: "nita@gmail.com",      phone: "6281234501008", listings: 1, verified: true,  joined: "Feb 2024", avatar: "https://images.unsplash.com/photo-1547425260-76bcadfb4f2c?w=60&q=80" },
 ];
 
+const LISTINGS_STORAGE_KEY = "admin-listings-state";
+const OWNERS_STORAGE_KEY   = "admin-owners-state";
+
+function loadListings() {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(LISTINGS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+function saveListings(data: any[]) {
+  if (typeof window === "undefined") return;
+  try { localStorage.setItem(LISTINGS_STORAGE_KEY, JSON.stringify(data)); } catch {}
+}
+function loadOwners() {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = localStorage.getItem(OWNERS_STORAGE_KEY);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+function saveOwners(data: any[]) {
+  if (typeof window === "undefined") return;
+  try { localStorage.setItem(OWNERS_STORAGE_KEY, JSON.stringify(data)); } catch {}
+}
+
 export default function AdminPage() {
   const { lang } = useLanguage();
   const router = useRouter();
   const [session, setSession] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
-  const [listings, setListings] = useState(
-    SAMPLE_LISTINGS.map((l) => ({ ...l, active: true, pendingVerify: !l.verified }))
-  );
-  const [owners, setOwners] = useState(mockOwners);
+
+  // State: load dari localStorage, fallback ke default ────────────────
+  const [listings, setListingsRaw] = useState<any[]>(() => {
+    const saved = loadListings();
+    if (saved && saved.length > 0) return saved;
+    return SAMPLE_LISTINGS.map((l) => ({ ...l, active: true, pendingVerify: !l.verified }));
+  });
+  const [owners, setOwnersRaw] = useState<any[]>(() => loadOwners() ?? mockOwners);
+
+  // Wrapper persist ───────────────────────────────────────────────────
+  const setListings = (updater: any) => {
+    setListingsRaw((prev: any[]) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveListings(next);
+      return next;
+    });
+  };
+  const setOwners = (updater: any) => {
+    setOwnersRaw((prev: any[]) => {
+      const next = typeof updater === "function" ? updater(prev) : updater;
+      saveOwners(next);
+      return next;
+    });
+  };
+
   const [searchListing, setSearchListing] = useState("");
   const [searchOwner, setSearchOwner] = useState("");
 
@@ -191,9 +238,22 @@ export default function AdminPage() {
     }, 1200);
   }
   const toggleListing = (id: string) =>
-    setListings((p) => p.map((l) => l.id === id ? { ...l, active: !l.active } : l));
+    setListings((p: any[]) => p.map((l) => l.id === id ? { ...l, active: !l.active } : l));
   const verifyListing = (id: string) =>
-    setListings((p) => p.map((l) => l.id === id ? { ...l, verified: true, pendingVerify: false } : l));
+    setListings((p: any[]) => p.map((l) => l.id === id ? { ...l, verified: true, pendingVerify: false } : l));
+
+  // Verifikasi SEMUA listing yang pending sekaligus
+  const verifyAllPending = () => {
+    setListings((p: any[]) => p.map((l) => ({ ...l, verified: true, pendingVerify: false })));
+  };
+
+  const verifyOwner = (id: string) =>
+    setOwners((p: any[]) => p.map((o) => o.id === id ? { ...o, verified: true } : o));
+
+  // Verifikasi SEMUA owner yang belum terverifikasi sekaligus
+  const verifyAllOwners = () => {
+    setOwners((p: any[]) => p.map((o) => ({ ...o, verified: true })));
+  };
 
   // Open confirm modal instead of direct delete
   const askDeleteListing = (l: { id: string; title: string }) =>
@@ -334,14 +394,29 @@ export default function AdminPage() {
             </div>
 
             {/* Pending verification */}
-            {listings.filter((l) => l.pendingVerify).length > 0 && (
+            {listings.filter((l: any) => l.pendingVerify).length > 0 && (
               <div>
-                <h2 className="font-bold text-white mb-3 flex items-center gap-2">
-                  <AlertTriangle size={16} className="text-yellow-400" />
-                  {lang === "id" ? "Menunggu Verifikasi" : "Pending Verification"}
-                </h2>
+                <div className="flex items-center justify-between mb-3 flex-wrap gap-2">
+                  <h2 className="font-bold text-white flex items-center gap-2">
+                    <AlertTriangle size={16} className="text-yellow-400" />
+                    {lang === "id" ? "Menunggu Verifikasi" : "Pending Verification"}
+                    <span className="w-5 h-5 rounded-full bg-yellow-500 text-dark-900 text-[10px] font-bold flex items-center justify-center">
+                      {listings.filter((l: any) => l.pendingVerify).length}
+                    </span>
+                  </h2>
+                  {/* Tombol Verifikasi Semua */}
+                  <button
+                    onClick={verifyAllPending}
+                    className="flex items-center gap-1.5 px-4 py-2 bg-green-600/20 border border-green-500/40 hover:bg-green-600/30 text-green-400 text-xs font-semibold rounded-xl transition-all hover:shadow-[0_0_15px_rgba(34,197,94,0.25)]"
+                  >
+                    <BadgeCheck size={14} />
+                    {lang === "id"
+                      ? `Verifikasi Semua (${listings.filter((l: any) => l.pendingVerify).length})`
+                      : `Verify All (${listings.filter((l: any) => l.pendingVerify).length})`}
+                  </button>
+                </div>
                 <div className="space-y-3">
-                  {listings.filter((l) => l.pendingVerify).map((l) => (
+                  {listings.filter((l: any) => l.pendingVerify).map((l: any) => (
                     <div key={l.id} className="glass rounded-xl p-4 flex items-center gap-4 border border-yellow-500/20">
                       <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
                         <Image src={l.images[0]} alt={l.title} fill className="object-cover" sizes="56px" />
@@ -361,6 +436,16 @@ export default function AdminPage() {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* All verified banner */}
+            {listings.filter((l: any) => l.pendingVerify).length === 0 && (
+              <div className="flex items-center gap-3 p-4 glass rounded-xl border border-green-500/20 bg-green-600/5">
+                <CheckCircle2 size={18} className="text-green-400 flex-shrink-0" />
+                <p className="text-green-400 text-sm font-medium">
+                  {lang === "id" ? "✅ Semua listing sudah terverifikasi!" : "✅ All listings are verified!"}
+                </p>
               </div>
             )}
 
@@ -484,14 +569,28 @@ export default function AdminPage() {
                 <h1 className="font-heading font-bold text-white text-2xl">{lang === "id" ? "Kelola Pemilik" : "Manage Owners"}</h1>
                 <p className="text-white/50 text-sm">{owners.length} {lang === "id" ? "pemilik terdaftar" : "owners registered"}</p>
               </div>
-              <div className="relative">
-                <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
-                <input
-                  value={searchOwner}
-                  onChange={(e) => setSearchOwner(e.target.value)}
-                  placeholder={lang === "id" ? "Cari pemilik..." : "Search owners..."}
-                  className="input-field pl-8 py-2 text-sm w-56"
-                />
+              <div className="flex items-center gap-2 flex-wrap">
+                {/* Verifikasi Semua Owner */}
+                {owners.filter((o: any) => !o.verified).length > 0 && (
+                  <button
+                    onClick={verifyAllOwners}
+                    className="flex items-center gap-1.5 px-4 py-2 bg-green-600/20 border border-green-500/40 hover:bg-green-600/30 text-green-400 text-xs font-semibold rounded-xl transition-all"
+                  >
+                    <BadgeCheck size={14} />
+                    {lang === "id"
+                      ? `Verifikasi Semua (${owners.filter((o: any) => !o.verified).length})`
+                      : `Verify All (${owners.filter((o: any) => !o.verified).length})`}
+                  </button>
+                )}
+                <div className="relative">
+                  <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
+                  <input
+                    value={searchOwner}
+                    onChange={(e) => setSearchOwner(e.target.value)}
+                    placeholder={lang === "id" ? "Cari pemilik..." : "Search owners..."}
+                    className="input-field pl-8 py-2 text-sm w-56"
+                  />
+                </div>
               </div>
             </div>
 
