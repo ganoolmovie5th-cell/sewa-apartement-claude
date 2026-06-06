@@ -267,9 +267,9 @@ export default function AdminPage() {
   const handleConfirmDelete = () => {
     if (!confirmDelete) return;
     if (confirmDelete.type === "listing" || confirmDelete.type === "pending") {
-      setListings((p) => p.filter((l) => l.id !== confirmDelete.id));
+      setListings((p: any[]) => p.filter((l: any) => l.id !== confirmDelete.id));
     } else {
-      setOwners((p) => p.filter((o) => o.id !== confirmDelete.id));
+      setOwners((p: any[]) => p.filter((o: any) => o.id !== confirmDelete.id));
     }
     setConfirmDelete(null);
   };
