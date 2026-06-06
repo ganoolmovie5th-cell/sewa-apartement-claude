@@ -274,9 +274,6 @@ export default function AdminPage() {
     setConfirmDelete(null);
   };
 
-  const verifyOwner = (id: string) =>
-    setOwners((p) => p.map((o) => o.id === id ? { ...o, verified: true } : o));
-
   const filteredListings = listings.filter(
     (l) => !searchListing || l.title.toLowerCase().includes(searchListing.toLowerCase()) || l.location.toLowerCase().includes(searchListing.toLowerCase())
   );
