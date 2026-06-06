@@ -8,7 +8,7 @@ import CTASection from "@/components/home/CTASection";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "SewaTerlengkap – Platform Sewa Apartemen #1 JABODETABEK",
+  title: "SewaApartement – Platform Sewa Apartemen #1 JABODETABEK",
   description: "Temukan apartemen impian Anda di JABODETABEK. 2.940+ listing terpercaya untuk mahasiswa, pekerja, dan keluarga.",
 };
 

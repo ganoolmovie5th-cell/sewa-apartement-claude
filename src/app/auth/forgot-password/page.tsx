@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Mail, CheckCircle2, Send } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { getWhatsAppUrl } from "@/lib/utils";
+import { ACCOUNTS } from "@/lib/auth";
 
 export default function ForgotPasswordPage() {
   const { lang } = useLanguage();
@@ -14,20 +15,14 @@ export default function ForgotPasswordPage() {
   const [sent, setSent]         = useState(false);
   const [notFound, setNotFound] = useState(false);
 
-  // Demo: email yang "terdaftar"
-  const REGISTERED_EMAILS = [
-    "owner@sewaapartement.id",
-    "admin@sewaapartement.id",
-    "budi@email.com",
-  ];
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setNotFound(false);
     await new Promise(r => setTimeout(r, 1200));
     setLoading(false);
-    if (REGISTERED_EMAILS.includes(email.toLowerCase())) {
+    const isRegistered = ACCOUNTS.some(a => a.email.toLowerCase() === email.toLowerCase());
+    if (isRegistered) {
       setSent(true);
     } else {
       setNotFound(true);

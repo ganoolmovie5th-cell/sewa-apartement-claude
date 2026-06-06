@@ -68,6 +68,7 @@ export default function PropertyCard({ listing, variant = "default", index = 0 }
         {/* Wishlist */}
         <button
           onClick={() => setWishlisted(!wishlisted)}
+          aria-label={wishlisted ? (lang === "id" ? "Hapus dari simpanan" : "Remove from saved") : (lang === "id" ? "Simpan listing" : "Save listing")}
           className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-dark-900/60 backdrop-blur-sm flex items-center justify-center border border-white/10 hover:border-red-400/50 transition-all"
         >
           <Heart
@@ -112,7 +113,7 @@ export default function PropertyCard({ listing, variant = "default", index = 0 }
           </div>
           <div className="flex items-center gap-1">
             <Bath size={11} />
-            <span>{listing.bathrooms} KM</span>
+            <span>{listing.bathrooms} {lang === "id" ? "KM" : "Bath"}</span>
           </div>
           <div className="flex items-center gap-1">
             <Maximize2 size={11} />

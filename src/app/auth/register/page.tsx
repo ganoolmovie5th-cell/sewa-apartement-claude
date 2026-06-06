@@ -83,7 +83,7 @@ export default function RegisterPage() {
             <div className="relative w-9 h-9">
               <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl rotate-6" />
               <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
-                <span className="text-white font-black text-xs">ST</span>
+                <span className="text-white font-black text-xs">SA</span>
               </div>
             </div>
             <div className="font-heading font-extrabold text-white leading-none">
@@ -214,8 +214,8 @@ export default function RegisterPage() {
 
               <div className="bg-dark-800/50 rounded-xl p-4 text-xs text-white/50 leading-relaxed max-h-28 overflow-y-auto">
                 {lang === "id"
-                  ? "Dengan mendaftar, Anda menyetujui Syarat & Ketentuan dan Kebijakan Privasi SewaTerlengkap. Anda berkomitmen untuk memberikan informasi yang akurat dan bertanggung jawab atas konten yang dipasang."
-                  : "By registering, you agree to SewaTerlengkap's Terms & Conditions and Privacy Policy. You commit to providing accurate information and are responsible for the content posted."}
+                  ? "Dengan mendaftar, Anda menyetujui Syarat & Ketentuan dan Kebijakan Privasi SewaApartement. Anda berkomitmen untuk memberikan informasi yang akurat dan bertanggung jawab atas konten yang dipasang."
+                  : "By registering, you agree to SewaApartement's Terms & Conditions and Privacy Policy. You commit to providing accurate information and are responsible for the content posted."}
               </div>
 
               <label className="flex items-start gap-3 cursor-pointer group">

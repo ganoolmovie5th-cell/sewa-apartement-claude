@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { motion } from "framer-motion";
 import {
   MapPin, Bed, Bath, Maximize2, Star, BadgeCheck, Phone, MessageCircle,
@@ -28,7 +29,9 @@ const AMENITY_ICONS: Record<string, React.ReactNode> = {
 
 export default function ListingDetailPage({ params }: { params: { slug: string } }) {
   const { lang, t } = useLanguage();
-  const listing = SAMPLE_LISTINGS.find((l) => l.slug === params.slug) || SAMPLE_LISTINGS[0];
+  const found = SAMPLE_LISTINGS.find((l) => l.slug === params.slug);
+  if (!found) notFound();
+  const listing = found;
   const [currentImage, setCurrentImage] = useState(0);
   const [wishlisted, setWishlisted] = useState(false);
   const [copied, setCopied]         = useState(false);
@@ -118,12 +121,14 @@ export default function ListingDetailPage({ params }: { params: { slug: string }
                 {/* Navigation */}
                 <button
                   onClick={() => setCurrentImage((p) => (p - 1 + listing.images.length) % listing.images.length)}
+                  aria-label={lang === "id" ? "Foto sebelumnya" : "Previous photo"}
                   className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-dark-900/70 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white hover:bg-dark-700 transition-all"
                 >
                   <ChevronLeft size={18} />
                 </button>
                 <button
                   onClick={() => setCurrentImage((p) => (p + 1) % listing.images.length)}
+                  aria-label={lang === "id" ? "Foto berikutnya" : "Next photo"}
                   className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 rounded-full bg-dark-900/70 backdrop-blur-sm border border-white/10 flex items-center justify-center text-white hover:bg-dark-700 transition-all"
                 >
                   <ChevronRight size={18} />

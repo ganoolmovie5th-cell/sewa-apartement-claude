@@ -7,6 +7,7 @@ import Link from "next/link";
 import { Calendar, Clock, ArrowRight, Tag, Search, Sparkles, RefreshCw, Rss } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { cn } from "@/lib/utils";
+import { getSession } from "@/lib/auth";
 
 // Static seed articles (shown immediately, no fetch needed)
 import { BLOG_POSTS } from "@/lib/data";
@@ -66,6 +67,9 @@ export default function BlogPage() {
   const [loading, setLoading]               = useState(true);
   const [generating, setGenerating]         = useState(false);
   const [genMsg, setGenMsg]                 = useState("");
+
+  // Hanya tampilkan Generate button untuk admin
+  const isAdmin = typeof window !== "undefined" && getSession()?.role === "admin";
 
   // ── Load articles: API first, fall back to static seed ──────────────
   useEffect(() => {
@@ -218,23 +222,25 @@ export default function BlogPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
 
-        {/* ── Admin: Manual Generate Button (dev/demo) ── */}
+        {/* ── Generate Button — hanya untuk Admin ── */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <p className="text-white/40 text-sm">
             {loading ? "Memuat artikel..." : `${posts.length} ${lang === "id" ? "artikel tersedia" : "articles available"}`}
           </p>
-          <button onClick={handleManualGenerate} disabled={generating}
-            className={cn(
-              "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border transition-all",
-              generating
-                ? "bg-white/5 border-white/10 text-white/30 cursor-not-allowed"
-                : "bg-accent-600/20 border-accent-500/40 text-accent-300 hover:bg-accent-600/30"
-            )}>
-            {generating
-              ? <><div className="w-3 h-3 border border-white/30 border-t-white/80 rounded-full animate-spin" /> {lang === "id" ? "Generating..." : "Generating..."}</>
-              : <><Sparkles size={13} /> {lang === "id" ? "Generate Artikel Sekarang" : "Generate Article Now"}</>
-            }
-          </button>
+          {isAdmin && (
+            <button onClick={handleManualGenerate} disabled={generating}
+              className={cn(
+                "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border transition-all",
+                generating
+                  ? "bg-white/5 border-white/10 text-white/30 cursor-not-allowed"
+                  : "bg-accent-600/20 border-accent-500/40 text-accent-300 hover:bg-accent-600/30"
+              )}>
+              {generating
+                ? <><div className="w-3 h-3 border border-white/30 border-t-white/80 rounded-full animate-spin" /> {lang === "id" ? "Generating..." : "Generating..."}</>
+                : <><Sparkles size={13} /> {lang === "id" ? "Generate Artikel Sekarang" : "Generate Article Now"}</>
+              }
+            </button>
+          )}
         </div>
 
         {/* Generate status */}

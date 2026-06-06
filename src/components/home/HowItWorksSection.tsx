@@ -39,7 +39,7 @@ export default function HowItWorksSection() {
             className="font-heading font-black text-white text-responsive-md mb-4"
           >
             {lang === "id" ? "Cara Kerja " : "How "}
-            <span className="gradient-text">SewaTerlengkap</span>
+            <span className="gradient-text">SewaApartement</span>
             {lang === "en" ? " Works" : ""}
           </motion.h2>
 

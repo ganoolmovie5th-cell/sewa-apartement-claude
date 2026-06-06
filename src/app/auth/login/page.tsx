@@ -153,7 +153,8 @@ export default function LoginPage() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Demo credentials hint */}
+          {/* Demo credentials — hanya tampil di development */}
+          {process.env.NODE_ENV === "development" && (
           <div className={`mb-5 p-3 rounded-xl border text-xs space-y-1.5 ${
             tab === "admin"
               ? "bg-accent-600/10 border-accent-500/30"
@@ -186,6 +187,7 @@ export default function LoginPage() {
               </button>
             )}
           </div>
+          )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="form-group">

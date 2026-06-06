@@ -17,7 +17,7 @@ const team = [
 ];
 
 const milestones = [
-  { year: "2022", title: { id: "Berdiri", en: "Founded" }, desc: { id: "SewaTerlengkap lahir dari keresahan sulitnya mencari apartemen di Jakarta.", en: "SewaTerlengkap was born from the difficulty of finding apartments in Jakarta." } },
+  { year: "2022", title: { id: "Berdiri", en: "Founded" }, desc: { id: "SewaApartement lahir dari keresahan sulitnya mencari apartemen di Jakarta.", en: "SewaApartement was born from the difficulty of finding apartments in Jakarta." } },
   { year: "2023", title: { id: "Ekspansi JABODETABEK", en: "JABODETABEK Expansion" }, desc: { id: "Ekspansi ke Bogor, Depok, Tangerang, dan Bekasi. Mencapai 1.000+ listing.", en: "Expanded to Bogor, Depok, Tangerang, and Bekasi. Reached 1,000+ listings." } },
   { year: "2024", title: { id: "2.940+ Listing", en: "2,940+ Listings" }, desc: { id: "Menjadi platform sewa apartemen terlengkap di JABODETABEK dengan 12.500+ pengguna.", en: "Became the most complete apartment rental platform in JABODETABEK with 12,500+ users." } },
 ];
@@ -130,7 +130,7 @@ export default function AboutPage() {
               {lang === "id" ? "Tim " : "Meet the "}
               <span className="gradient-text">{lang === "id" ? "Kami" : "Team"}</span>
             </h2>
-            <p className="text-white/50 mt-2">{lang === "id" ? "Orang-orang hebat di balik SewaTerlengkap." : "The great people behind SewaTerlengkap."}</p>
+            <p className="text-white/50 mt-2">{lang === "id" ? "Orang-orang hebat di balik SewaApartement." : "The great people behind SewaApartement."}</p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {team.map((member, i) => (
@@ -155,7 +155,7 @@ export default function AboutPage() {
           <h2 className="font-heading font-black text-white text-3xl mb-4">
             {lang === "id" ? "Bergabung dengan Kami" : "Join Us Today"}
           </h2>
-          <p className="text-white/60 mb-8">{lang === "id" ? "Jadilah bagian dari komunitas terpercaya SewaTerlengkap." : "Be part of the trusted SewaTerlengkap community."}</p>
+          <p className="text-white/60 mb-8">{lang === "id" ? "Jadilah bagian dari komunitas terpercaya SewaApartement." : "Be part of the trusted SewaApartement community."}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link href="/listings" className="btn-primary inline-flex items-center gap-2">{lang === "id" ? "Cari Apartemen" : "Find Apartment"} <ArrowRight size={16} /></Link>
             <Link href="/auth/register" className="btn-secondary inline-flex items-center gap-2">{lang === "id" ? "Pasang Iklan" : "List Property"} <ArrowRight size={16} /></Link>

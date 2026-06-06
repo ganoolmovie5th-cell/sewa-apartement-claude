@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
+import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -65,6 +66,7 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
   const [loading, setLoading]     = useState(true);
   const [liked, setLiked]         = useState(false);
   const [copied, setCopied]       = useState(false);
+  const copyTimerRef              = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     async function load() {
@@ -113,8 +115,14 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
   const handleCopy = () => {
     navigator.clipboard.writeText(window.location.href);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+    copyTimerRef.current = setTimeout(() => setCopied(false), 2000);
   };
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => { if (copyTimerRef.current) clearTimeout(copyTimerRef.current); };
+  }, []);
 
   const handleWhatsAppShare = () => {
     const text = `Baca artikel menarik ini: ${t(post?.title ?? { id: "", en: "" })} — ${window.location.href}`;

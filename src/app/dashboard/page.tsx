@@ -12,7 +12,7 @@ import {
 } from "lucide-react";
 import { SAMPLE_LISTINGS, formatPrice } from "@/lib/data";
 import { useRouter } from "next/navigation";
-import { getSession } from "@/lib/auth";
+import { getSession, clearSession } from "@/lib/auth";
 import { useLanguage } from "@/hooks/useLanguage";
 
 import { cn } from "@/lib/utils";
@@ -226,11 +226,14 @@ export default function DashboardPage() {
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
     const newFiles = [...photoFiles, ...files].slice(0, 8);
+    // Revoke old blob URLs to prevent memory leak
+    photoPreviews.forEach(url => URL.revokeObjectURL(url));
     setPhotoFiles(newFiles);
     setPhotoPreviews(newFiles.map(f => URL.createObjectURL(f)));
   };
 
   const removePhoto = (idx: number) => {
+    URL.revokeObjectURL(photoPreviews[idx]);
     setPhotoFiles(prev => prev.filter((_, i) => i !== idx));
     setPhotoPreviews(prev => prev.filter((_, i) => i !== idx));
   };
@@ -262,31 +265,22 @@ export default function DashboardPage() {
     setMyListings(prev => prev.map(l => l.id === id ? { ...l, active: !l.active } : l));
   };
 
-  const handleAddSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setSubmitting(true);
-    await new Promise(r => setTimeout(r, 1500));
-    setSubmitting(false);
-    setSubmitted(true);
-    safeTimeout(() => { setSubmitted(false); setActiveTab("listings"); }, 2000);
-  };
-
   return (
     <div className="page-dark min-h-screen pt-16 md:pt-20 flex">
       {/* Sidebar */}
       <aside className="hidden md:flex flex-col w-64 bg-dark-800/80 border-r border-white/5 sticky top-20 h-[calc(100vh-5rem)] overflow-y-auto">
-        {/* Owner Profile */}
+        {/* Owner Profile — dari session */}
         <div className="p-5 border-b border-white/5">
           <div className="flex items-center gap-3">
             <div className="relative w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
-              <Image src={mockOwner.avatar} alt={mockOwner.name} fill className="object-cover" sizes="40px" />
+              <Image src={session?.avatar ?? mockOwner.avatar} alt={session?.name ?? mockOwner.name} fill className="object-cover" sizes="40px" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <p className="text-white font-semibold text-sm truncate">{mockOwner.name}</p>
+                <p className="text-white font-semibold text-sm truncate">{session?.name ?? mockOwner.name}</p>
                 {mockOwner.verified && <BadgeCheck size={12} className="text-primary-400 flex-shrink-0" />}
               </div>
-              <p className="text-white/40 text-xs truncate">{mockOwner.email}</p>
+              <p className="text-white/40 text-xs truncate">{session?.email ?? mockOwner.email}</p>
             </div>
           </div>
         </div>
@@ -307,10 +301,13 @@ export default function DashboardPage() {
 
         {/* Logout */}
         <div className="p-3 border-t border-white/5">
-          <Link href="/" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-all">
+          <button
+            onClick={() => { clearSession(); router.push("/auth/login"); }}
+            className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-all"
+          >
             <LogOut size={18} />
             {lang === "id" ? "Keluar" : "Logout"}
-          </Link>
+          </button>
         </div>
       </aside>
 
@@ -334,7 +331,7 @@ export default function DashboardPage() {
           <div className="space-y-6">
             <div>
               <h1 className="font-heading font-bold text-white text-2xl">
-                {lang === "id" ? `Selamat datang, ${mockOwner.name.split(" ")[0]}! 👋` : `Welcome back, ${mockOwner.name.split(" ")[0]}! 👋`}
+                {lang === "id" ? `Selamat datang, ${(session?.name ?? mockOwner.name).split(" ")[0]}! 👋` : `Welcome back, ${(session?.name ?? mockOwner.name).split(" ")[0]}! 👋`}
               </h1>
               <p className="text-white/50 text-sm">{lang === "id" ? "Berikut ringkasan aktivitas listing Anda." : "Here's a summary of your listing activity."}</p>
             </div>
