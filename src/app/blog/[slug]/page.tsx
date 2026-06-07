@@ -274,26 +274,43 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
         <div className="flex items-center justify-between flex-wrap gap-3">
           <p className="text-white/40 text-sm">{lang === "id" ? "Bagikan artikel ini:" : "Share this article:"}</p>
           <div className="flex flex-wrap gap-2">
-            {/* WhatsApp */}
+
+            {/* WhatsApp — logo resmi hijau */}
             <button onClick={handleWhatsAppShare}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-green-600/20 hover:border-green-500/30 text-white/60 hover:text-green-400 text-xs transition-all">
-              💬 WhatsApp
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-[#25D366]/15 hover:border-[#25D366]/40 text-white/60 hover:text-[#25D366] text-xs font-medium transition-all">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-label="WhatsApp">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/><path d="M12 0C5.373 0 0 5.373 0 12c0 2.127.556 4.124 1.528 5.857L0 24l6.335-1.652A11.954 11.954 0 0012 24c6.627 0 12-5.373 12-12S18.627 0 12 0zm0 22c-1.885 0-3.65-.52-5.157-1.424l-.37-.22-3.763.984.999-3.662-.24-.376A9.961 9.961 0 012 12C2 6.477 6.477 2 12 2s10 4.477 10 10-4.477 10-10 10z"/>
+              </svg>
+              WhatsApp
             </button>
-            {/* Telegram */}
+
+            {/* Telegram — logo resmi biru langit */}
             <button onClick={handleTelegramShare}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-sky-600/20 hover:border-sky-500/30 text-white/60 hover:text-sky-400 text-xs transition-all">
-              ✈️ Telegram
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-[#229ED9]/15 hover:border-[#229ED9]/40 text-white/60 hover:text-[#229ED9] text-xs font-medium transition-all">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-label="Telegram">
+                <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248-2.03 9.571c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L6.515 14.27l-2.948-.924c-.64-.203-.653-.64.136-.948l11.498-4.432c.534-.194 1.001.13.361.282z"/>
+              </svg>
+              Telegram
             </button>
-            {/* LINE */}
+
+            {/* LINE — logo resmi hijau LINE */}
             <button onClick={handleLineShare}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-green-600/20 hover:border-green-500/30 text-white/60 hover:text-green-400 text-xs transition-all">
-              💚 LINE
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-[#06C755]/15 hover:border-[#06C755]/40 text-white/60 hover:text-[#06C755] text-xs font-medium transition-all">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-label="LINE">
+                <path d="M12 .5C5.648.5.5 4.735.5 9.943c0 4.91 4.354 9.02 10.245 9.794.399.086.941.265 1.079.607.123.31.08.797.04 1.11l-.174 1.052c-.052.313-.242 1.222 1.072.666 1.313-.556 7.092-4.178 9.676-7.155C23.523 13.72 24.5 11.915 24.5 9.944 24.5 4.735 18.352.5 12 .5zM8.4 12.6H6.6a.6.6 0 0 1 0-1.2V8.4a.6.6 0 0 1 1.2 0v3.6h.6a.6.6 0 0 1 0 1.2l-1.2-.4zm2.4 0a.6.6 0 0 1-.6-.6V8.4a.6.6 0 0 1 1.2 0v3.6a.6.6 0 0 1-.6.6zm4.8 0H13.8a.6.6 0 0 1-.6-.6V8.4a.6.6 0 0 1 1.2 0v3h1.2a.6.6 0 0 1 0 1.2zm2.4 0h-1.2a.6.6 0 0 1 0-1.2h.6V9.6h-.6a.6.6 0 0 1 0-1.2h1.2a.6.6 0 0 1 .6.6v3a.6.6 0 0 1-.6.6z"/>
+              </svg>
+              LINE
             </button>
+
             {/* Copy Link */}
             <button onClick={handleCopy}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 hover:text-white text-xs transition-all">
-              {copied ? <><Check size={12} className="text-green-400" /> {lang === "id" ? "Tersalin!" : "Copied!"}</> : <><Copy size={12} /> {lang === "id" ? "Salin Link" : "Copy Link"}</>}
+              className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 hover:text-white text-xs font-medium transition-all">
+              {copied
+                ? <><Check size={13} className="text-green-400" /><span className="text-green-400">{lang === "id" ? "Tersalin!" : "Copied!"}</span></>
+                : <><Copy size={13} />{lang === "id" ? "Salin Link" : "Copy Link"}</>
+              }
             </button>
+
           </div>
         </div>
 
