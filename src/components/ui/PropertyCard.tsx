@@ -138,9 +138,9 @@ export default function PropertyCard({ listing, index = 0 }: PropertyCardProps) 
                 <span className="font-semibold text-white/80">{listing.rating}</span>
                 <span className="text-white/30">({listing.reviews})</span>
               </div>
-              {(listing as any).ratingSource && (
+              {listing.ratingSource && (
                 <span className="text-[9px] text-white/25 leading-none">
-                  via {(listing as any).ratingSource}
+                  via {listing.ratingSource}
                 </span>
               )}
             </div>

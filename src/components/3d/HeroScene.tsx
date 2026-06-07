@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, Suspense } from "react";
+import { useRef, Suspense, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Float, Stars, Environment, MeshReflectorMaterial } from "@react-three/drei";
 import * as THREE from "three";
@@ -26,6 +26,10 @@ function Building({
   windowCols: number;
 }) {
   const meshRef = useRef<THREE.Mesh>(null);
+  const windowLights = useMemo(() =>
+    Array.from({ length: windowRows * windowCols }, () => Math.random() > 0.25),
+    [windowRows, windowCols]
+  );
 
   return (
     <group position={position}>
@@ -52,7 +56,7 @@ function Building({
         Array.from({ length: windowCols }).map((_, col) => {
           const wx = (col - (windowCols - 1) / 2) * (width / (windowCols + 1)) * 1.6;
           const wy = (row - (windowRows - 1) / 2) * (height / (windowRows + 1)) * 1.1;
-          const lit = Math.random() > 0.25;
+          const lit = windowLights[row * windowCols + col];
           return (
             <mesh key={`w-${row}-${col}`} position={[wx, wy, depth / 2 + 0.01]}>
               <planeGeometry args={[width * 0.08, height * 0.055]} />
@@ -165,18 +169,20 @@ function CityParticles() {
   const points = useRef<THREE.Points>(null);
   const count = 300;
 
-  const positions = new Float32Array(count * 3);
-  const colors = new Float32Array(count * 3);
-  for (let i = 0; i < count; i++) {
-    positions[i * 3]     = (Math.random() - 0.5) * 18;
-    positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
-    positions[i * 3 + 2] = (Math.random() - 0.5) * 10 - 3;
-    // Mix between white-blue and gold
-    const gold = Math.random() > 0.7;
-    colors[i * 3]     = gold ? 0.98 : 0.4 + Math.random() * 0.4;
-    colors[i * 3 + 1] = gold ? 0.55 : 0.5 + Math.random() * 0.3;
-    colors[i * 3 + 2] = gold ? 0.04 : 0.9 + Math.random() * 0.1;
-  }
+  const { positions, colors } = useMemo(() => {
+    const positions = new Float32Array(count * 3);
+    const colors = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      positions[i * 3]     = (Math.random() - 0.5) * 18;
+      positions[i * 3 + 1] = (Math.random() - 0.5) * 10;
+      positions[i * 3 + 2] = (Math.random() - 0.5) * 10 - 3;
+      const gold = Math.random() > 0.7;
+      colors[i * 3]     = gold ? 0.98 : 0.4 + Math.random() * 0.4;
+      colors[i * 3 + 1] = gold ? 0.55 : 0.5 + Math.random() * 0.3;
+      colors[i * 3 + 2] = gold ? 0.04 : 0.9 + Math.random() * 0.1;
+    }
+    return { positions, colors };
+  }, []);
 
   useFrame(({ clock }) => {
     if (points.current) {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
-import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -65,7 +64,7 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
   const [related, setRelated]     = useState<BlogPost[]>([]);
   const [loading, setLoading]     = useState(true);
   const [copied, setCopied]       = useState(false);
-  const copyTimerRef              = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     async function load() {

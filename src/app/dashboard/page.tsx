@@ -901,21 +901,22 @@ export default function DashboardPage() {
               <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
                 🔒 {lang === "id" ? "Ubah Password" : "Change Password"}
               </h3>
-              <div className="space-y-3">
+              <form onSubmit={e => { e.preventDefault(); alert(lang === "id" ? "Fitur segera hadir!" : "Feature coming soon!"); }}
+                className="space-y-3">
                 {[
-                  { label: lang === "id" ? "Password Lama" : "Current Password", type: "password", placeholder: "••••••••" },
-                  { label: lang === "id" ? "Password Baru" : "New Password",     type: "password", placeholder: "Min. 8 karakter" },
-                  { label: lang === "id" ? "Konfirmasi Password Baru" : "Confirm New Password", type: "password", placeholder: "Ulangi password baru" },
+                  { label: lang === "id" ? "Password Lama" : "Current Password", placeholder: "••••••••" },
+                  { label: lang === "id" ? "Password Baru" : "New Password",     placeholder: "Min. 8 karakter" },
+                  { label: lang === "id" ? "Konfirmasi Password Baru" : "Confirm New Password", placeholder: lang === "id" ? "Ulangi password baru" : "Repeat new password" },
                 ].map((f, i) => (
                   <div key={i} className="form-group">
                     <label className="form-label">{f.label}</label>
-                    <input type={f.type} placeholder={f.placeholder} className="input-field" />
+                    <input type="password" placeholder={f.placeholder} className="input-field" />
                   </div>
                 ))}
-                <button className="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white text-sm font-semibold transition-all mt-1">
+                <button type="submit" className="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white text-sm font-semibold transition-all mt-1">
                   {lang === "id" ? "Update Password" : "Update Password"}
                 </button>
-              </div>
+              </form>
             </div>
 
             {/* Danger zone */}
@@ -928,8 +929,12 @@ export default function DashboardPage() {
                   ? "Menghapus akun akan menghapus semua listing dan data Anda secara permanen."
                   : "Deleting your account will permanently remove all your listings and data."}
               </p>
-              <button className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600/10 border border-red-500/30 hover:bg-red-600/20 text-red-400 text-sm font-semibold transition-all">
-                {lang === "id" ? "Hapus Akun" : "Delete Account"}
+              <button
+                disabled
+                title={lang === "id" ? "Hubungi admin untuk hapus akun" : "Contact admin to delete account"}
+                className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-red-600/10 border border-red-500/30 text-red-400/50 text-sm font-semibold cursor-not-allowed opacity-50"
+              >
+                {lang === "id" ? "Hapus Akun (Hubungi Admin)" : "Delete Account (Contact Admin)"}
               </button>
             </div>
           </div>

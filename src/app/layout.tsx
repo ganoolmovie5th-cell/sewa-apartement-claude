@@ -49,9 +49,9 @@ export const metadata: Metadata = {
       "Platform marketplace sewa apartemen terlengkap di JABODETABEK. Ribuan pilihan untuk mahasiswa, pekerja, dan keluarga.",
     images: [
       {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
+        url: "/logo.svg",
+        width: 512,
+        height: 512,
         alt: "SewaApartement – Marketplace Sewa Apartemen JABODETABEK",
       },
     ],

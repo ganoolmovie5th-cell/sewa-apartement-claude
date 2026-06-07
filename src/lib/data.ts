@@ -1300,10 +1300,4 @@ export const FAQS = [
   },
 ];
 
-export const formatPrice = (price: number): string => {
-  if (price >= 1000000) {
-    const val = price / 1000000;
-    return `Rp ${val % 1 === 0 ? val.toFixed(0) : val.toFixed(1)} Jt`;
-  }
-  return `Rp ${price.toLocaleString("id-ID")}`;
-};
+export { formatPrice } from "@/lib/utils";

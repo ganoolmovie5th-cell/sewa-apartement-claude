@@ -32,7 +32,7 @@ function ListingsContent() {
           l.title.toLowerCase().includes(kw) ||
           l.location.toLowerCase().includes(kw) ||
           l.description.id.toLowerCase().includes(kw) ||
-          l.tags.some((t) => t.toLowerCase().includes(kw))
+          l.tags.some((tag) => tag.toLowerCase().includes(kw))
       );
     }
 

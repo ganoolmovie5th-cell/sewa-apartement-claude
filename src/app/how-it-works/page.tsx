@@ -2,11 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { ArrowRight, CheckCircle2, Users, Building2, Shield, Zap } from "lucide-react";
-import { HOW_IT_WORKS_TENANT, HOW_IT_WORKS_OWNER, FAQS } from "@/lib/data";
-import { useLanguage } from "@/hooks/useLanguage";
-import { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import { ArrowRight, CheckCircle2, Users, Building2, Shield, Zap, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function HowItWorksPage() {

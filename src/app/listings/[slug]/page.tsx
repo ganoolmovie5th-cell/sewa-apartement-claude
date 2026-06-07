@@ -254,9 +254,9 @@ export default function ListingDetailPage({ params }: { params: { slug: string }
                   </div>
                   <span className="text-white font-semibold text-sm">{listing.rating}</span>
                   <span className="text-white/40 text-xs">({listing.reviews} {lang === "id" ? "ulasan" : "reviews"})</span>
-                  {(listing as any).ratingSource && (
+                  {listing.ratingSource && (
                     <span className="ml-auto text-[10px] text-white/25 bg-white/5 px-2 py-0.5 rounded-full">
-                      via {(listing as any).ratingSource}
+                      via {listing.ratingSource}
                     </span>
                   )}
                 </div>
