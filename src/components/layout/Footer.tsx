@@ -160,12 +160,8 @@ export default function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-5">
-              <div className="relative w-10 h-10">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl rotate-6" />
-                <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
-                  <span className="text-white font-black text-sm">SA</span>
-                </div>
-              </div>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.svg" alt="SewaApartement Logo" width={40} height={40} className="w-10 h-10 flex-shrink-0" />
               <div>
                 <div className="font-heading font-extrabold text-white text-xl leading-none">
                   Sewa<span className="gradient-text-gold">Apartement</span>
@@ -185,14 +181,22 @@ export default function Footer() {
                 <MapPin size={14} className="text-primary-400 flex-shrink-0" />
                 <span>Binong Permai Blok R-10/14, Tangerang</span>
               </div>
-              <div className="flex items-center gap-2.5 text-white/50 text-sm">
-                <Phone size={14} className="text-primary-400 flex-shrink-0" />
+              <a
+                href="https://wa.me/628118696940"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2.5 text-white/50 hover:text-green-400 text-sm transition-colors group"
+              >
+                <Phone size={14} className="text-primary-400 group-hover:text-green-400 flex-shrink-0 transition-colors" />
                 <span>+62 811 8696 940</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-white/50 text-sm">
-                <Mail size={14} className="text-primary-400 flex-shrink-0" />
+              </a>
+              <a
+                href="mailto:sewa-apartement-jabodetabek@gmail.com"
+                className="flex items-center gap-2.5 text-white/50 hover:text-primary-300 text-sm transition-colors group"
+              >
+                <Mail size={14} className="text-primary-400 group-hover:text-primary-300 flex-shrink-0 transition-colors" />
                 <span>sewa-apartement-jabodetabek@gmail.com</span>
-              </div>
+              </a>
             </div>
 
             {/* Socials */}

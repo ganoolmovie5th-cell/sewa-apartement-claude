@@ -190,12 +190,7 @@ export default function BlogPage() {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
             className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary-600/20 border border-primary-500/30 text-primary-300 text-sm font-medium mb-4">
             <Rss size={14} className="text-accent-400" />
-            {lang === "id" ? "Update otomatis setiap Senin" : "Auto-updated every Monday"}
-            {autoCount > 0 && (
-              <span className="ml-1 px-2 py-0.5 rounded-full bg-accent-500/20 text-accent-400 text-xs border border-accent-500/30">
-                {autoCount} AI artikel
-              </span>
-            )}
+            {lang === "id" ? "Tips & Panduan Properti JABODETABEK" : "JABODETABEK Property Tips & Guides"}
           </motion.div>
 
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.05 }}
@@ -222,25 +217,11 @@ export default function BlogPage() {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
 
-        {/* ── Generate Button — hanya untuk Admin ── */}
+        {/* Article count info */}
         <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
           <p className="text-white/40 text-sm">
             {loading ? "Memuat artikel..." : `${posts.length} ${lang === "id" ? "artikel tersedia" : "articles available"}`}
           </p>
-          {isAdmin && (
-            <button onClick={handleManualGenerate} disabled={generating}
-              className={cn(
-                "flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold border transition-all",
-                generating
-                  ? "bg-white/5 border-white/10 text-white/30 cursor-not-allowed"
-                  : "bg-accent-600/20 border-accent-500/40 text-accent-300 hover:bg-accent-600/30"
-              )}>
-              {generating
-                ? <><div className="w-3 h-3 border border-white/30 border-t-white/80 rounded-full animate-spin" /> {lang === "id" ? "Generating..." : "Generating..."}</>
-                : <><Sparkles size={13} /> {lang === "id" ? "Generate Artikel Sekarang" : "Generate Article Now"}</>
-              }
-            </button>
-          )}
         </div>
 
         {/* Generate status */}
@@ -397,31 +378,7 @@ export default function BlogPage() {
           </div>
         )}
 
-        {/* ── Auto-update info banner ── */}
-        <motion.div initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} viewport={{ once: true }}
-          className="mt-16 p-6 glass rounded-2xl border border-primary-500/20 flex flex-col sm:flex-row items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-primary-600/20 border border-primary-500/30 flex items-center justify-center flex-shrink-0">
-            <Rss className="text-primary-400" size={22} />
-          </div>
-          <div className="flex-1 text-center sm:text-left">
-            <h3 className="font-bold text-white mb-1">
-              {lang === "id" ? "Blog Diperbarui Otomatis Setiap Senin" : "Blog Auto-Updated Every Monday"}
-            </h3>
-            <p className="text-white/50 text-sm">
-              {lang === "id"
-                ? "Sistem kami menggunakan AI untuk generate artikel properti terbaru setiap minggu. Topik mencakup tips sewa, analisis pasar, rekomendasi, dan banyak lagi."
-                : "Our system uses AI to generate the latest property articles every week. Topics include rental tips, market analysis, recommendations, and more."}
-            </p>
-          </div>
-          <div className="text-white/30 text-xs text-center sm:text-right flex-shrink-0">
-            <div className="flex items-center gap-1.5 justify-center sm:justify-end mb-1">
-              <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
-              <span className="text-green-400">{lang === "id" ? "Aktif" : "Active"}</span>
-            </div>
-            <div>{lang === "id" ? "Jadwal: Senin 08:00 WIB" : "Schedule: Monday 08:00 WIB"}</div>
-            <div>{lang === "id" ? "8 topik berrotasi" : "8 rotating topics"}</div>
-          </div>
-        </motion.div>
+        {/* Auto-update berjalan di background setiap Senin — tidak ditampilkan ke user */}
 
       </div>
     </div>

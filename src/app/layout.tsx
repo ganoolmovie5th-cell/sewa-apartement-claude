@@ -33,6 +33,11 @@ export const metadata: Metadata = {
   verification: {
     google: GSC_VERIFICATION,
   },
+  icons: {
+    icon: "/logo.svg",
+    shortcut: "/logo.svg",
+    apple: "/logo.svg",
+  },
   openGraph: {
     type: "website",
     locale: "id_ID",

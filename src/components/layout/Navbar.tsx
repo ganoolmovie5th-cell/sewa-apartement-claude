@@ -49,11 +49,9 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-9 h-9">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl rotate-6 group-hover:rotate-12 transition-transform duration-300" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
-                <span className="text-white font-black text-sm">SA</span>
-              </div>
+            <div className="relative w-9 h-9 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.svg" alt="SewaApartement Logo" width={36} height={36} className="w-9 h-9" />
             </div>
             <div className="hidden sm:block">
               <div className="font-heading font-extrabold text-white text-lg leading-none">

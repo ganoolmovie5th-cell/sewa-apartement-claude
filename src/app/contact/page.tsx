@@ -26,10 +26,10 @@ export default function ContactPage() {
   const waUrl = getWhatsAppUrl("628118696940", waMessage);
 
   const contactInfo = [
-    { icon: <MapPin size={20} />, label: { id: "Alamat", en: "Address" }, value: "Binong Permai Blok R-10/14, Tangerang" },
-    { icon: <Phone size={20} />, label: { id: "Telepon", en: "Phone" }, value: "+62 811 8696 940" },
-    { icon: <Mail size={20} />, label: { id: "Email", en: "Email" }, value: "sewa-apartement-jabodetabek@gmail.com" },
-    { icon: <Clock size={20} />, label: { id: "Jam Operasional", en: "Working Hours" }, value: lang === "id" ? "Senin–Jumat: 09.00–18.00 WIB" : "Mon–Fri: 09:00–18:00 WIB" },
+    { icon: <MapPin size={20} />, label: { id: "Alamat", en: "Address" }, value: "Binong Permai Blok R-10/14, Tangerang", href: null },
+    { icon: <Phone size={20} />,  label: { id: "Telepon", en: "Phone" },   value: "+62 811 8696 940",                        href: "https://wa.me/628118696940" },
+    { icon: <Mail size={20} />,   label: { id: "Email", en: "Email" },     value: "sewa-apartement-jabodetabek@gmail.com",   href: "mailto:sewa-apartement-jabodetabek@gmail.com" },
+    { icon: <Clock size={20} />,  label: { id: "Jam Operasional", en: "Working Hours" }, value: lang === "id" ? "Senin–Jumat: 09.00–18.00 WIB" : "Mon–Fri: 09:00–18:00 WIB", href: null },
   ];
 
   return (
@@ -59,16 +59,26 @@ export default function ContactPage() {
             </div>
 
             <div className="space-y-4">
-              {contactInfo.map((info, i) => (
-                <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
-                  className="flex items-start gap-4 glass rounded-2xl p-4">
-                  <div className="w-10 h-10 rounded-xl bg-primary-600/20 border border-primary-500/30 flex items-center justify-center text-primary-400 flex-shrink-0">{info.icon}</div>
-                  <div>
-                    <p className="text-white/50 text-xs mb-0.5">{typeof info.label === "string" ? info.label : (lang === "id" ? info.label.id : info.label.en)}</p>
-                    <p className="text-white text-sm font-medium">{info.value}</p>
+              {contactInfo.map((info, i) => {
+                const content = (
+                  <div className="flex items-start gap-4 glass rounded-2xl p-4 hover:border-primary-500/20 transition-all">
+                    <div className="w-10 h-10 rounded-xl bg-primary-600/20 border border-primary-500/30 flex items-center justify-center text-primary-400 flex-shrink-0">{info.icon}</div>
+                    <div>
+                      <p className="text-white/50 text-xs mb-0.5">{lang === "id" ? (info.label as any).id : (info.label as any).en}</p>
+                      <p className="text-white text-sm font-medium break-all">{info.value}</p>
+                    </div>
                   </div>
-                </motion.div>
-              ))}
+                );
+                return (
+                  <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}>
+                    {info.href ? (
+                      <a href={info.href} target={info.href.startsWith("http") ? "_blank" : undefined} rel={info.href.startsWith("http") ? "noopener noreferrer" : undefined} className="block group">
+                        {content}
+                      </a>
+                    ) : content}
+                  </motion.div>
+                );
+              })}
             </div>
 
             {/* WhatsApp */}

@@ -6,7 +6,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import {
-  ArrowLeft, Calendar, Clock, Tag, Share2, Heart,
+  ArrowLeft, Calendar, Clock, Tag, Share2,
   ArrowRight, Sparkles, Eye, Copy, Check,
 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -64,7 +64,6 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
   const [post, setPost]           = useState<BlogPost | null>(null);
   const [related, setRelated]     = useState<BlogPost[]>([]);
   const [loading, setLoading]     = useState(true);
-  const [liked, setLiked]         = useState(false);
   const [copied, setCopied]       = useState(false);
   const copyTimerRef              = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -127,6 +126,15 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
   const handleWhatsAppShare = () => {
     const text = `Baca artikel menarik ini: ${t(post?.title ?? { id: "", en: "" })} — ${window.location.href}`;
     window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  const handleTelegramShare = () => {
+    const text = `Baca artikel menarik ini: ${t(post?.title ?? { id: "", en: "" })}`;
+    window.open(`https://t.me/share/url?url=${encodeURIComponent(window.location.href)}&text=${encodeURIComponent(text)}`, "_blank");
+  };
+
+  const handleLineShare = () => {
+    window.open(`https://social-plugins.line.me/lineit/share?url=${encodeURIComponent(window.location.href)}`, "_blank");
   };
 
   if (loading) {
@@ -265,19 +273,26 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
         {/* Share */}
         <div className="flex items-center justify-between flex-wrap gap-3">
           <p className="text-white/40 text-sm">{lang === "id" ? "Bagikan artikel ini:" : "Share this article:"}</p>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            {/* WhatsApp */}
             <button onClick={handleWhatsAppShare}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-green-600/20 hover:border-green-500/30 text-white/60 hover:text-white text-xs transition-all">
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-green-600/20 hover:border-green-500/30 text-white/60 hover:text-green-400 text-xs transition-all">
               💬 WhatsApp
             </button>
+            {/* Telegram */}
+            <button onClick={handleTelegramShare}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-sky-600/20 hover:border-sky-500/30 text-white/60 hover:text-sky-400 text-xs transition-all">
+              ✈️ Telegram
+            </button>
+            {/* LINE */}
+            <button onClick={handleLineShare}
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-green-600/20 hover:border-green-500/30 text-white/60 hover:text-green-400 text-xs transition-all">
+              💚 LINE
+            </button>
+            {/* Copy Link */}
             <button onClick={handleCopy}
               className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 hover:text-white text-xs transition-all">
-              {copied ? <><Check size={12} className="text-green-400" /> Tersalin!</> : <><Copy size={12} /> Copy Link</>}
-            </button>
-            <button onClick={() => setLiked(!liked)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl border text-xs transition-all ${liked ? "bg-red-500/20 border-red-500/40 text-red-400" : "bg-white/5 border-white/10 text-white/60 hover:text-white"}`}>
-              <Heart size={12} className={liked ? "fill-red-400" : ""} />
-              {lang === "id" ? "Suka" : "Like"}
+              {copied ? <><Check size={12} className="text-green-400" /> {lang === "id" ? "Tersalin!" : "Copied!"}</> : <><Copy size={12} /> {lang === "id" ? "Salin Link" : "Copy Link"}</>}
             </button>
           </div>
         </div>

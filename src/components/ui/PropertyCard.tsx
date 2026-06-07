@@ -3,15 +3,14 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { MapPin, Bed, Bath, Maximize2, Star, BadgeCheck, Heart, MessageCircle, Wifi, Car, Dumbbell } from "lucide-react";
-import { formatPrice, getWhatsAppUrl, cn } from "@/lib/utils";
+import { MapPin, Bed, Bath, Maximize2, Star, BadgeCheck, MessageCircle, Wifi, Car, Dumbbell } from "lucide-react";
+import { formatPrice, getWhatsAppUrl } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
 import type { Listing } from "@/types";
 import { useState } from "react";
 
 interface PropertyCardProps {
   listing: Listing;
-  variant?: "default" | "featured" | "compact";
   index?: number;
 }
 
@@ -21,10 +20,9 @@ const AMENITY_ICONS: Record<string, React.ReactNode> = {
   gym: <Dumbbell size={11} />,
 };
 
-export default function PropertyCard({ listing, variant = "default", index = 0 }: PropertyCardProps) {
+export default function PropertyCard({ listing, index = 0 }: PropertyCardProps) {
   const { t, lang } = useLanguage();
   const [imgError, setImgError] = useState(false);
-  const [wishlisted, setWishlisted] = useState(false);
 
   const priceLabel = lang === "id" ? `/${listing.priceUnit}` : `/month`;
 
@@ -64,18 +62,6 @@ export default function PropertyCard({ listing, variant = "default", index = 0 }
             </span>
           )}
         </div>
-
-        {/* Wishlist */}
-        <button
-          onClick={() => setWishlisted(!wishlisted)}
-          aria-label={wishlisted ? (lang === "id" ? "Hapus dari simpanan" : "Remove from saved") : (lang === "id" ? "Simpan listing" : "Save listing")}
-          className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-dark-900/60 backdrop-blur-sm flex items-center justify-center border border-white/10 hover:border-red-400/50 transition-all"
-        >
-          <Heart
-            size={14}
-            className={cn("transition-colors", wishlisted ? "fill-red-400 text-red-400" : "text-white/70")}
-          />
-        </button>
 
         {/* Floor info */}
         <div className="absolute bottom-3 left-3 z-10">
