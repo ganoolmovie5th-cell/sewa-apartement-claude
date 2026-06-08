@@ -200,7 +200,7 @@ export default function DashboardPage() {
       title: listing.title, location: listing.location, city: listing.city, type: listing.type,
       price: String(listing.price), priceUnit: listing.priceUnit, size: String(listing.size),
       floor: String(listing.floor), bedrooms: String(listing.bedrooms), bathrooms: String(listing.bathrooms),
-      phone: listing.ownerPhone, description: (listing as any).description?.id ?? "",
+      phone: listing.ownerPhone, description: listing.description?.id ?? "",
     });
     setEditingListing(listing.id);
     setEditSaved(false);

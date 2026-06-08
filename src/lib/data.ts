@@ -1243,7 +1243,7 @@ export const HOW_IT_WORKS_OWNER = [
 
 export const BLOG_POSTS = [
   {
-    id: 1,
+    id: "seed-blog-001",
     slug: "tips-sewa-apartemen-jakarta-pertama-kali",
     title: { id: "10 Tips Sewa Apartemen di Jakarta untuk Pertama Kali", en: "10 Tips for Renting an Apartment in Jakarta for the First Time" },
     excerpt: { id: "Menyewa apartemen pertama kali di Jakarta bisa terasa membingungkan. Berikut panduan lengkap agar Anda tidak salah pilih.", en: "Renting an apartment for the first time in Jakarta can feel confusing. Here is a complete guide so you don't make the wrong choice." },
@@ -1254,7 +1254,7 @@ export const BLOG_POSTS = [
     readTime: 7,
   },
   {
-    id: 2,
+    id: "seed-blog-002",
     slug: "perbandingan-harga-apartemen-jabodetabek-2024",
     title: { id: "Perbandingan Harga Apartemen JABODETABEK 2024", en: "JABODETABEK Apartment Price Comparison 2024" },
     excerpt: { id: "Analisis lengkap harga sewa apartemen di Jakarta, Bogor, Depok, Tangerang, dan Bekasi. Mana yang paling terjangkau?", en: "Complete analysis of apartment rental prices in Jakarta, Bogor, Depok, Tangerang, and Bekasi. Which is the most affordable?" },
@@ -1265,7 +1265,7 @@ export const BLOG_POSTS = [
     readTime: 10,
   },
   {
-    id: 3,
+    id: "seed-blog-003",
     slug: "apartemen-terbaik-untuk-mahasiswa-depok",
     title: { id: "Rekomendasi Apartemen Terbaik untuk Mahasiswa di Depok", en: "Best Apartment Recommendations for Students in Depok" },
     excerpt: { id: "Daftar apartemen terbaik di Depok dengan harga ramah mahasiswa, lengkap dengan fasilitas dan akses transportasi.", en: "List of the best apartments in Depok with student-friendly prices, complete with facilities and transportation access." },

@@ -91,27 +91,10 @@ export default function BlogPage() {
       } catch {/* network error — use seed */}
       // Fallback to static seed posts from data.ts
       setPosts(BLOG_POSTS.map(normalize));
-      setLoading(false);
     }
+    // setLoading(false) hanya sekali via .finally()
     loadPosts().finally(() => setLoading(false));
   }, []);
-
-  // ── Helpers: localStorage persistence untuk artikel AI ──────────────
-  function loadLocalArticles(): BlogPost[] {
-    try {
-      const raw = localStorage.getItem("sewa-ai-articles");
-      if (!raw) return [];
-      return JSON.parse(raw);
-    } catch { return []; }
-  }
-  function mergeWithLocal(serverPosts: BlogPost[]): BlogPost[] {
-    const local = loadLocalArticles();
-    const serverIds = new Set(serverPosts.map(p => p.id));
-    const localOnly = local.filter(p => !serverIds.has(p.id));
-    return [...serverPosts, ...localOnly].sort(
-      (a, b) => new Date(b.publishedAt ?? b.date ?? "").getTime() - new Date(a.publishedAt ?? a.date ?? "").getTime()
-    );
-  }
 
   // ── Filter ───────────────────────────────────────────────────────────
   const filtered = posts.filter(p => {

@@ -57,7 +57,7 @@ export interface User {
 }
 
 export interface BlogPost {
-  id: number;
+  id: string;
   slug: string;
   title: BilingualText;
   excerpt: BilingualText;

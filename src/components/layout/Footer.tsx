@@ -85,12 +85,14 @@ export default function Footer() {
     e.preventDefault();
     if (!email.trim()) return;
     setSubLoading(true);
-    setTimeout(() => {
+    const t1 = window.setTimeout(() => {
       setSubLoading(false);
       setSubscribed(true);
       setEmail("");
-      setTimeout(() => setSubscribed(false), 4000);
+      const t2 = window.setTimeout(() => setSubscribed(false), 4000);
+      return () => window.clearTimeout(t2);
     }, 900);
+    return () => window.clearTimeout(t1);
   };
 
   return (

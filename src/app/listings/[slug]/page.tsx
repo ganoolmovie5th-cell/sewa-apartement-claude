@@ -68,7 +68,8 @@ export default function ListingDetailPage({ params }: { params: { slug: string }
       navigator.clipboard.writeText(pageUrl).then(() => {
         setCopied(true);
         setShowShareMenu(false);
-        setTimeout(() => setCopied(false), 2500);
+        const id = window.setTimeout(() => setCopied(false), 2500);
+        return () => window.clearTimeout(id);
       });
     }
   };
@@ -320,7 +321,10 @@ export default function ListingDetailPage({ params }: { params: { slug: string }
 
                     {/* Dropdown share menu */}
                     {showShareMenu && (
-                      <div className="absolute bottom-full right-0 mb-2 w-52 glass rounded-2xl border border-white/15 shadow-glass overflow-hidden z-30">
+                      <div
+                        className="absolute bottom-full right-0 mb-2 w-52 glass rounded-2xl border border-white/15 shadow-glass overflow-hidden z-30"
+                        onClick={e => e.stopPropagation()}
+                      >
                         <div className="p-2 space-y-0.5">
                           <p className="text-white/30 text-xs px-3 py-1.5 font-medium">
                             {lang === "id" ? "Bagikan via:" : "Share via:"}

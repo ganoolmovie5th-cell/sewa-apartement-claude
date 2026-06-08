@@ -24,7 +24,12 @@ export default function PropertyCard({ listing, index = 0 }: PropertyCardProps) 
   const { t, lang } = useLanguage();
   const [imgError, setImgError] = useState(false);
 
-  const priceLabel = lang === "id" ? `/${listing.priceUnit}` : `/month`;
+  const PRICE_UNIT_EN: Record<string, string> = {
+    hari: "/day", bulan: "/month", tahun: "/year",
+  };
+  const priceLabel = lang === "id"
+    ? `/${listing.priceUnit}`
+    : `/${PRICE_UNIT_EN[listing.priceUnit] ?? listing.priceUnit}`;
 
   return (
     <motion.div
