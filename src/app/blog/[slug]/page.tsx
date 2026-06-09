@@ -100,10 +100,10 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
       } catch {/* ignore */}
 
       // 3. Fallback: static seed
-      const found = (BLOG_POSTS as any[]).find(p => p.slug === params.slug);
+      const found = BLOG_POSTS.find(p => p.slug === params.slug);
       if (found) {
-        setPost(found);
-        setRelated((BLOG_POSTS as any[]).filter(p => p.slug !== params.slug).slice(0, 2));
+        setPost(found as unknown as BlogPost);
+        setRelated(BLOG_POSTS.filter(p => p.slug !== params.slug).slice(0, 2) as unknown as BlogPost[]);
       }
       setLoading(false);
     }
@@ -174,13 +174,13 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
   const contentHtml = post.content ? sanitizeHtml(renderMarkdown(t(post.content))) : null;
 
   // Static content fallback (seed posts that have no .content field)
-  const staticContent = (post as any).content
-    ? null
-    : lang === "id"
+  const staticContent = !post.content
+    ? lang === "id"
       ? `<p class="text-white/70 leading-relaxed mb-4">${t(post.excerpt)}</p>
          <p class="text-white/70 leading-relaxed mb-4">Konten lengkap artikel ini sedang disiapkan. Kunjungi kembali sebentar lagi, atau jelajahi artikel lainnya di bawah.</p>`
       : `<p class="text-white/70 leading-relaxed mb-4">${t(post.excerpt)}</p>
-         <p class="text-white/70 leading-relaxed mb-4">Full article content is being prepared. Check back soon, or explore other articles below.</p>`;
+         <p class="text-white/70 leading-relaxed mb-4">Full article content is being prepared. Check back soon, or explore other articles below.</p>`
+    : null;
 
   return (
     <div className="page-dark pt-16 md:pt-20">

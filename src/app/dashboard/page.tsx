@@ -773,7 +773,7 @@ export default function DashboardPage() {
               <div className="flex items-center gap-5 mb-8">
                 <div className="relative flex-shrink-0">
                   <div className="relative w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-primary-500/30">
-                    <Image src={mockOwner.avatar} alt={mockOwner.name} fill className="object-cover" sizes="80px" />
+                    <Image src={session?.avatar ?? mockOwner.avatar} alt={session?.name ?? mockOwner.name} fill className="object-cover" sizes="80px" />
                   </div>
                   <button
                     type="button"
@@ -901,22 +901,27 @@ export default function DashboardPage() {
               <h3 className="font-semibold text-white mb-4 flex items-center gap-2">
                 🔒 {lang === "id" ? "Ubah Password" : "Change Password"}
               </h3>
-              <form onSubmit={e => { e.preventDefault(); alert(lang === "id" ? "Fitur segera hadir!" : "Feature coming soon!"); }}
-                className="space-y-3">
-                {[
-                  { label: lang === "id" ? "Password Lama" : "Current Password", placeholder: "••••••••" },
-                  { label: lang === "id" ? "Password Baru" : "New Password",     placeholder: "Min. 8 karakter" },
-                  { label: lang === "id" ? "Konfirmasi Password Baru" : "Confirm New Password", placeholder: lang === "id" ? "Ulangi password baru" : "Repeat new password" },
-                ].map((f, i) => (
-                  <div key={i} className="form-group">
-                    <label className="form-label">{f.label}</label>
-                    <input type="password" placeholder={f.placeholder} className="input-field" />
-                  </div>
-                ))}
-                <button type="submit" className="w-full py-3 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/70 hover:text-white text-sm font-semibold transition-all mt-1">
-                  {lang === "id" ? "Update Password" : "Update Password"}
-                </button>
-              </form>
+              <div className="flex items-center gap-3 p-4 rounded-xl bg-primary-600/10 border border-primary-500/20">
+                <span className="text-2xl">🚧</span>
+                <div>
+                  <p className="text-white/70 text-sm font-medium">
+                    {lang === "id" ? "Fitur Segera Hadir" : "Coming Soon"}
+                  </p>
+                  <p className="text-white/40 text-xs mt-0.5">
+                    {lang === "id"
+                      ? "Untuk mengubah password, silakan hubungi admin via WhatsApp."
+                      : "To change your password, please contact admin via WhatsApp."}
+                  </p>
+                </div>
+                <a
+                  href="https://wa.me/628118696940?text=Halo%20admin%20SewaApartement%2C%20saya%20ingin%20mengubah%20password%20akun%20saya."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="ml-auto flex items-center gap-1.5 px-3 py-2 rounded-xl bg-green-600/20 border border-green-500/30 text-green-400 text-xs font-semibold hover:bg-green-600/30 transition-all whitespace-nowrap"
+                >
+                  💬 WA Admin
+                </a>
+              </div>
             </div>
 
             {/* Danger zone */}

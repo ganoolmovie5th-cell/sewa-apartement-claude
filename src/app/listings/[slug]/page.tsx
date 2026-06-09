@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -63,13 +63,19 @@ export default function ListingDetailPage({ params }: { params: { slug: string }
     setShowShareMenu(prev => !prev);
   };
 
+  // Cleanup copy timer on unmount
+  const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  useEffect(() => {
+    return () => { if (copyTimerRef.current) clearTimeout(copyTimerRef.current); };
+  }, []);
+
   const handleCopyLink = () => {
     if (typeof navigator !== "undefined" && navigator.clipboard) {
       navigator.clipboard.writeText(pageUrl).then(() => {
         setCopied(true);
         setShowShareMenu(false);
-        const id = window.setTimeout(() => setCopied(false), 2500);
-        return () => window.clearTimeout(id);
+        if (copyTimerRef.current) clearTimeout(copyTimerRef.current);
+        copyTimerRef.current = setTimeout(() => setCopied(false), 2500);
       });
     }
   };

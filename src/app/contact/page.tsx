@@ -7,7 +7,7 @@ import { useLanguage } from "@/hooks/useLanguage";
 import { getWhatsAppUrl } from "@/lib/utils";
 
 export default function ContactPage() {
-  const { lang } = useLanguage();
+  const { lang, t } = useLanguage();
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading]     = useState(false);
   const [form, setForm] = useState({ name: "", email: "", subject: "", message: "" });
@@ -64,7 +64,7 @@ export default function ContactPage() {
                   <div className="flex items-start gap-4 glass rounded-2xl p-4 hover:border-primary-500/20 transition-all">
                     <div className="w-10 h-10 rounded-xl bg-primary-600/20 border border-primary-500/30 flex items-center justify-center text-primary-400 flex-shrink-0">{info.icon}</div>
                     <div>
-                      <p className="text-white/50 text-xs mb-0.5">{lang === "id" ? (info.label as any).id : (info.label as any).en}</p>
+                      <p className="text-white/50 text-xs mb-0.5">{t(info.label)}</p>
                       <p className="text-white text-sm font-medium break-all">{info.value}</p>
                     </div>
                   </div>
