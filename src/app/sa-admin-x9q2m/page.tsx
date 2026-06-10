@@ -265,7 +265,7 @@ export default function AdminPage() {
   }
 
 
-  const handleLogout = () => { clearSession(); router.push("/auth/login"); };
+  const handleLogout = () => { clearSession(); window.location.href = "/sa-admin-x9q2m"; };
 
   // ── Helpers: CSV export ─────────────────────────────────────────────
   function downloadCSV(filename: string, rows: string[][], headers: string[]) {
