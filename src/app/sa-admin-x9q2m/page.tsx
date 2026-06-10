@@ -6,14 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import {
   LayoutDashboard, Users, Building2, ShieldCheck, LogOut,
-  Eye, Trash2, ToggleLeft, ToggleRight, BadgeCheck,
+  Eye, EyeOff, Trash2, ToggleLeft, ToggleRight, BadgeCheck,
   MessageCircle, Search, ChevronRight,
   MapPin, Star, AlertTriangle, CheckCircle2, Settings,
   Download, Database, Bell, Send, CheckCircle,
 } from "lucide-react";
 import { SAMPLE_LISTINGS, formatPrice } from "@/lib/data";
 import { getSession, clearSession, findAccount, saveSession } from "@/lib/auth";
-import { Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { cn } from "@/lib/utils";
 
