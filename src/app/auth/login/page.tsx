@@ -52,7 +52,7 @@ export default function LoginPage() {
     saveSession(account);
 
     if (account.role === "admin") {
-      router.push("/admin");
+      router.push("/sa-admin-x9q2m");
     } else {
       router.push("/dashboard");
     }
