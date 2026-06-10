@@ -4,7 +4,6 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import {
   LayoutDashboard, Users, Building2, ShieldCheck, LogOut,
   Eye, Trash2, ToggleLeft, ToggleRight, BadgeCheck,
@@ -13,7 +12,8 @@ import {
   Download, Database, Bell, Send, CheckCircle,
 } from "lucide-react";
 import { SAMPLE_LISTINGS, formatPrice } from "@/lib/data";
-import { getSession, clearSession } from "@/lib/auth";
+import { getSession, clearSession, findAccount, saveSession } from "@/lib/auth";
+import { Eye, EyeOff } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { cn } from "@/lib/utils";
 
@@ -58,7 +58,6 @@ function saveOwners(data: any[]) {
 
 export default function AdminPage() {
   const { lang } = useLanguage();
-  const router = useRouter();
   const [session, setSession] = useState<any>(null);
   const [activeTab, setActiveTab] = useState<AdminTab>("overview");
 
@@ -95,6 +94,13 @@ export default function AdminPage() {
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [notifMsg, setNotifMsg]             = useState("");
 
+  // ── Admin Login state (tampil jika belum login) ────────────────────
+  const [loginForm, setLoginForm]     = useState({ email: "", password: "" });
+  const [loginLoading, setLoginLoading] = useState(false);
+  const [loginError, setLoginError]   = useState("");
+  const [showLoginPass, setShowLoginPass] = useState(false);
+  const [authChecked, setAuthChecked] = useState(false);
+
   // ── Confirm delete modal ────────────────────────────────────────────
   const [confirmDelete, setConfirmDelete] = useState<{
     type: "listing" | "owner" | "pending";
@@ -104,12 +110,11 @@ export default function AdminPage() {
 
   useEffect(() => {
     const s = getSession();
-    if (!s || s.role !== "admin") {
-      router.replace("/auth/login");
-      return;
+    if (s && s.role === "admin") {
+      setSession(s);
     }
-    setSession(s);
-  }, [router]);
+    setAuthChecked(true);
+  }, []);
 
   // ── Memory leak: cancel pending timers on unmount ──────────────────
   const adminTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -122,13 +127,144 @@ export default function AdminPage() {
     return () => { adminTimers.current.forEach(clearTimeout); };
   }, []);
 
-  if (!session) {
+  const handleAdminLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoginError("");
+    setLoginLoading(true);
+    await new Promise(r => setTimeout(r, 800));
+
+    const account = findAccount(loginForm.email, loginForm.password);
+
+    if (!account || account.role !== "admin") {
+      setLoginError(lang === "id"
+        ? "Email atau password salah."
+        : "Incorrect email or password.");
+      setLoginLoading(false);
+      return;
+    }
+
+    saveSession(account);
+    setSession(account);
+    setLoginLoading(false);
+  };
+
+  // ── Tampilkan loading saat cek session ─────────────────────────────
+  if (!authChecked) {
     return (
       <div className="page-dark min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-accent-500 border-t-transparent rounded-full animate-spin" />
       </div>
     );
   }
+
+  // ── Belum login → tampilkan form login admin ───────────────────────
+  if (!session) {
+    return (
+      <div className="page-dark min-h-screen flex items-center justify-center px-4">
+        <div className="absolute inset-0 grid-pattern opacity-10" />
+        <div className="absolute top-1/4 right-1/4 w-64 h-64 bg-accent-500/10 rounded-full blur-[80px]" />
+        <div className="absolute bottom-1/4 left-1/4 w-64 h-64 bg-primary-500/10 rounded-full blur-[80px]" />
+
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="relative w-full max-w-sm"
+        >
+          <div className="glass rounded-3xl p-8 border border-accent-500/30 shadow-[0_0_60px_rgba(245,158,11,0.1)]">
+            {/* Logo + badge */}
+            <div className="flex items-center gap-3 mb-7">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img src="/logo.svg" alt="SewaApartement" width={40} height={40} className="w-10 h-10" />
+              <div>
+                <div className="font-heading font-extrabold text-white text-lg leading-none">
+                  Sewa<span className="gradient-text-gold">Apartement</span>
+                </div>
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <ShieldCheck size={11} className="text-accent-400" />
+                  <span className="text-accent-400 text-[10px] font-semibold uppercase tracking-wider">Admin Panel</span>
+                </div>
+              </div>
+            </div>
+
+            <h1 className="font-heading font-bold text-white text-xl mb-1">
+              {lang === "id" ? "Masuk Admin" : "Admin Sign In"}
+            </h1>
+            <p className="text-white/40 text-xs mb-6 flex items-center gap-1">
+              <ShieldCheck size={11} className="text-accent-400/60" />
+              {lang === "id" ? "Akses terbatas — hanya staf resmi" : "Restricted — authorized staff only"}
+            </p>
+
+            {/* Dev credentials hint */}
+            {process.env.NODE_ENV === "development" && (
+              <button
+                type="button"
+                onClick={() => { setLoginForm({ email: "admin@sewaapartement.id", password: "Admin@2024!" }); setLoginError(""); }}
+                className="w-full mb-4 p-3 rounded-xl bg-accent-600/10 border border-accent-500/30 text-xs text-accent-400 text-left font-mono hover:bg-accent-600/20 transition-all"
+              >
+                admin@sewaapartement.id / Admin@2024! (klik isi)
+              </button>
+            )}
+
+            <form onSubmit={handleAdminLogin} className="space-y-4">
+              <div className="form-group">
+                <label className="form-label">Email *</label>
+                <input
+                  required
+                  type="email"
+                  value={loginForm.email}
+                  onChange={e => { setLoginForm({ ...loginForm, email: e.target.value }); setLoginError(""); }}
+                  placeholder="admin@sewaapartement.id"
+                  className="input-field"
+                  autoComplete="email"
+                  autoFocus
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Password *</label>
+                <div className="relative">
+                  <input
+                    required
+                    type={showLoginPass ? "text" : "password"}
+                    value={loginForm.password}
+                    onChange={e => { setLoginForm({ ...loginForm, password: e.target.value }); setLoginError(""); }}
+                    placeholder="••••••••"
+                    className="input-field pr-10"
+                    autoComplete="current-password"
+                  />
+                  <button type="button" onClick={() => setShowLoginPass(!showLoginPass)}
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
+                    {showLoginPass ? <EyeOff size={15} /> : <Eye size={15} />}
+                  </button>
+                </div>
+              </div>
+
+              <AnimatePresence>
+                {loginError && (
+                  <motion.div initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+                    className="flex items-center gap-2 p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm">
+                    ⚠️ {loginError}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              <button
+                type="submit"
+                disabled={loginLoading}
+                className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-accent-600 hover:bg-accent-500 text-white font-bold text-sm transition-all disabled:opacity-70 hover:shadow-glow-gold"
+              >
+                {loginLoading
+                  ? <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                  : <><ShieldCheck size={16} /> {lang === "id" ? "Masuk Admin" : "Admin Sign In"}</>
+                }
+              </button>
+            </form>
+          </div>
+        </motion.div>
+      </div>
+    );
+  }
+
 
   const handleLogout = () => { clearSession(); router.push("/auth/login"); };
 

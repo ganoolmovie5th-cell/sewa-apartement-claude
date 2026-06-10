@@ -3,22 +3,21 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Eye, EyeOff, LogIn, ArrowLeft, ShieldCheck, Building2 } from "lucide-react";
+import { Eye, EyeOff, LogIn, ArrowLeft, Building2 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { useRouter } from "next/navigation";
 import { findAccount, saveSession } from "@/lib/auth";
 
-type LoginTab = "owner" | "admin";
-
+// Halaman ini hanya untuk pemilik apartemen (owner).
+// Login admin tersedia di URL terpisah (tidak dipublikasikan).
 export default function LoginPage() {
   const { lang } = useLanguage();
-  const router = useRouter();
+  const router   = useRouter();
 
-  const [tab, setTab] = useState<LoginTab>("owner");
   const [showPass, setShowPass] = useState(false);
-  const [form, setForm] = useState({ email: "", password: "" });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [form, setForm]         = useState({ email: "", password: "" });
+  const [loading, setLoading]   = useState(false);
+  const [error, setError]       = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,30 +37,19 @@ export default function LoginPage() {
       return;
     }
 
-    // role guard per tab
-    if (tab === "admin" && account.role !== "admin") {
+    // Admin tidak bisa login dari halaman ini
+    if (account.role === "admin") {
       setError(
         lang === "id"
-          ? "Akun ini tidak memiliki akses admin."
-          : "This account does not have admin access."
+          ? "Akun tidak ditemukan. Pastikan email dan password benar."
+          : "Account not found. Please check your email and password."
       );
       setLoading(false);
       return;
     }
 
     saveSession(account);
-
-    if (account.role === "admin") {
-      router.push("/sa-admin-x9q2m");
-    } else {
-      router.push("/dashboard");
-    }
-  };
-
-  // prefill helper
-  const prefill = (email: string, pw: string) => {
-    setForm({ email, password: pw });
-    setError("");
+    router.push("/dashboard");
   };
 
   return (
@@ -85,12 +73,8 @@ export default function LoginPage() {
         <div className="glass rounded-3xl p-8 border border-white/10">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="relative w-10 h-10">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl rotate-6" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
-                <span className="text-white font-black text-sm">SA</span>
-              </div>
-            </div>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.svg" alt="SewaApartement" width={40} height={40} className="w-10 h-10 flex-shrink-0" />
             <div>
               <div className="font-heading font-extrabold text-white text-lg leading-none">
                 Sewa<span className="gradient-text-gold">Apartement</span>
@@ -99,94 +83,37 @@ export default function LoginPage() {
             </div>
           </div>
 
-          {/* Tab Toggle */}
-          <div className="flex p-1 bg-dark-800 border border-white/10 rounded-2xl mb-6">
-            {(["owner", "admin"] as LoginTab[]).map((t) => (
-              <button
-                key={t}
-                onClick={() => { setTab(t); setError(""); setForm({ email: "", password: "" }); }}
-                className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
-                  tab === t
-                    ? t === "admin"
-                      ? "bg-accent-600 text-white shadow-glow-gold"
-                      : "bg-primary-600 text-white shadow-glow-blue"
-                    : "text-white/40 hover:text-white"
-                }`}
-              >
-                {t === "admin" ? <ShieldCheck size={15} /> : <Building2 size={15} />}
-                {t === "admin"
-                  ? lang === "id" ? "Admin" : "Admin"
-                  : lang === "id" ? "Pemilik" : "Owner"}
-              </button>
-            ))}
+          {/* Title — hanya Owner */}
+          <div className="flex items-center gap-2 mb-1">
+            <Building2 size={18} className="text-primary-400" />
+            <h1 className="font-heading font-bold text-white text-xl">
+              {lang === "id" ? "Masuk sebagai Pemilik" : "Sign In as Owner"}
+            </h1>
           </div>
+          <p className="text-white/40 text-sm mb-6">
+            {lang === "id" ? "Belum punya akun? " : "No account yet? "}
+            <Link href="/auth/register" className="text-primary-400 hover:text-primary-300 font-medium">
+              {lang === "id" ? "Daftar gratis" : "Register free"}
+            </Link>
+          </p>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={tab}
-              initial={{ opacity: 0, x: tab === "admin" ? 20 : -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <h1 className="font-heading font-bold text-white text-xl mb-1">
-                {tab === "admin"
-                  ? lang === "id" ? "Masuk sebagai Admin" : "Sign In as Admin"
-                  : lang === "id" ? "Masuk sebagai Pemilik" : "Sign In as Owner"}
-              </h1>
-              <p className="text-white/40 text-sm mb-6">
-                {tab === "owner" && (
-                  <>
-                    {lang === "id" ? "Belum punya akun? " : "No account yet? "}
-                    <Link href="/auth/register" className="text-primary-400 hover:text-primary-300 font-medium">
-                      {lang === "id" ? "Daftar gratis" : "Register free"}
-                    </Link>
-                  </>
-                )}
-                {tab === "admin" && (
-                  <span className="flex items-center gap-1.5 text-accent-400/70">
-                    <ShieldCheck size={12} />
-                    {lang === "id" ? "Akses terbatas — hanya staf resmi" : "Restricted access — authorized staff only"}
-                  </span>
-                )}
-              </p>
-            </motion.div>
-          </AnimatePresence>
-
-          {/* Demo credentials — hanya tampil di development */}
+          {/* Demo credentials — development only */}
           {process.env.NODE_ENV === "development" && (
-          <div className={`mb-5 p-3 rounded-xl border text-xs space-y-1.5 ${
-            tab === "admin"
-              ? "bg-accent-600/10 border-accent-500/30"
-              : "bg-primary-600/10 border-primary-500/30"
-          }`}>
-            <p className="font-semibold text-white/60 mb-1">
-              {lang === "id" ? "💡 Demo Kredensial:" : "💡 Demo Credentials:"}
-            </p>
-            {tab === "admin" ? (
+            <div className="mb-5 p-3 rounded-xl border bg-primary-600/10 border-primary-500/30 text-xs">
+              <p className="font-semibold text-white/60 mb-1">
+                {lang === "id" ? "💡 Demo Owner:" : "💡 Demo Owner:"}
+              </p>
               <button
                 type="button"
-                onClick={() => prefill("admin@sewaapartement.id", "Admin@2024!")}
-                className="text-accent-400 hover:text-accent-300 font-mono block text-left w-full transition-colors"
-              >
-                <span className="text-white/40">Email:</span> admin@sewaapartement.id
-                <br />
-                <span className="text-white/40">Pass: </span> Admin@2024!
-                <span className="ml-2 text-accent-500/60">(klik untuk isi otomatis)</span>
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={() => prefill("owner@sewaapartement.id", "Owner@2024!")}
+                onClick={() => { setForm({ email: "owner@sewaapartement.id", password: "Owner@2024!" }); setError(""); }}
                 className="text-primary-400 hover:text-primary-300 font-mono block text-left w-full transition-colors"
               >
                 <span className="text-white/40">Email:</span> owner@sewaapartement.id
                 <br />
                 <span className="text-white/40">Pass: </span> Owner@2024!
-                <span className="ml-2 text-primary-500/60">(klik untuk isi otomatis)</span>
+                <span className="ml-2 text-primary-500/60">(klik isi otomatis)</span>
               </button>
-            )}
-          </div>
+            </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -247,24 +174,12 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={loading}
-              className={`w-full flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-base transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5 ${
-                tab === "admin"
-                  ? "bg-gradient-to-r from-accent-600 to-accent-500 hover:from-accent-500 hover:to-accent-400 text-white shadow-glow-gold"
-                  : "bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white shadow-glow-blue"
-              }`}
+              className="w-full flex items-center justify-center gap-2 py-4 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white font-bold text-base transition-all duration-300 disabled:opacity-70 disabled:cursor-not-allowed hover:-translate-y-0.5 shadow-glow-blue"
             >
-              {loading ? (
-                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              ) : (
-                <>
-                  {tab === "admin" ? <ShieldCheck size={17} /> : <LogIn size={17} />}
-                  {loading
-                    ? lang === "id" ? "Memproses..." : "Processing..."
-                    : tab === "admin"
-                      ? lang === "id" ? "Masuk Admin" : "Admin Sign In"
-                      : lang === "id" ? "Masuk" : "Sign In"}
-                </>
-              )}
+              {loading
+                ? <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                : <><LogIn size={17} /> {lang === "id" ? "Masuk" : "Sign In"}</>
+              }
             </button>
           </form>
         </div>
