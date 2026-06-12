@@ -48,9 +48,9 @@ const config: Config = {
         }
       },
       fontFamily: {
-        sans: ["Inter", "Plus Jakarta Sans", "system-ui", "sans-serif"],
-        heading: ["Plus Jakarta Sans", "Inter", "system-ui", "sans-serif"],
-        mono: ["JetBrains Mono", "monospace"],
+        sans: ["var(--font-inter)", "var(--font-plus-jakarta)", "system-ui", "sans-serif"],
+        heading: ["var(--font-plus-jakarta)", "var(--font-inter)", "system-ui", "sans-serif"],
+        mono: ["var(--font-jetbrains)", "monospace"],
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
