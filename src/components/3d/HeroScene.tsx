@@ -202,9 +202,11 @@ function CityParticles() {
 }
 
 // ── HDRI Environment loader ───────────────────────────────────────────
+// Menggunakan raw.githubusercontent.com (direct, tanpa redirect)
+// agar RGBELoader tidak gagal karena CORS redirect
 function HDRIEnvironment() {
   const envMap = useEnvironment({
-    files: "https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/potsdamer_platz_1k.hdr",
+    files: "https://raw.githubusercontent.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/potsdamer_platz_1k.hdr",
   });
 
   return <Environment map={envMap} background={false} />;
