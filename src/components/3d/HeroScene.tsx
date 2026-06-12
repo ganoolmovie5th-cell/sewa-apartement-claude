@@ -2,7 +2,7 @@
 
 import { useRef, Suspense, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Float, Stars, Environment, MeshReflectorMaterial } from "@react-three/drei";
+import { Float, Stars, Environment, MeshReflectorMaterial, useEnvironment } from "@react-three/drei";
 import * as THREE from "three";
 
 // ── Single apartment building block ──────────────────────────────────
@@ -201,6 +201,15 @@ function CityParticles() {
   );
 }
 
+// ── HDRI Environment loader ───────────────────────────────────────────
+function HDRIEnvironment() {
+  const envMap = useEnvironment({
+    files: "https://raw.githack.com/pmndrs/drei-assets/456060a26bbeb8fdf79326f224b6d99b8bcce736/hdri/potsdamer_platz_1k.hdr",
+  });
+
+  return <Environment map={envMap} background={false} />;
+}
+
 // ── Main exported scene ───────────────────────────────────────────────
 export default function HeroScene() {
   return (
@@ -234,7 +243,8 @@ export default function HeroScene() {
           {/* City light particles */}
           <CityParticles />
 
-          <Environment preset="city" />
+          {/* HDRI Environment — Potsdamer Platz 1K */}
+          <HDRIEnvironment />
         </Suspense>
       </Canvas>
     </div>
