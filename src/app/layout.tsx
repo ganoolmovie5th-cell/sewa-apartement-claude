@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "id_ID",
     alternateLocale: "en_US",
-    url: "https://sewa-apartement-claude.vercel.app",
+    url: "https://sewa-apartement.web.id",
     siteName: "SewaApartement",
     title: "SewaApartement – Sewa Apartemen JABODETABEK #1",
     description:
