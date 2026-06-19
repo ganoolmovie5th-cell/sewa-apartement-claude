@@ -24,7 +24,7 @@ Platform pencarian dan pemasaran apartemen sewa di kawasan Jakarta, Bogor, Depok
 | 🔐 **Autentikasi** | Login, register, dan lupa password berbasis localStorage |
 | 📱 **Fully Responsive** | Tampilan optimal di mobile, tablet, dan desktop |
 | 🚀 **SEO Optimized** | Metadata lengkap, sitemap, robots.txt, dan OpenGraph |
-| 📈 **Analytics** | Integrasi Vercel Analytics, Speed Insights, dan Google Analytics |
+| 📈 **Analytics** | Integrasi Vercel Analytics, Speed Insights, Google Analytics 4, dan Google Tag Manager |
 
 ---
 
@@ -212,6 +212,40 @@ Vercel Cron secara otomatis akan memanggil `/api/generate-blog` setiap Senin puk
 
 ---
 
+## 🌐 Custom Domain Setup
+
+Domain `web.id` dibeli di **IDWebhost**, DNS dikelola via **Cloudflare**, dan hosting di **Vercel**.
+
+```
+IDWebhost (registrar) → Cloudflare (DNS) → Vercel (hosting)
+```
+
+### Langkah Setup
+
+**1. Vercel — Tambah Domain**
+- Dashboard → Project → Settings → Domains → tambahkan domain
+- Catat DNS records yang diberikan Vercel:
+  - `A` record: `@` → `76.76.21.21`
+  - `CNAME` record: `www` → `cname.vercel-dns.com`
+
+**2. Cloudflare — Daftarkan Domain & Isi DNS**
+- Tambah site di Cloudflare → masukkan domain
+- Tambah DNS records dari Vercel (mode **DNS Only / grey cloud ☁️**)
+- Catat 2 nameserver yang diberikan Cloudflare
+
+**3. IDWebhost — Ganti Nameserver**
+- Login IDWebhost → Domain → Kelola Domain → Nameserver
+- Ganti ke nameserver Cloudflare yang didapat di langkah 2
+
+**4. Tunggu Propagasi**
+- NS propagasi: 1–24 jam
+- Cek status: [dnschecker.org](https://dnschecker.org)
+- Vercel akan otomatis verifikasi dan issue SSL setelah propagasi selesai
+
+> ⚠️ **Penting:** Pastikan DNS records di Cloudflare di-set ke **DNS Only** (grey cloud), bukan Proxied (orange cloud), agar Vercel bisa mengelola SSL certificate secara langsung.
+
+---
+
 ## 🛠️ Tech Stack
 
 | Kategori | Teknologi |
@@ -224,7 +258,7 @@ Vercel Cron secara otomatis akan memanggil `/api/generate-blog` setiap Senin puk
 | **State Management** | [Zustand 4](https://zustand-demo.pmnd.rs) |
 | **Icons** | [Lucide React](https://lucide.dev) |
 | **AI** | [Mistral AI](https://mistral.ai) (mistral-small-latest) |
-| **Analytics** | Vercel Analytics + Google Analytics 4 |
+| **Analytics** | Vercel Analytics + Google Analytics 4 + Google Tag Manager |
 | **Deploy** | [Vercel](https://vercel.com) |
 
 ---
@@ -254,7 +288,7 @@ Vercel Cron secara otomatis akan memanggil `/api/generate-blog` setiap Senin puk
 
 ## 📝 Lisensi
 
-Proyek ini bersifat privat. Seluruh hak cipta dilindungi © 2024 SewaApartement.
+Proyek ini bersifat privat. Seluruh hak cipta dilindungi © 2025 SewaApartement.
 
 ---
 
