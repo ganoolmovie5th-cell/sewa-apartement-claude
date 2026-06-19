@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 import { SAMPLE_LISTINGS, BLOG_POSTS } from "@/lib/data";
 
-const BASE_URL = "https://sewa-apartement-claude.vercel.app";
+const BASE_URL = "https://sewa-apartement.web.id";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   // ── Static pages ────────────────────────────────────────────────────
