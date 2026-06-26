@@ -119,7 +119,7 @@ export default function ContactPage() {
                       href={waUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-green-600 hover:bg-green-500 text-white text-sm font-semibold transition-all hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]"
+                      className="flex items-center justify-center gap-2 w-full py-3 rounded-xl bg-green-700 hover:bg-green-600 text-white text-sm font-semibold transition-all hover:shadow-[0_0_20px_rgba(34,197,94,0.4)]"
                     >
                       <MessageCircle size={16} />
                       {lang === "id" ? "Lanjutkan via WhatsApp" : "Continue via WhatsApp"}

@@ -152,12 +152,14 @@ export default function ListingDetailPage({ params }: { params: { slug: string }
                   <button
                     key={i}
                     onClick={() => setCurrentImage(i)}
+                    aria-label={`${lang === "id" ? "Lihat foto" : "View photo"} ${i + 1} - ${listing.title}`}
+                    aria-pressed={i === currentImage}
                     className={cn(
                       "relative flex-shrink-0 w-20 h-16 rounded-xl overflow-hidden border-2 transition-all",
                       i === currentImage ? "border-primary-500" : "border-transparent opacity-60 hover:opacity-100"
                     )}
                   >
-                    <Image src={img} alt="" fill className="object-cover" sizes="80px" />
+                    <Image src={img} alt={`${listing.title} - foto ${i + 1}`} fill className="object-cover" sizes="80px" />
                   </button>
                 ))}
               </div>
@@ -285,7 +287,7 @@ export default function ListingDetailPage({ params }: { params: { slug: string }
                   href={getWhatsAppUrl(listing.ownerPhone, whatsappMsg)}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full bg-green-600 hover:bg-green-500 text-white py-4 rounded-xl font-bold text-base transition-all duration-300 hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:-translate-y-0.5 mb-3"
+                  className="flex items-center justify-center gap-2 w-full bg-green-700 hover:bg-green-600 text-white py-4 rounded-xl font-bold text-base transition-all duration-300 hover:shadow-[0_0_30px_rgba(34,197,94,0.4)] hover:-translate-y-0.5 mb-3"
                 >
                   <MessageCircle size={20} />
                   {lang === "id" ? "Hubungi via WhatsApp" : "Contact via WhatsApp"}
