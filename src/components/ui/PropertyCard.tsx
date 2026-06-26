@@ -56,7 +56,7 @@ export default function PropertyCard({ listing, index = 0 }: PropertyCardProps) 
         {/* Top Badges */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
           {listing.featured && (
-            <span className="badge bg-accent-500 text-white text-[10px]">
+            <span className="badge bg-accent-500 text-dark-900 text-[10px]">
               ⭐ {lang === "id" ? "Unggulan" : "Featured"}
             </span>
           )}
@@ -132,7 +132,7 @@ export default function PropertyCard({ listing, index = 0 }: PropertyCardProps) 
             <div className="font-heading font-bold text-primary-400 text-base">
               {formatPrice(listing.price)}
             </div>
-            <div className="text-white/40 text-xs">{priceLabel}</div>
+            <div className="text-white/55 text-xs">{priceLabel}</div>
           </div>
 
           <div className="flex items-center gap-2">
@@ -141,10 +141,10 @@ export default function PropertyCard({ listing, index = 0 }: PropertyCardProps) 
               <div className="flex items-center gap-1 text-xs text-white/60">
                 <Star size={11} className="text-accent-400 fill-accent-400" />
                 <span className="font-semibold text-white/80">{listing.rating}</span>
-                <span className="text-white/30">({listing.reviews})</span>
+                <span className="text-white/50">({listing.reviews})</span>
               </div>
               {listing.ratingSource && (
-                <span className="text-[9px] text-white/25 leading-none">
+                <span className="text-[9px] text-white/50 leading-none">
                   via {listing.ratingSource}
                 </span>
               )}

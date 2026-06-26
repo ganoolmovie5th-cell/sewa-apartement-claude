@@ -139,6 +139,7 @@ export default function HeroSection() {
                   <select
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
+                    aria-label={lang === "id" ? "Pilih kota" : "Select city"}
                     className="bg-transparent text-white/80 text-sm focus:outline-none w-full cursor-pointer"
                   >
                     <option value="" className="bg-dark-800">{lang === "id" ? "Semua Kota" : "All Cities"}</option>

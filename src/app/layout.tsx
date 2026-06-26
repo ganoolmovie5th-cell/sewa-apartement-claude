@@ -32,7 +32,10 @@ const jetbrainsMono = JetBrains_Mono({
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? "G-DFKHWJ3TJZ";
 const GSC_VERIFICATION = "pEw-CXIVMv8NSSGvdlOtNwSWWdIWmsANEaYXG9lN-8o";
 
+const SITE_URL = "https://sewa-apartement.web.id";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
     default: "SewaApartement – Sewa Apartemen JABODETABEK #1",
     template: "%s | SewaApartement",
@@ -134,6 +137,51 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         `}
       </Script>
       <body className="bg-dark-900 text-white antialiased">
+        {/* Global structured data — Organization + WebSite (SearchAction).
+            Plain script tag → ada di HTML awal (SSR) agar terbaca crawler. */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@graph": [
+                {
+                  "@type": "Organization",
+                  "@id": `${SITE_URL}/#organization`,
+                  name: "SewaApartement",
+                  url: SITE_URL,
+                  logo: `${SITE_URL}/logo.svg`,
+                  description:
+                    "Platform marketplace sewa apartemen terlengkap di JABODETABEK.",
+                  areaServed: "Jakarta, Bogor, Depok, Tangerang, Bekasi",
+                  contactPoint: {
+                    "@type": "ContactPoint",
+                    telephone: "+62-811-8696-940",
+                    contactType: "customer service",
+                    areaServed: "ID",
+                    availableLanguage: ["Indonesian", "English"],
+                  },
+                },
+                {
+                  "@type": "WebSite",
+                  "@id": `${SITE_URL}/#website`,
+                  url: SITE_URL,
+                  name: "SewaApartement",
+                  publisher: { "@id": `${SITE_URL}/#organization` },
+                  inLanguage: "id-ID",
+                  potentialAction: {
+                    "@type": "SearchAction",
+                    target: {
+                      "@type": "EntryPoint",
+                      urlTemplate: `${SITE_URL}/listings?q={search_term_string}`,
+                    },
+                    "query-input": "required name=search_term_string",
+                  },
+                },
+              ],
+            }),
+          }}
+        />
         {/* Google Tag Manager (noscript) */}
         <noscript>
           <iframe

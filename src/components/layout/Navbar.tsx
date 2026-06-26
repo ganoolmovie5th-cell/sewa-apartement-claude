@@ -57,7 +57,7 @@ export default function Navbar() {
               <div className="font-heading font-extrabold text-white text-lg leading-none">
                 Sewa<span className="gradient-text-gold">Apartement</span>
               </div>
-              <div className="text-white/40 text-[10px] leading-none">JABODETABEK</div>
+              <div className="text-white/60 text-[10px] leading-none">JABODETABEK</div>
             </div>
           </Link>
 
@@ -110,12 +110,15 @@ export default function Navbar() {
           <div className="flex lg:hidden items-center gap-2">
             <button
               onClick={toggle}
+              aria-label={lang === "id" ? "Ganti bahasa ke Inggris" : "Switch language to Indonesian"}
               className="p-2 rounded-lg bg-white/5 border border-white/10 text-white/70 hover:text-white text-xs font-medium"
             >
               {lang === "id" ? "🇮🇩" : "🇬🇧"}
             </button>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
+              aria-label={mobileOpen ? (lang === "id" ? "Tutup menu" : "Close menu") : (lang === "id" ? "Buka menu" : "Open menu")}
+              aria-expanded={mobileOpen}
               className="p-2 rounded-lg bg-white/5 border border-white/10 text-white"
             >
               <AnimatePresence mode="wait">

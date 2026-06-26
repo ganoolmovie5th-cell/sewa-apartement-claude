@@ -5,11 +5,14 @@ import CitySection from "@/components/home/CitySection";
 import HowItWorksSection from "@/components/home/HowItWorksSection";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
 import CTASection from "@/components/home/CTASection";
+import HomeSeoContent from "@/components/home/HomeSeoContent";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "SewaApartement – Platform Sewa Apartemen #1 JABODETABEK",
-  description: "Temukan apartemen impian Anda di JABODETABEK. 2.940+ listing terpercaya untuk mahasiswa, pekerja, dan keluarga.",
+  description:
+    "Temukan apartemen sewa impian di Jakarta, Bogor, Depok, Tangerang, dan Bekasi. 2.940+ listing terverifikasi untuk mahasiswa, pekerja, dan keluarga di SewaApartement.",
+  alternates: { canonical: "/" },
 };
 
 export default function HomePage() {
@@ -21,6 +24,7 @@ export default function HomePage() {
       <CitySection />
       <HowItWorksSection />
       <TestimonialsSection />
+      <HomeSeoContent />
       <CTASection />
     </div>
   );

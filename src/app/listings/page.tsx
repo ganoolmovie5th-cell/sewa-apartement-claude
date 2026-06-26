@@ -106,7 +106,7 @@ function ListingsContent() {
               className="input-field pl-10"
             />
             {keyword && (
-              <button onClick={() => setKeyword("")} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
+              <button onClick={() => setKeyword("")} aria-label={lang === "id" ? "Hapus pencarian" : "Clear search"} className="absolute right-3 top-1/2 -translate-y-1/2 text-white/40 hover:text-white">
                 <X size={14} />
               </button>
             )}
@@ -118,6 +118,7 @@ function ListingsContent() {
             <select
               value={city}
               onChange={(e) => setCity(e.target.value)}
+              aria-label={lang === "id" ? "Filter berdasarkan kota" : "Filter by city"}
               className="input-field pl-8 pr-8 appearance-none cursor-pointer"
             >
               <option value="">{lang === "id" ? "Semua Kota" : "All Cities"}</option>
@@ -252,6 +253,7 @@ function ListingsContent() {
               <select
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
+                aria-label={lang === "id" ? "Urutkan hasil" : "Sort results"}
                 className="bg-white/5 border border-white/10 text-white/70 text-xs rounded-xl pl-8 pr-3 py-2 focus:outline-none cursor-pointer appearance-none"
               >
                 <option value="featured">{lang === "id" ? "Unggulan" : "Featured"}</option>
@@ -266,12 +268,16 @@ function ListingsContent() {
             <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-xl p-1">
               <button
                 onClick={() => setView("grid")}
+                aria-label={lang === "id" ? "Tampilan grid" : "Grid view"}
+                aria-pressed={view === "grid"}
                 className={cn("p-1.5 rounded-lg transition-all", view === "grid" ? "bg-primary-600 text-white" : "text-white/40 hover:text-white")}
               >
                 <Grid3X3 size={14} />
               </button>
               <button
                 onClick={() => setView("list")}
+                aria-label={lang === "id" ? "Tampilan daftar" : "List view"}
+                aria-pressed={view === "list"}
                 className={cn("p-1.5 rounded-lg transition-all", view === "list" ? "bg-primary-600 text-white" : "text-white/40 hover:text-white")}
               >
                 <List size={14} />

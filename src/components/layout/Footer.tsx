@@ -168,7 +168,7 @@ export default function Footer() {
                 <div className="font-heading font-extrabold text-white text-xl leading-none">
                   Sewa<span className="gradient-text-gold">Apartement</span>
                 </div>
-                <div className="text-white/40 text-xs">JABODETABEK</div>
+                <div className="text-white/60 text-xs">JABODETABEK</div>
               </div>
             </Link>
             <p className="text-white/50 text-sm leading-relaxed mb-6">
@@ -240,7 +240,7 @@ export default function Footer() {
       {/* Bottom Bar */}
       <div className="border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-white/30 text-xs">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3 text-white/55 text-xs">
             <p>
               © 2024 SewaApartement. {lang === "id" ? "Hak Cipta Dilindungi." : "All Rights Reserved."}
             </p>

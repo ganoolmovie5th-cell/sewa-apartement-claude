@@ -79,7 +79,7 @@ export default function LoginPage() {
               <div className="font-heading font-extrabold text-white text-lg leading-none">
                 Sewa<span className="gradient-text-gold">Apartement</span>
               </div>
-              <div className="text-white/40 text-xs">JABODETABEK</div>
+              <div className="text-white/60 text-xs">JABODETABEK</div>
             </div>
           </div>
 
@@ -184,7 +184,7 @@ export default function LoginPage() {
           </form>
         </div>
 
-        <p className="text-center text-white/30 text-xs mt-6">
+        <p className="text-center text-white/55 text-xs mt-6">
           🔒 {lang === "id" ? "Data Anda aman & terenkripsi" : "Your data is safe & encrypted"}
         </p>
       </motion.div>
