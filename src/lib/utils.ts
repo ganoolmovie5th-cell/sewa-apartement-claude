@@ -13,23 +13,6 @@ export function formatPrice(price: number): string {
   return `Rp ${price.toLocaleString("id-ID")}`;
 }
 
-export function formatNumber(num: number): string {
-  return num.toLocaleString("id-ID");
-}
-
-export function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
-
-export function truncate(text: string, length: number): string {
-  if (text.length <= length) return text;
-  return text.slice(0, length) + "...";
-}
-
 /**
  * Build a WhatsApp deep-link.
  * - apartmentName: include the listing title in the opening message
@@ -51,13 +34,3 @@ export function getWhatsAppUrl(
   }
   return `https://wa.me/${cleanPhone}?text=${encodeURIComponent(text)}`;
 }
-
-export function generateStars(rating: number): string[] {
-  return Array.from({ length: 5 }, (_, i) => {
-    if (i < Math.floor(rating)) return "full";
-    if (i < rating) return "half";
-    return "empty";
-  });
-}
-
-export const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));

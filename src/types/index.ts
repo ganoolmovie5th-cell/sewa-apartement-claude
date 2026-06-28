@@ -34,36 +34,3 @@ export interface Listing {
   tags: string[];
   createdAt: string;
 }
-
-export interface FilterState {
-  city: string;
-  type: string;
-  priceMin: number;
-  priceMax: number;
-  duration: string;
-  amenities: string[];
-  keyword: string;
-}
-
-export interface User {
-  id: string;
-  name: string;
-  email: string;
-  phone: string;
-  avatar?: string;
-  role: "owner" | "admin";
-  verified: boolean;
-  createdAt: string;
-}
-
-export interface BlogPost {
-  id: string;
-  slug: string;
-  title: BilingualText;
-  excerpt: BilingualText;
-  category: BilingualText;
-  image: string;
-  author: string;
-  date: string;
-  readTime: number;
-}

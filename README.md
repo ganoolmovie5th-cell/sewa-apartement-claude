@@ -292,6 +292,14 @@ Proyek ini bersifat privat. Seluruh hak cipta dilindungi © 2025 SewaApartement.
 
 ---
 
+## Pembersihan Kode / Ponytail Audit (Juni 2026)
+
+Hapus dead code (verifikasi `tsc --noEmit` lolos), tanpa menyentuh keamanan/validasi/a11y:
+- `src/types/index.ts`: hapus tipe mati `FilterState`, `User`, `BlogPost` (`@/types` hanya diimpor untuk `Listing` & `Language`).
+- `src/lib/utils.ts`: hapus 5 helper tak terpakai `formatNumber`, `slugify`, `truncate`, `generateStars`, `sleep` (yang dipakai hanya `cn`, `formatPrice`, `getWhatsAppUrl`).
+
+Ditunda (refactor lintas-file, bukan hapusan): dedup interface `BlogPost`+`normalize` di halaman blog, `getAllArticles` vs `api/generate-blog`, reuse `<StatsSection/>` di `about`, satukan `BLOG_POSTS`/`SEED_BLOGS`, host HDRI `HeroScene` di `/public`.
+
 <p align="center">
   Dibuat dengan ❤️ untuk memudahkan pencarian apartemen di JABODETABEK
 </p>

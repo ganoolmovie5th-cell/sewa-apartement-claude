@@ -132,3 +132,14 @@ npm run build    # Build produksi
 npm run start    # Jalankan hasil build
 npm run lint     # ESLint check
 ```
+
+---
+
+## Pembersihan Kode / Ponytail Audit (Juni 2026)
+
+Hapusan dead code, verifikasi `tsc --noEmit` lolos. Semua dependency package.json terpakai (tak ada yang dihapus).
+- `src/types/index.ts`: tipe `FilterState`, `User`, `BlogPost` dihapus — `@/types` hanya dipakai untuk `Listing` & `Language` (diverifikasi grep). Catatan: halaman blog punya interface `BlogPost` lokal sendiri; tipe shared yang dihapus memang tidak dipakai.
+- `src/lib/utils.ts`: hapus `formatNumber`, `slugify`, `truncate`, `generateStars`, `sleep` (0 import dari `@/lib/utils`; yang dipakai hanya `cn`, `formatPrice`, `getWhatsAppUrl`). Hati-hati: `truncate` sebagai className Tailwind & `slugify` lokal di `api/generate-blog` itu BUKAN util ini.
+- `formatPrice` re-export di `data.ts` DIPERTAHANKAN (dipakai 3 halaman via `@/lib/data`).
+
+**Ditunda (refactor):** dedup interface `BlogPost`+`normalize` di `blog/page.tsx` & `blog/[slug]/page.tsx`; `getAllArticles` (api/blogs) vs merge/sort di api/generate-blog; reuse `<StatsSection/>` di `about` (versi inline ketinggalan fix reduced-motion); satukan `BLOG_POSTS` (data.ts) & `SEED_BLOGS` (generate-blog); host HDRI `HeroScene` di `/public`.
