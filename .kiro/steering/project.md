@@ -132,6 +132,14 @@ npm run lint     # ESLint check
 - Hapus `src/lib/auth.ts` — plaintext password di source code (security risk)
 - Login page diganti banner "Coming Soon"
 
+### Build Fixes (Juli 2026)
+
+- **`src/lib/auth.ts`** — dibuat kembali sebagai stub (`getSession`/`clearSession`/`findAccount`/`saveSession` return null/no-op, `ACCOUNTS = []`). Dashboard, sa-admin, forgot-password masih mengimpor dari sini; stub agar build lulus tanpa mengembalikan plaintext auth. Ganti dengan auth nyata (Supabase/JWT) sebelum mengaktifkan fitur auth.
+- **`src/app/auth/login/page.tsx`** — file setengah-ganti (shell coming-soon + form lama yang referensi state/icon yang tidak ada) → diganti halaman coming-soon yang bersih.
+- **`src/app/auth/forgot-password/page.tsx`** — hapus import `ACCOUNTS` (bertipe `never[]` → `.email` gagal type check); form selalu tampilkan "sent" (auth coming soon).
+- **`src/app/dashboard/page.tsx`** & **`sa-admin-x9q2m/page.tsx`** — hapus `.role` check pada return value `null` (TypeScript menganggap `never` setelah narrowing).
+- **`src/app/api/blogs/route.ts`** — hapus `export` dari `SEED_BLOGS`; Next.js App Router menolak named export non-route dari file route.
+
 ## Pembersihan Kode / Ponytail Audit (Juni 2026)
 
 Hapusan dead code, verifikasi `tsc --noEmit` lolos. Semua dependency package.json terpakai (tak ada yang dihapus).
