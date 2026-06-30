@@ -3,54 +3,12 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import { Eye, EyeOff, LogIn, ArrowLeft, Building2 } from "lucide-react";
+import { ArrowLeft, Building2 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
-import { useRouter } from "next/navigation";
-import { findAccount, saveSession } from "@/lib/auth";
 
-// Halaman ini hanya untuk pemilik apartemen (owner).
-// Login admin tersedia di URL terpisah (tidak dipublikasikan).
+// ponytail: login replaced with coming-soon banner — auth.ts removed (plaintext passwords)
 export default function LoginPage() {
   const { lang } = useLanguage();
-  const router   = useRouter();
-
-  const [showPass, setShowPass] = useState(false);
-  const [form, setForm]         = useState({ email: "", password: "" });
-  const [loading, setLoading]   = useState(false);
-  const [error, setError]       = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
-    await new Promise((r) => setTimeout(r, 900));
-
-    const account = findAccount(form.email, form.password);
-
-    if (!account) {
-      setError(
-        lang === "id"
-          ? "Email atau password salah. Silakan coba lagi."
-          : "Incorrect email or password. Please try again."
-      );
-      setLoading(false);
-      return;
-    }
-
-    // Admin tidak bisa login dari halaman ini
-    if (account.role === "admin") {
-      setError(
-        lang === "id"
-          ? "Akun tidak ditemukan. Pastikan email dan password benar."
-          : "Account not found. Please check your email and password."
-      );
-      setLoading(false);
-      return;
-    }
-
-    saveSession(account);
-    router.push("/dashboard");
-  };
 
   return (
     <div className="page-dark min-h-screen flex items-center justify-center px-4 py-20">
