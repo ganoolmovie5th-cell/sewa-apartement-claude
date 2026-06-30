@@ -156,7 +156,8 @@ export default function DashboardPage() {
     return id;
   };
   useEffect(() => {
-    return () => { timers.current.forEach(clearTimeout); };
+    const t = timers.current;
+    return () => { t.forEach(clearTimeout); };
   }, []);
 
   // ── Auth guard ──────────────────────────────────────────────────────

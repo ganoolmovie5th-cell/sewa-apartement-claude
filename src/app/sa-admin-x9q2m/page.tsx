@@ -123,7 +123,8 @@ export default function AdminPage() {
     return id;
   };
   useEffect(() => {
-    return () => { adminTimers.current.forEach(clearTimeout); };
+    const t = adminTimers.current;
+    return () => { t.forEach(clearTimeout); };
   }, []);
 
   const handleAdminLogin = async (e: React.FormEvent) => {
