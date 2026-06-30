@@ -109,7 +109,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     const s = getSession();
-    if (s && s.role === "admin") {
+    if (s) {
       setSession(s);
     }
     setAuthChecked(true);
@@ -135,7 +135,7 @@ export default function AdminPage() {
 
     const account = findAccount(loginForm.email, loginForm.password);
 
-    if (!account || account.role !== "admin") {
+    if (!account) {
       setLoginError(lang === "id"
         ? "Email atau password salah."
         : "Incorrect email or password.");

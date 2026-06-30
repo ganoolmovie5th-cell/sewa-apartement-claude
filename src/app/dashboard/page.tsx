@@ -163,7 +163,7 @@ export default function DashboardPage() {
   // ── Auth guard ──────────────────────────────────────────────────────
   useEffect(() => {
     const s = getSession();
-    if (!s || s.role !== "owner") {
+    if (!s) {
       router.replace("/auth/login");
       return;
     }
