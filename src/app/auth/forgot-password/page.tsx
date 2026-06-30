@@ -6,27 +6,19 @@ import Link from "next/link";
 import { ArrowLeft, Mail, CheckCircle2, Send } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { getWhatsAppUrl } from "@/lib/utils";
-import { ACCOUNTS } from "@/lib/auth";
-
 export default function ForgotPasswordPage() {
   const { lang } = useLanguage();
   const [email, setEmail]       = useState("");
   const [loading, setLoading]   = useState(false);
   const [sent, setSent]         = useState(false);
-  const [notFound, setNotFound] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setNotFound(false);
     await new Promise(r => setTimeout(r, 1200));
     setLoading(false);
-    const isRegistered = ACCOUNTS.some(a => a.email.toLowerCase() === email.toLowerCase());
-    if (isRegistered) {
-      setSent(true);
-    } else {
-      setNotFound(true);
-    }
+    // ponytail: no real accounts — always show sent (auth coming soon)
+    setSent(true);
   };
 
   // WA fallback ke admin jika tidak bisa akses email
@@ -128,29 +120,13 @@ export default function ForgotPasswordPage() {
                         required
                         type="email"
                         value={email}
-                        onChange={e => { setEmail(e.target.value); setNotFound(false); }}
+                        onChange={e => setEmail(e.target.value)}
                         placeholder="email@example.com"
                         className="input-field pl-9"
                         autoFocus
                       />
                     </div>
                   </div>
-
-                  {/* Error: email not found */}
-                  <AnimatePresence>
-                    {notFound && (
-                      <motion.div
-                        initial={{ opacity: 0, y: -6 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0 }}
-                        className="p-3 rounded-xl bg-red-500/10 border border-red-500/30 text-red-400 text-sm"
-                      >
-                        ⚠️ {lang === "id"
-                          ? "Email tidak ditemukan. Pastikan email sesuai akun terdaftar."
-                          : "Email not found. Make sure it matches a registered account."}
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
 
                   <button
                     type="submit"
