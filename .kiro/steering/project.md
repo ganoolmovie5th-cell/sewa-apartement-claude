@@ -17,7 +17,6 @@ Platform marketplace sewa apartemen #1 di JABODETABEK. Dibangun dengan Next.js 1
 | 3D Graphics | Three.js + @react-three/fiber |
 | State Management | Zustand 4 |
 | Icons | Lucide React |
-| AI | Mistral AI — `mistral-small-latest` |
 | Analytics | Vercel Analytics + Speed Insights + Google Analytics 4 + Google Tag Manager |
 | Deploy | Vercel |
 
@@ -71,9 +70,7 @@ Semua script menggunakan `next/script` dengan `strategy="afterInteractive"`.
 
 | Variable | Wajib | Keterangan |
 |---|---|---|
-| `MISTRAL_API_KEY` | Opsional | Generate artikel blog AI. Fallback ke template jika kosong |
 | `NEXT_PUBLIC_GA_ID` | Opsional | Google Analytics ID. Default: `G-DFKHWJ3TJZ` |
-| `CRON_SECRET` | Ya (prod) | Autentikasi endpoint `/api/generate-blog` |
 
 Salin `.env.example` → `.env.local` untuk development lokal.
 
@@ -89,7 +86,6 @@ IDWebhost (registrar) → Cloudflare (DNS, grey cloud) → Vercel (hosting + SSL
 ### Aturan Penting
 - DNS records di Cloudflare **harus** di-set ke **DNS Only (grey cloud)** — bukan Proxied
 - SSL certificate dikelola sepenuhnya oleh Vercel
-- Vercel Cron memanggil `POST /api/generate-blog` setiap **Senin 01:00 UTC**
 
 ---
 
@@ -113,14 +109,9 @@ IDWebhost (registrar) → Cloudflare (DNS, grey cloud) → Vercel (hosting + SSL
 
 ---
 
-## Akun Demo
+## Auth
 
-| Role | Email | Password |
-|---|---|---|
-| Admin | `admin@sewaapartement.id` | `Admin@2024!` |
-| Owner | `owner@sewaapartement.id` | `Owner@2024!` |
-
-> Auth berbasis `localStorage` — hanya untuk demo, bukan produksi.
+Login page menampilkan "Coming Soon" — `auth.ts` dihapus (plaintext passwords). Implementasi auth nyata diperlukan sebelum fitur ini diaktifkan kembali.
 
 ---
 
@@ -134,6 +125,12 @@ npm run lint     # ESLint check
 ```
 
 ---
+
+## Ponytail Audit — Juli 2026
+
+- Hapus `src/app/api/generate-blog/route.ts` (419 baris Mistral AI + Vercel Cron) — tidak dipakai UI, semua artikel dari `SEED_BLOGS` di `blogs/route.ts`
+- Hapus `src/lib/auth.ts` — plaintext password di source code (security risk)
+- Login page diganti banner "Coming Soon"
 
 ## Pembersihan Kode / Ponytail Audit (Juni 2026)
 

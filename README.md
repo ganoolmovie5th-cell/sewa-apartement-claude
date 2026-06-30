@@ -19,9 +19,8 @@ Platform pencarian dan pemasaran apartemen sewa di kawasan Jakarta, Bogor, Depok
 | 🏠 **2.940+ Listing Real JABODETABEK** | Data apartemen nyata dengan harga market rate 2024 |
 | 🌐 **Bilingual (ID / EN)** | Seluruh konten tersedia dalam Bahasa Indonesia dan Inggris |
 | 🎮 **3D Hero Scene** | Animasi Three.js interaktif di halaman beranda |
-| 📝 **Blog Otomatis AI** | Artikel properti di-generate mingguan via Mistral AI |
+| 📝 **Blog** | Artikel properti (seed articles, siap diperluas) |
 | 📊 **Admin Dashboard** | Panel pengelolaan listing dan konten |
-| 🔐 **Autentikasi** | Login, register, dan lupa password berbasis localStorage |
 | 📱 **Fully Responsive** | Tampilan optimal di mobile, tablet, dan desktop |
 | 🚀 **SEO Optimized** | Metadata lengkap, sitemap, robots.txt, dan OpenGraph |
 | 📈 **Analytics** | Integrasi Vercel Analytics, Speed Insights, Google Analytics 4, dan Google Tag Manager |
@@ -61,8 +60,7 @@ sewa-apartement-claude/
 │   │   └── robots.ts               # robots.txt
 │   │
 │   ├── api/
-│   │   ├── blogs/route.ts          # API endpoint data blog
-│   │   └── generate-blog/route.ts  # Endpoint generate artikel AI
+│   │   └── blogs/route.ts          # API endpoint data blog (seed articles)
 │   │
 │   ├── components/
 │   │   ├── home/                   # Komponen halaman beranda
@@ -84,7 +82,6 @@ sewa-apartement-claude/
 │   ├── hooks/
 │   │   └── useLanguage.ts          # Hook manajemen bahasa (ID/EN)
 │   ├── lib/
-│   │   ├── auth.ts                 # Autentikasi & session management
 │   │   ├── data.ts                 # Data listing, kota, tipe, fasilitas
 │   │   └── utils.ts                # Utilitas (cn, format harga, dll)
 │   └── types/
@@ -137,18 +134,9 @@ Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 Salin `.env.example` menjadi `.env.local` dan isi nilai berikut:
 
 ```env
-# Mistral AI — untuk generate artikel blog otomatis
-# Daftar di: https://console.mistral.ai/api-keys
-MISTRAL_API_KEY=your-mistral-api-key-here
-
 # Google Analytics ID
 NEXT_PUBLIC_GA_ID=G-XXXXXXXXXX
-
-# Cron Secret — untuk mengamankan endpoint /api/generate-blog
-CRON_SECRET=ganti-dengan-string-acak-aman
 ```
-
-> **Catatan:** Tanpa `MISTRAL_API_KEY`, sistem akan menggunakan template fallback untuk artikel blog. Aplikasi tetap berjalan normal.
 
 ---
 
@@ -175,27 +163,6 @@ npm run lint     # Jalankan ESLint
 
 ---
 
-## 🤖 Fitur Blog AI Otomatis
-
-Sistem generate artikel properti otomatis setiap minggu menggunakan **Mistral AI** (`mistral-small-latest`).
-
-- **Jadwal:** Setiap Senin pukul 01:00 UTC via Vercel Cron
-- **Endpoint:** `POST /api/generate-blog` (membutuhkan autentikasi `CRON_SECRET`)
-- **Topik:** 8 topik berputar (tips sewa, tren pasar, perbandingan kawasan, dll.)
-- **Fallback:** Jika Mistral AI tidak tersedia, sistem menggunakan template konten bawaan
-- **Penyimpanan:** In-memory cache selama instance serverless aktif
-
----
-
-## 🔐 Akun Demo
-
-| Role | Email | Password |
-|---|---|---|
-| **Admin** | `admin@sewaapartement.id` | `Admin@2024!` |
-| **Owner** | `owner@sewaapartement.id` | `Owner@2024!` |
-
-> ⚠️ Akun ini hanya untuk keperluan demo. Autentikasi disimpan di `localStorage`.
-
 ---
 
 ## 🚢 Deploy ke Vercel
@@ -203,12 +170,8 @@ Sistem generate artikel properti otomatis setiap minggu menggunakan **Mistral AI
 1. Push repositori ke GitHub
 2. Buka [vercel.com](https://vercel.com) dan import repositori
 3. Tambahkan environment variables di **Settings → Environment Variables**:
-   - `MISTRAL_API_KEY`
-   - `CRON_SECRET`
    - `NEXT_PUBLIC_GA_ID`
 4. Klik **Deploy**
-
-Vercel Cron secara otomatis akan memanggil `/api/generate-blog` setiap Senin pukul 01:00 UTC sesuai konfigurasi di `vercel.json`.
 
 ---
 
@@ -257,7 +220,6 @@ IDWebhost (registrar) → Cloudflare (DNS) → Vercel (hosting)
 | **3D Graphics** | [Three.js](https://threejs.org) + [@react-three/fiber](https://docs.pmnd.rs/react-three-fiber) |
 | **State Management** | [Zustand 4](https://zustand-demo.pmnd.rs) |
 | **Icons** | [Lucide React](https://lucide.dev) |
-| **AI** | [Mistral AI](https://mistral.ai) (mistral-small-latest) |
 | **Analytics** | Vercel Analytics + Google Analytics 4 + Google Tag Manager |
 | **Deploy** | [Vercel](https://vercel.com) |
 
