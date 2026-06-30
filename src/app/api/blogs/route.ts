@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 // ─── Seed articles — always available ────────────────────────────────────────
-export const SEED_BLOGS = [
+const SEED_BLOGS = [
   {
     id: "seed-001",
     slug: "tips-sewa-apartemen-jakarta-pertama-kali",
