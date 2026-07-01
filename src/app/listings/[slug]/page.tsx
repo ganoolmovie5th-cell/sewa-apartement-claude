@@ -11,7 +11,8 @@ import {
   Wifi, Car, Dumbbell, Waves, Shield, WashingMachine, UtensilsCrossed, Wind,
   Copy, Check
 } from "lucide-react";
-import { SAMPLE_LISTINGS, AMENITIES, formatPrice } from "@/lib/data";
+import { SAMPLE_LISTINGS, AMENITIES } from "@/lib/data";
+import { formatPrice } from "@/lib/utils";
 import { getWhatsAppUrl, cn } from "@/lib/utils";
 import { useLanguage } from "@/hooks/useLanguage";
 import PropertyCard from "@/components/ui/PropertyCard";

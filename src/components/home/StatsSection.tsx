@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useReducedMotion } from "framer-motion";
-import { useInView } from "react-intersection-observer";
+import { useRef } from "react";
+import { motion, useReducedMotion, useInView } from "framer-motion";
 import CountUp from "react-countup";
 import { STATS } from "@/lib/data";
 import { useLanguage } from "@/hooks/useLanguage";
@@ -11,11 +11,8 @@ export default function StatsSection() {
   const prefersReducedMotion = useReducedMotion();
   // initialInView: true → di headless/Cypress (IntersectionObserver tidak fire)
   // elemen tetap terlihat & counter tetap menampilkan nilai akhir, bukan 0.
-  const [ref, inView] = useInView({
-    triggerOnce: true,
-    threshold: 0.3,
-    initialInView: true,
-  });
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: true, amount: 0.3 });
 
   return (
     <section ref={ref} className="py-16 bg-dark-800/50 border-y border-white/5">

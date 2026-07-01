@@ -11,7 +11,8 @@ import {
   MapPin, Star, AlertTriangle, CheckCircle2, Settings,
   Download, Database, Bell, Send, CheckCircle,
 } from "lucide-react";
-import { SAMPLE_LISTINGS, formatPrice } from "@/lib/data";
+import { SAMPLE_LISTINGS } from "@/lib/data";
+import { formatPrice } from "@/lib/utils";
 import { getSession, clearSession, findAccount, saveSession } from "@/lib/auth";
 import { useLanguage } from "@/hooks/useLanguage";
 import { cn } from "@/lib/utils";

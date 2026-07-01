@@ -1300,4 +1300,3 @@ export const FAQS = [
   },
 ];
 
-export { formatPrice } from "@/lib/utils";

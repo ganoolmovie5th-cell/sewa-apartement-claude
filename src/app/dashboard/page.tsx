@@ -10,7 +10,8 @@ import {
   Star, MapPin, ToggleLeft, ToggleRight, Upload, X, ImagePlus,
   CheckSquare, Square, Phone, Info, Save, CheckCircle2,
 } from "lucide-react";
-import { SAMPLE_LISTINGS, formatPrice } from "@/lib/data";
+import { SAMPLE_LISTINGS } from "@/lib/data";
+import { formatPrice } from "@/lib/utils";
 import { useRouter } from "next/navigation";
 import { getSession, clearSession } from "@/lib/auth";
 import { useLanguage } from "@/hooks/useLanguage";
