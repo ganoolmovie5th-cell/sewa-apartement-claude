@@ -265,3 +265,11 @@ Ditunda (refactor lintas-file, bukan hapusan): dedup interface `BlogPost`+`norma
 <p align="center">
   Dibuat dengan ❤️ untuk memudahkan pencarian apartemen di JABODETABEK
 </p>
+
+### Audit Lanjutan (Juli 2026)
+
+Hapus dep & sederhanakan state management. Verifikasi: `tsc --noEmit` lolos.
+- Hapus dep `zustand` dan `react-intersection-observer`
+- Rewrite `src/hooks/useLanguage.ts` pakai module-level state biasa (tanpa zustand); API identik (`lang`, `setLang`, `toggle`, `t`)
+- Ganti `useInView` dari `react-intersection-observer` → `useInView` dari `framer-motion` di `StatsSection.tsx` & `about/page.tsx`
+- Hapus re-export `formatPrice` dari `src/lib/data.ts`; 3 file (`listings/[slug]/page.tsx`, `dashboard/page.tsx`, `sa-admin-x9q2m/page.tsx`) diupdate impor langsung ke `@/lib/utils`
