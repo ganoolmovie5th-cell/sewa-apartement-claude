@@ -13,7 +13,6 @@ import {
 import { SAMPLE_LISTINGS } from "@/lib/data";
 import { formatPrice } from "@/lib/utils";
 import { useRouter } from "next/navigation";
-import { getSession, clearSession } from "@/lib/auth";
 import { useLanguage } from "@/hooks/useLanguage";
 
 import { cn } from "@/lib/utils";
@@ -161,16 +160,10 @@ export default function DashboardPage() {
     return () => { t.forEach(clearTimeout); };
   }, []);
 
-  // ── Auth guard ──────────────────────────────────────────────────────
+  // ponytail: auth stub removed — getSession() was always null; dashboard uses mockOwner
   useEffect(() => {
-    const s = getSession();
-    if (!s) {
-      router.replace("/auth/login");
-      return;
-    }
-    setSession(s);
     setAuthChecked(true);
-  }, [router]);
+  }, []);
 
   // ── Early return AFTER all hooks ────────────────────────────────────
   if (!authChecked) {
@@ -304,7 +297,7 @@ export default function DashboardPage() {
         {/* Logout */}
         <div className="p-3 border-t border-white/5">
           <button
-            onClick={() => { clearSession(); router.push("/auth/login"); }}
+            onClick={() => { router.push("/auth/login"); }}
             className="flex items-center gap-3 w-full px-3 py-2.5 rounded-xl text-sm text-white/50 hover:text-white hover:bg-white/5 transition-all"
           >
             <LogOut size={18} />

@@ -1,10 +1,5 @@
 export type Language = "id" | "en";
 
-export interface BilingualText {
-  id: string;
-  en: string;
-}
-
 export interface Listing {
   id: string;
   title: string;
@@ -21,7 +16,7 @@ export interface Listing {
   bathrooms: number;
   images: string[];
   amenities: string[];
-  description: BilingualText;
+  description: { id: string; en: string };
   ownerName: string;
   ownerPhone: string;
   ownerAvatar: string;
