@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-mport { motion } from "framer-motion";
+import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, Target, Eye, Heart, Users, Building2 } from "lucide-react";
