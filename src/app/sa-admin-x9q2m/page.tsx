@@ -7,7 +7,7 @@ import Link from "next/link";
 import {
   LayoutDashboard, Users, Building2, ShieldCheck, LogOut,
   Trash2, ToggleLeft, ToggleRight, BadgeCheck,
-  MessageCircle, Search, ChevronRight,
+  MessageCircle, Search, ChevronRight, Eye,
   MapPin, Star, AlertTriangle, CheckCircle2, Settings,
   Download, Database, Bell, Send, CheckCircle,
 } from "lucide-react";
