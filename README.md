@@ -273,3 +273,8 @@ Hapus dep & sederhanakan state management. Verifikasi: `tsc --noEmit` lolos.
 - Rewrite `src/hooks/useLanguage.ts` pakai module-level state biasa (tanpa zustand); API identik (`lang`, `setLang`, `toggle`, `t`)
 - Ganti `useInView` dari `react-intersection-observer` → `useInView` dari `framer-motion` di `StatsSection.tsx` & `about/page.tsx`
 - Hapus re-export `formatPrice` dari `src/lib/data.ts`; 3 file (`listings/[slug]/page.tsx`, `dashboard/page.tsx`, `sa-admin-x9q2m/page.tsx`) diupdate impor langsung ke `@/lib/utils`
+
+### Audit Lanjutan 2 (Juli 2026)
+
+- `src/lib/auth.ts`: hapus file — semua fungsi (`getSession`, `clearSession`, `findAccount`, `saveSession`, `ACCOUNTS`) adalah stub no-op; call site di `dashboard/page.tsx` & `sa-admin-x9q2m/page.tsx` dibersihkan
+- `src/types/index.ts`: hapus interface `BilingualText`; inline `{ id: string; en: string }` langsung ke field `description` di `Listing`
