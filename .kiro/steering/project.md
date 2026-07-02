@@ -148,3 +148,9 @@ Hapusan dead code, verifikasi `tsc --noEmit` lolos. Semua dependency package.jso
 - `formatPrice` re-export di `data.ts` DIPERTAHANKAN (dipakai 3 halaman via `@/lib/data`).
 
 **Ditunda (refactor):** dedup interface `BlogPost`+`normalize` di `blog/page.tsx` & `blog/[slug]/page.tsx`; `getAllArticles` (api/blogs) vs merge/sort di api/generate-blog; reuse `<StatsSection/>` di `about` (versi inline ketinggalan fix reduced-motion); satukan `BLOG_POSTS` (data.ts) & `SEED_BLOGS` (generate-blog); host HDRI `HeroScene` di `/public`.
+
+## Ponytail Audit — Lanjutan 4 (Juli 2026)
+
+- **Hapus dep `react-countup`** — diganti `src/components/ui/CountUp.tsx` native (rAF + cubic easeOut). Props: `end`, `start?`, `duration?`, `separator?`, `suffix?` — API identik dengan react-countup subset. Jangan tambah `react-countup` kembali.
+- **`StatsSection.tsx`** & **`about/page.tsx`** — import diganti ke `@/components/ui/CountUp`.
+- **`about/page.tsx`** — catatan dari "ditunda": `StatsSection` versi inline di about kini sudah pakai `useReducedMotion` via framer-motion (sama dengan home `StatsSection`) karena keduanya pakai CountUp component yang sama.

@@ -7,7 +7,7 @@ import Link from "next/link";
 import { ArrowRight, Target, Eye, Heart, Users, Building2 } from "lucide-react";
 import { useLanguage } from "@/hooks/useLanguage";
 import { STATS } from "@/lib/data";
-import CountUp from "react-countup";
+import CountUp from "@/components/ui/CountUp";
 
 const team = [
   { name: "Andi Saputra", role: { id: "CEO & Co-Founder", en: "CEO & Co-Founder" }, img: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&q=80", bio: { id: "Berpengalaman 10 tahun di industri properti Indonesia.", en: "10 years experience in Indonesian property industry." } },

@@ -2,7 +2,7 @@
 
 import { useRef } from "react";
 import { motion, useReducedMotion, useInView } from "framer-motion";
-import CountUp from "react-countup";
+import CountUp from "@/components/ui/CountUp";
 import { STATS } from "@/lib/data";
 import { useLanguage } from "@/hooks/useLanguage";
 

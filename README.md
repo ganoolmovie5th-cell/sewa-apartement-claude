@@ -282,3 +282,8 @@ Hapus dep & sederhanakan state management. Verifikasi: `tsc --noEmit` lolos.
 ### Audit Lanjutan 3 (Juli 2026)
 
 - `src/lib/data.ts`: hapus `RENT_DURATIONS` (zero importer); `APARTMENT_TYPES` dipertahankan (digunakan di `listings/page.tsx`)
+
+### Audit Lanjutan 4 (Juli 2026)
+
+- Hapus dep `react-countup` — ganti dengan komponen `CountUp` native (`src/components/ui/CountUp.tsx`, rAF + cubic easeOut); props API identik (`end`, `start`, `duration`, `separator`, `suffix`)
+- Update `StatsSection.tsx` & `about/page.tsx` → import dari `@/components/ui/CountUp`
