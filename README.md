@@ -278,3 +278,7 @@ Hapus dep & sederhanakan state management. Verifikasi: `tsc --noEmit` lolos.
 
 - `src/lib/auth.ts`: hapus file — semua fungsi (`getSession`, `clearSession`, `findAccount`, `saveSession`, `ACCOUNTS`) adalah stub no-op; call site di `dashboard/page.tsx` & `sa-admin-x9q2m/page.tsx` dibersihkan
 - `src/types/index.ts`: hapus interface `BilingualText`; inline `{ id: string; en: string }` langsung ke field `description` di `Listing`
+
+### Audit Lanjutan 3 (Juli 2026)
+
+- `src/lib/data.ts`: hapus `RENT_DURATIONS` (zero importer); `APARTMENT_TYPES` dipertahankan (digunakan di `listings/page.tsx`)
