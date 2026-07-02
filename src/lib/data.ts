@@ -24,12 +24,6 @@ export const APARTMENT_TYPES = [
   { id: "penthouse", label: { id: "Penthouse", en: "Penthouse" } },
 ];
 
-export const RENT_DURATIONS = [
-  { id: "harian", label: { id: "Harian", en: "Daily" } },
-  { id: "bulanan", label: { id: "Bulanan", en: "Monthly" } },
-  { id: "tahunan", label: { id: "Tahunan", en: "Yearly" } },
-];
-
 export const PRICE_RANGES = [
   { id: "0-2jt", label: { id: "< Rp 2 Juta/bln", en: "< Rp 2M/month" }, min: 0, max: 2000000 },
   { id: "2-4jt", label: { id: "Rp 2–4 Juta/bln", en: "Rp 2–4M/month" }, min: 2000000, max: 4000000 },
