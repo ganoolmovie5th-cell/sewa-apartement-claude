@@ -30,7 +30,7 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? "G-DFKHWJ3TJZ";
-const GSC_VERIFICATION = "pEw-CXIVMv8NSSGvdlOtNwSWWdIWmsANEaYXG9lN-8o";
+const GSC_VERIFICATION = "6YstOpKP20nfr1dhmov54d6hgdy0tl7M9ExTCz9UF9s";
 
 const SITE_URL = "https://sewa-apartement.web.id";
 
