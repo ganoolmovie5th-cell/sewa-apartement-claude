@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { SAMPLE_LISTINGS, CITIES } from "@/lib/data";
 
-const SITE_URL = "https://sewa-apartement.web.id";
+const SITE_URL = "https://www.sewa-apartement.web.id";
 
 function getListing(slug: string) {
   return SAMPLE_LISTINGS.find((l) => l.slug === slug);

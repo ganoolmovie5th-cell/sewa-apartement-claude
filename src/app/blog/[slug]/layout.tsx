@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { BLOG_POSTS } from "@/lib/data";
 
-const SITE_URL = "https://sewa-apartement.web.id";
+const SITE_URL = "https://www.sewa-apartement.web.id";
 
 function getPost(slug: string) {
   return BLOG_POSTS.find((p) => p.slug === slug);

@@ -32,7 +32,7 @@ const jetbrainsMono = JetBrains_Mono({
 const GA_ID = process.env.NEXT_PUBLIC_GA_ID ?? "G-DFKHWJ3TJZ";
 const GSC_VERIFICATION = "6YstOpKP20nfr1dhmov54d6hgdy0tl7M9ExTCz9UF9s";
 
-const SITE_URL = "https://sewa-apartement.web.id";
+const SITE_URL = "https://www.sewa-apartement.web.id";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -68,7 +68,7 @@ export const metadata: Metadata = {
     type: "website",
     locale: "id_ID",
     alternateLocale: "en_US",
-    url: "https://sewa-apartement.web.id",
+    url: "https://www.sewa-apartement.web.id",
     siteName: "SewaApartement",
     title: "SewaApartement – Sewa Apartemen JABODETABEK #1",
     description:
