@@ -28,9 +28,11 @@ const AMENITY_ICONS: Record<string, React.ReactNode> = {
   ac: <Wind size={16} />,
 };
 
-export default function ListingDetailPage({ params }: { params: { slug: string } }) {
+export default function ListingDetailPage({ params }: { params: Promise<{ slug: string }> }) {
+  // Next 15 hands client components params as a Promise; use() unwraps it.
+  const { slug } = use(params);
   const { lang, t } = useLanguage();
-  const found = SAMPLE_LISTINGS.find((l) => l.slug === params.slug);
+  const found = SAMPLE_LISTINGS.find((l) => l.slug === slug);
   if (!found) notFound();
   const listing = found;
   const [currentImage, setCurrentImage] = useState(0);
