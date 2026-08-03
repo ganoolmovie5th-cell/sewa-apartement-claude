@@ -31,7 +31,9 @@
     "@vercel/speed-insights": "^1.0.12"
   },
   "overrides": {
-    "postcss": "^8.5.18"
+    "postcss": "^8.5.18",
+    "react": "$react",
+    "react-dom": "$react-dom"
   },
   "devDependencies": {
     "eslint": "^8",
