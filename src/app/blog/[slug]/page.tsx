@@ -58,20 +58,26 @@ function renderMarkdown(md: string): string {
       '<a href="$2" class="text-primary-400 hover:text-primary-300 underline underline-offset-2" target="_blank">$1</a>');
 }
 
-export default function BlogDetailPage({ params }: { params: { slug: string } }) {
+export default function BlogDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { lang, t } = useLanguage();
   const [post, setPost]           = useState<BlogPost | null>(null);
   const [related, setRelated]     = useState<BlogPost[]>([]);
   const [loading, setLoading]     = useState(true);
   const [copied, setCopied]       = useState(false);
+  const [slug, setSlug]           = useState<string>("");
   const copyTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
+    params.then(p => setSlug(p.slug));
+  }, [params]);
+
+  useEffect(() => {
+    if (!slug) return;
     async function load() {
       setLoading(true);
       // 1. Try API first
       try {
-        const res = await fetch(`/api/blogs?slug=${params.slug}`);
+        const res = await fetch(`/api/blogs?slug=${slug}`);
         if (res.ok) {
           const data = await res.json();
           if (data && data.id) {
@@ -79,7 +85,7 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
             const allRes = await fetch("/api/blogs");
             if (allRes.ok) {
               const all: BlogPost[] = await allRes.json();
-              setRelated(all.filter(p => p.slug !== params.slug).slice(0, 2));
+              setRelated(all.filter(p => p.slug !== slug).slice(0, 2));
             }
             setLoading(false);
             return;
@@ -90,25 +96,25 @@ export default function BlogDetailPage({ params }: { params: { slug: string } })
       // 2. Try localStorage (AI-generated articles saved client-side)
       try {
         const local: BlogPost[] = JSON.parse(localStorage.getItem("sewa-ai-articles") ?? "[]");
-        const found = local.find(p => p.slug === params.slug);
+        const found = local.find(p => p.slug === slug);
         if (found) {
           setPost(found);
-          setRelated(local.filter(p => p.slug !== params.slug).slice(0, 2));
+          setRelated(local.filter(p => p.slug !== slug).slice(0, 2));
           setLoading(false);
           return;
         }
       } catch {/* ignore */}
 
       // 3. Fallback: static seed
-      const found = BLOG_POSTS.find(p => p.slug === params.slug);
+      const found = BLOG_POSTS.find(p => p.slug === slug);
       if (found) {
         setPost(found as unknown as BlogPost);
-        setRelated(BLOG_POSTS.filter(p => p.slug !== params.slug).slice(0, 2) as unknown as BlogPost[]);
+        setRelated(BLOG_POSTS.filter(p => p.slug !== slug).slice(0, 2) as unknown as BlogPost[]);
       }
       setLoading(false);
     }
     load();
-  }, [params.slug]);
+  }, [slug]);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(window.location.href);
