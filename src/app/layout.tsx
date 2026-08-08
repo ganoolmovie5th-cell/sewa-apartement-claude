@@ -113,29 +113,20 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="id" className={`dark ${inter.variable} ${plusJakartaSans.variable} ${jetbrainsMono.variable}`}>
-      {/* Google Tag Manager */}
-      <Script id="google-tag-manager" strategy="afterInteractive">
-        {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-WXDBVJJ3');`}
-      </Script>
-      {/* Google Analytics */}
-      <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
-        strategy="afterInteractive"
-      />
-      <Script id="google-analytics" strategy="afterInteractive">
-        {`
+})(window,document,'script','dataLayer','GTM-WXDBVJJ3');` }} />
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} />
+        <script dangerouslySetInnerHTML={{ __html: `
           window.dataLayer = window.dataLayer || [];
           function gtag(){dataLayer.push(arguments);}
           gtag('js', new Date());
-          gtag('config', '${GA_ID}', {
-            page_path: window.location.pathname,
-          });
-        `}
-      </Script>
+          gtag('config', '${GA_ID}', { page_path: window.location.pathname });
+        ` }} />
+      </head>
       <body className="bg-dark-900 text-white antialiased">
         {/* Global structured data — Organization + WebSite (SearchAction).
             Plain script tag → ada di HTML awal (SSR) agar terbaca crawler. */}
