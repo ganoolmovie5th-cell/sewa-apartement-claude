@@ -11,9 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: [
           "/admin",
           "/sa-admin-x9q2m",
-          "/dashboard",
           "/api/",
-          "/auth/",
         ],
       },
     ],
