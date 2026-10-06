@@ -49,7 +49,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16 lg:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative w-9 h-9 flex-shrink-0 group-hover:scale-110 transition-transform duration-300">
+            <div className="relative w-9 h-9 shrink-0 group-hover:scale-110 transition-transform duration-300">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src="/logo.svg" alt="SewaApartement Logo" width={36} height={36} className="w-9 h-9" />
             </div>
@@ -99,7 +99,7 @@ export default function Navbar() {
 
             <Link
               href="/auth/register"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white text-sm font-semibold shadow-glow-blue hover:shadow-glow-blue transition-all duration-300 hover:-translate-y-0.5"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-linear-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white text-sm font-semibold shadow-glow-blue hover:shadow-glow-blue transition-all duration-300 hover:-translate-y-0.5"
             >
               <Plus size={15} />
               {lang === "id" ? "Pasang Iklan" : "List Property"}
@@ -173,7 +173,7 @@ export default function Navbar() {
                 <Link href="/auth/login" className="flex items-center justify-center px-4 py-3 rounded-xl text-sm font-semibold text-white border border-white/10 hover:bg-white/5 transition-all">
                   {lang === "id" ? "Masuk" : "Login"}
                 </Link>
-                <Link href="/auth/register" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-primary-600 to-primary-500 text-white text-sm font-semibold">
+                <Link href="/auth/register" className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-linear-to-r from-primary-600 to-primary-500 text-white text-sm font-semibold">
                   <Plus size={15} />
                   {lang === "id" ? "Pasang Iklan Gratis" : "List Property Free"}
                 </Link>

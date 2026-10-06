@@ -102,13 +102,13 @@ export default function AboutPage() {
             </h2>
           </div>
           <div className="relative">
-            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gradient-to-b from-primary-500 via-accent-500 to-primary-500" />
+            <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-linear-to-b from-primary-500 via-accent-500 to-primary-500" />
             <div className="space-y-8">
               {milestones.map((m, i) => (
                 <motion.div key={i} initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.15 }}
                   className="flex gap-6">
-                  <div className="relative flex-shrink-0">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center font-black text-white text-sm shadow-glow-blue">
+                  <div className="relative shrink-0">
+                    <div className="w-16 h-16 rounded-2xl bg-linear-to-br from-primary-600 to-primary-800 flex items-center justify-center font-black text-white text-sm shadow-glow-blue">
                       {m.year}
                     </div>
                   </div>
@@ -151,7 +151,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-gradient-to-br from-primary-900/30 via-dark-900 to-accent-900/20">
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-linear-to-br from-primary-900/30 via-dark-900 to-accent-900/20">
         <div className="max-w-2xl mx-auto text-center">
           <h2 className="font-heading font-black text-white text-3xl mb-4">
             {lang === "id" ? "Bergabung dengan Kami" : "Join Us Today"}

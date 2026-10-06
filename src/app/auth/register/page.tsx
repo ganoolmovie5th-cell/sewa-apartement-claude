@@ -81,8 +81,8 @@ export default function RegisterPage() {
           {/* Logo */}
           <div className="flex items-center gap-3 mb-6">
             <div className="relative w-9 h-9">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl rotate-6" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
+              <div className="absolute inset-0 bg-linear-to-br from-primary-500 to-accent-500 rounded-xl rotate-6" />
+              <div className="absolute inset-0 bg-linear-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
                 <span className="text-white font-black text-xs">SA</span>
               </div>
             </div>
@@ -105,7 +105,7 @@ export default function RegisterPage() {
           <div className="flex items-center gap-2 mb-8">
             {steps.map((s, i) => (
               <div key={s.id} className="flex items-center gap-2 flex-1">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 transition-all ${
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold shrink-0 transition-all ${
                   step > s.id ? "bg-green-600 text-white" : step === s.id ? "bg-primary-600 text-white shadow-glow-blue" : "bg-white/10 text-white/40"
                 }`}>
                   {step > s.id ? <CheckCircle2 size={14} /> : s.id}

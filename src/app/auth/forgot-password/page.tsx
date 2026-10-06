@@ -45,9 +45,9 @@ export default function ForgotPasswordPage() {
         <div className="glass rounded-3xl p-8 border border-white/10">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-7">
-            <div className="relative w-10 h-10 flex-shrink-0">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-500 to-accent-500 rounded-xl rotate-6" />
-              <div className="absolute inset-0 bg-gradient-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
+            <div className="relative w-10 h-10 shrink-0">
+              <div className="absolute inset-0 bg-linear-to-br from-primary-500 to-accent-500 rounded-xl rotate-6" />
+              <div className="absolute inset-0 bg-linear-to-br from-primary-600 to-primary-800 rounded-xl flex items-center justify-center">
                 <span className="text-white font-black text-sm">SA</span>
               </div>
             </div>

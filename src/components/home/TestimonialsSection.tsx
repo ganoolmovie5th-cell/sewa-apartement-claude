@@ -22,11 +22,11 @@ export default function TestimonialsSection() {
             viewport={{ once: true }}
             className="flex items-center justify-center gap-2 mb-3"
           >
-            <div className="h-1 w-8 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full" />
+            <div className="h-1 w-8 bg-linear-to-r from-primary-500 to-accent-500 rounded-full" />
             <span className="text-primary-400 text-sm font-semibold uppercase tracking-wider">
               {lang === "id" ? "Dipercaya Ribuan Pengguna" : "Trusted by Thousands"}
             </span>
-            <div className="h-1 w-8 bg-gradient-to-r from-accent-500 to-primary-500 rounded-full" />
+            <div className="h-1 w-8 bg-linear-to-r from-accent-500 to-primary-500 rounded-full" />
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -68,7 +68,7 @@ export default function TestimonialsSection() {
 
               {/* Author */}
               <div className="flex items-center gap-3">
-                <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0">
                   <Image
                     src={testimonial.avatar}
                     alt={testimonial.name}

@@ -186,11 +186,11 @@ export default function CitySection() {
             viewport={{ once: true }}
             className="flex items-center justify-center gap-2 mb-3"
           >
-            <div className="h-1 w-8 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full" />
+            <div className="h-1 w-8 bg-linear-to-r from-primary-500 to-accent-500 rounded-full" />
             <span className="text-primary-400 text-sm font-semibold uppercase tracking-wider">
               {lang === "id" ? "Area Layanan" : "Coverage Area"}
             </span>
-            <div className="h-1 w-8 bg-gradient-to-r from-accent-500 to-primary-500 rounded-full" />
+            <div className="h-1 w-8 bg-linear-to-r from-accent-500 to-primary-500 rounded-full" />
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -225,15 +225,15 @@ export default function CitySection() {
               whileHover={{ y: -8, scale: 1.02 }}
             >
               <Link href={`/listings?city=${city.id}`} className="block">
-                <div className="relative overflow-hidden rounded-2xl aspect-[3/4] group">
+                <div className="relative overflow-hidden rounded-2xl aspect-3/4 group">
                   {/* CSS Illustration */}
                   <CityIllustration cityId={city.id} />
 
                   {/* Hover overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-primary-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute inset-0 bg-linear-to-t from-primary-900/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
                   {/* Bottom gradient for text */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-dark-900/95 via-dark-900/20 to-transparent" />
+                  <div className="absolute inset-0 bg-linear-to-t from-dark-900/95 via-dark-900/20 to-transparent" />
 
                   {/* Content */}
                   <div className="absolute bottom-0 left-0 right-0 p-4 z-10">

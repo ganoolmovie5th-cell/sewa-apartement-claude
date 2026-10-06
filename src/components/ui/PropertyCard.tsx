@@ -40,7 +40,7 @@ export default function PropertyCard({ listing, index = 0 }: PropertyCardProps) 
       className="property-card bg-dark-800 border border-white/5 hover:border-primary-500/30 shadow-card hover:shadow-card-hover group"
     >
       {/* Image */}
-      <div className="relative overflow-hidden aspect-[4/3]">
+      <div className="relative overflow-hidden aspect-4/3">
         <Image
           src={imgError ? `https://picsum.photos/seed/${listing.id}/800/600` : listing.images[0]}
           alt={listing.title}
@@ -51,7 +51,7 @@ export default function PropertyCard({ listing, index = 0 }: PropertyCardProps) 
         />
 
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-dark-900/60 via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-linear-to-t from-dark-900/60 via-transparent to-transparent" />
 
         {/* Top Badges */}
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
@@ -92,7 +92,7 @@ export default function PropertyCard({ listing, index = 0 }: PropertyCardProps) 
 
         {/* Location */}
         <div className="flex items-center gap-1 text-white/50 text-xs mb-3">
-          <MapPin size={11} className="flex-shrink-0" />
+          <MapPin size={11} className="shrink-0" />
           <span className="truncate">{listing.location}</span>
         </div>
 

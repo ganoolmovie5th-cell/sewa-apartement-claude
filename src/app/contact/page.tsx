@@ -62,7 +62,7 @@ export default function ContactPage() {
               {contactInfo.map((info, i) => {
                 const content = (
                   <div className="flex items-start gap-4 glass rounded-2xl p-4 hover:border-primary-500/20 transition-all">
-                    <div className="w-10 h-10 rounded-xl bg-primary-600/20 border border-primary-500/30 flex items-center justify-center text-primary-400 flex-shrink-0">{info.icon}</div>
+                    <div className="w-10 h-10 rounded-xl bg-primary-600/20 border border-primary-500/30 flex items-center justify-center text-primary-400 shrink-0">{info.icon}</div>
                     <div>
                       <p className="text-white/50 text-xs mb-0.5">{t(info.label)}</p>
                       <p className="text-white text-sm font-medium break-all">{info.value}</p>
@@ -84,7 +84,7 @@ export default function ContactPage() {
             {/* WhatsApp */}
             <a href="https://wa.me/628118696940?text=Halo%20SewaApartement%2C%20saya%20butuh%20bantuan." target="_blank" rel="noopener noreferrer"
               className="flex items-center gap-3 p-4 rounded-2xl bg-green-600/20 border border-green-500/30 hover:bg-green-600/30 transition-all group">
-              <div className="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center text-white flex-shrink-0"><MessageCircle size={18} /></div>
+              <div className="w-10 h-10 rounded-xl bg-green-600 flex items-center justify-center text-white shrink-0"><MessageCircle size={18} /></div>
               <div>
                 <p className="text-white font-semibold text-sm">{lang === "id" ? "Chat via WhatsApp" : "Chat via WhatsApp"}</p>
                 <p className="text-white/50 text-xs">{lang === "id" ? "Respon dalam 1 jam" : "Response within 1 hour"}</p>

@@ -26,11 +26,11 @@ export default function HowItWorksSection() {
             viewport={{ once: true }}
             className="flex items-center justify-center gap-2 mb-3"
           >
-            <div className="h-1 w-8 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full" />
+            <div className="h-1 w-8 bg-linear-to-r from-primary-500 to-accent-500 rounded-full" />
             <span className="text-primary-400 text-sm font-semibold uppercase tracking-wider">
               {lang === "id" ? "Mudah & Cepat" : "Easy & Fast"}
             </span>
-            <div className="h-1 w-8 bg-gradient-to-r from-accent-500 to-primary-500 rounded-full" />
+            <div className="h-1 w-8 bg-linear-to-r from-accent-500 to-primary-500 rounded-full" />
           </motion.div>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -72,7 +72,7 @@ export default function HowItWorksSection() {
         {/* Steps */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 relative">
           {/* Connecting Line */}
-          <div className="hidden lg:block absolute top-16 left-0 right-0 h-0.5 bg-gradient-to-r from-transparent via-primary-500/30 to-transparent" />
+          <div className="hidden lg:block absolute top-16 left-0 right-0 h-0.5 bg-linear-to-r from-transparent via-primary-500/30 to-transparent" />
 
           {steps.map((step, i) => (
             <motion.div
@@ -86,7 +86,7 @@ export default function HowItWorksSection() {
               <div className="glass p-6 rounded-2xl hover:border-primary-500/30 transition-all duration-300 group h-full">
                 {/* Step Number */}
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center font-black text-white text-sm shadow-glow-blue">
+                  <div className="w-10 h-10 rounded-xl bg-linear-to-br from-primary-600 to-primary-800 flex items-center justify-center font-black text-white text-sm shadow-glow-blue">
                     {step.step}
                   </div>
                   <div className="text-3xl">{step.icon}</div>

@@ -16,7 +16,7 @@ export default function AuthSeoContent() {
             width={40}
             height={40}
             loading="lazy"
-            className="w-10 h-10 flex-shrink-0"
+            className="w-10 h-10 shrink-0"
           />
           <h2
             id="auth-seo-title"

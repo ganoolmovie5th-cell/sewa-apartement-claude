@@ -119,7 +119,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ slug: 
             {/* Image Gallery */}
             <div className="space-y-3">
               {/* Main Image */}
-              <div className="relative aspect-[16/9] rounded-2xl overflow-hidden bg-dark-800">
+              <div className="relative aspect-video rounded-2xl overflow-hidden bg-dark-800">
                 <Image
                   src={listing.images[currentImage]}
                   alt={listing.title}
@@ -158,7 +158,7 @@ export default function ListingDetailPage({ params }: { params: Promise<{ slug: 
                     aria-label={`${lang === "id" ? "Lihat foto" : "View photo"} ${i + 1} - ${listing.title}`}
                     aria-pressed={i === currentImage}
                     className={cn(
-                      "relative flex-shrink-0 w-20 h-16 rounded-xl overflow-hidden border-2 transition-all",
+                      "relative shrink-0 w-20 h-16 rounded-xl overflow-hidden border-2 transition-all",
                       i === currentImage ? "border-primary-500" : "border-transparent opacity-60 hover:opacity-100"
                     )}
                   >
@@ -275,14 +275,14 @@ export default function ListingDetailPage({ params }: { params: Promise<{ slug: 
 
                 {/* Owner */}
                 <div className="flex items-center gap-3 mb-6 p-3 bg-white/5 rounded-xl">
-                  <div className="relative w-10 h-10 rounded-full overflow-hidden flex-shrink-0">
+                  <div className="relative w-10 h-10 rounded-full overflow-hidden shrink-0">
                     <Image src={listing.ownerAvatar} alt={listing.ownerName} fill className="object-cover" sizes="40px" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="text-white font-semibold text-sm truncate">{listing.ownerName}</div>
                     <div className="text-white/40 text-xs">{lang === "id" ? "Pemilik Properti" : "Property Owner"}</div>
                   </div>
-                  {listing.verified && <BadgeCheck size={16} className="text-primary-400 flex-shrink-0" />}
+                  {listing.verified && <BadgeCheck size={16} className="text-primary-400 shrink-0" />}
                 </div>
 
                 {/* WhatsApp CTA */}

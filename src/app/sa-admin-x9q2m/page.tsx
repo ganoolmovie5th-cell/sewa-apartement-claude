@@ -289,13 +289,13 @@ export default function AdminPage() {
         {/* Admin badge */}
         <div className="p-5 border-b border-white/5">
           <div className="flex items-center gap-3">
-            <div className="relative w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
+            <div className="relative w-10 h-10 rounded-xl overflow-hidden shrink-0">
               <Image src={session.avatar} alt={session.name} fill className="object-cover" sizes="40px" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <p className="text-white font-semibold text-sm truncate">{session.name}</p>
-                <ShieldCheck size={13} className="text-accent-400 flex-shrink-0" />
+                <ShieldCheck size={13} className="text-accent-400 shrink-0" />
               </div>
               <p className="text-accent-400 text-xs font-medium">Administrator</p>
             </div>
@@ -344,7 +344,7 @@ export default function AdminPage() {
               key={item.id}
               onClick={() => setActiveTab(item.id)}
               className={cn(
-                "flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all",
+                "shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all",
                 activeTab === item.id ? "bg-accent-600 text-white" : "text-white/50"
               )}
             >
@@ -402,7 +402,7 @@ export default function AdminPage() {
                 <div className="space-y-3">
                   {listings.filter((l: any) => l.pendingVerify).map((l: any) => (
                     <div key={l.id} className="glass rounded-xl p-4 flex items-center gap-4 border border-yellow-500/20">
-                      <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
+                      <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0">
                         <Image src={l.images[0]} alt={l.title} fill className="object-cover" sizes="56px" />
                       </div>
                       <div className="flex-1 min-w-0">
@@ -426,7 +426,7 @@ export default function AdminPage() {
             {/* All verified banner */}
             {listings.filter((l: any) => l.pendingVerify).length === 0 && (
               <div className="flex items-center gap-3 p-4 glass rounded-xl border border-green-500/20 bg-green-600/5">
-                <CheckCircle2 size={18} className="text-green-400 flex-shrink-0" />
+                <CheckCircle2 size={18} className="text-green-400 shrink-0" />
                 <p className="text-green-400 text-sm font-medium">
                   {lang === "id" ? "✅ Semua listing sudah terverifikasi!" : "✅ All listings are verified!"}
                 </p>
@@ -444,7 +444,7 @@ export default function AdminPage() {
               <div className="space-y-2">
                 {listings.slice(0, 5).map((l) => (
                   <div key={l.id} className="glass rounded-xl p-3 flex items-center gap-3">
-                    <div className="relative w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+                    <div className="relative w-10 h-10 rounded-lg overflow-hidden shrink-0">
                       <Image src={l.images[0]} alt={l.title} fill className="object-cover" sizes="40px" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -453,7 +453,7 @@ export default function AdminPage() {
                         <MapPin size={9} /> {l.city}
                       </div>
                     </div>
-                    <div className="text-right flex-shrink-0">
+                    <div className="text-right shrink-0">
                       <p className="text-primary-400 text-sm font-bold">{formatPrice(l.price)}</p>
                       <span className={`text-xs ${l.active ? "text-green-400" : "text-white/30"}`}>
                         ● {l.active ? (lang === "id" ? "Aktif" : "Active") : (lang === "id" ? "Nonaktif" : "Inactive")}
@@ -489,7 +489,7 @@ export default function AdminPage() {
               {filteredListings.map((l, i) => (
                 <motion.div key={l.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.04 }}
                   className="glass rounded-xl p-4 flex flex-col sm:flex-row gap-4">
-                  <div className="relative w-full sm:w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
+                  <div className="relative w-full sm:w-20 h-20 rounded-xl overflow-hidden shrink-0">
                     <Image src={l.images[0]} alt={l.title} fill className="object-cover" sizes="80px" />
                     <div className={`absolute top-1.5 left-1.5 px-1.5 py-0.5 rounded-full text-[10px] font-bold ${l.active ? "bg-green-600 text-white" : "bg-dark-800/80 text-white/40"}`}>
                       {l.active ? "ON" : "OFF"}
@@ -498,7 +498,7 @@ export default function AdminPage() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-start gap-2 mb-1">
                       <p className="text-white font-semibold text-sm leading-snug flex-1">{l.title}</p>
-                      <div className="flex items-center gap-1 flex-shrink-0">
+                      <div className="flex items-center gap-1 shrink-0">
                         {l.verified ? (
                           <BadgeCheck size={14} className="text-primary-400" />
                         ) : (
@@ -582,7 +582,7 @@ export default function AdminPage() {
               {filteredOwners.map((o, i) => (
                 <motion.div key={o.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.05 }}
                   className="glass rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center gap-4">
-                  <div className="relative w-12 h-12 rounded-xl overflow-hidden flex-shrink-0">
+                  <div className="relative w-12 h-12 rounded-xl overflow-hidden shrink-0">
                     <Image src={o.avatar} alt={o.name} fill className="object-cover" sizes="48px" />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -599,7 +599,7 @@ export default function AdminPage() {
                       <span className="tag-pill text-[10px]">📅 {o.joined}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-2 flex-shrink-0">
+                  <div className="flex items-center gap-2 shrink-0">
                     {!o.verified && (
                       <button onClick={() => verifyOwner(o.id)} className="flex items-center gap-1.5 px-3 py-1.5 bg-green-600/10 border border-green-500/30 hover:bg-green-600/20 text-green-400 text-xs font-medium rounded-lg transition-all">
                         <BadgeCheck size={12} /> {lang === "id" ? "Verifikasi" : "Verify"}
@@ -679,9 +679,9 @@ export default function AdminPage() {
                   className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-primary-500/30 text-primary-400 hover:bg-primary-600/10 text-sm font-medium transition-all disabled:opacity-60 disabled:cursor-not-allowed group"
                 >
                   {actionLoading === "export-listing" ? (
-                    <div className="w-5 h-5 border-2 border-primary-400/30 border-t-primary-400 rounded-full animate-spin flex-shrink-0" />
+                    <div className="w-5 h-5 border-2 border-primary-400/30 border-t-primary-400 rounded-full animate-spin shrink-0" />
                   ) : (
-                    <Download size={18} className="flex-shrink-0 group-hover:-translate-y-0.5 transition-transform" />
+                    <Download size={18} className="shrink-0 group-hover:-translate-y-0.5 transition-transform" />
                   )}
                   <div className="text-left">
                     <div>{lang === "id" ? "Export Data Listing" : "Export Listing Data"}</div>
@@ -698,9 +698,9 @@ export default function AdminPage() {
                   className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-primary-500/30 text-primary-400 hover:bg-primary-600/10 text-sm font-medium transition-all disabled:opacity-60 disabled:cursor-not-allowed group"
                 >
                   {actionLoading === "export-owner" ? (
-                    <div className="w-5 h-5 border-2 border-primary-400/30 border-t-primary-400 rounded-full animate-spin flex-shrink-0" />
+                    <div className="w-5 h-5 border-2 border-primary-400/30 border-t-primary-400 rounded-full animate-spin shrink-0" />
                   ) : (
-                    <Users size={18} className="flex-shrink-0 group-hover:-translate-y-0.5 transition-transform" />
+                    <Users size={18} className="shrink-0 group-hover:-translate-y-0.5 transition-transform" />
                   )}
                   <div className="text-left">
                     <div>{lang === "id" ? "Export Data Pemilik" : "Export Owner Data"}</div>
@@ -717,9 +717,9 @@ export default function AdminPage() {
                   className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-green-500/30 text-green-400 hover:bg-green-600/10 text-sm font-medium transition-all disabled:opacity-60 disabled:cursor-not-allowed group"
                 >
                   {actionLoading === "backup" ? (
-                    <div className="w-5 h-5 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin flex-shrink-0" />
+                    <div className="w-5 h-5 border-2 border-green-400/30 border-t-green-400 rounded-full animate-spin shrink-0" />
                   ) : (
-                    <Database size={18} className="flex-shrink-0 group-hover:-translate-y-0.5 transition-transform" />
+                    <Database size={18} className="shrink-0 group-hover:-translate-y-0.5 transition-transform" />
                   )}
                   <div className="text-left">
                     <div>{lang === "id" ? "Backup Database" : "Backup Database"}</div>
@@ -736,9 +736,9 @@ export default function AdminPage() {
                   className="flex items-center gap-3 p-4 rounded-xl bg-white/5 border border-accent-500/30 text-accent-400 hover:bg-accent-600/10 text-sm font-medium transition-all disabled:opacity-60 disabled:cursor-not-allowed group"
                 >
                   {actionLoading === "notif" ? (
-                    <div className="w-5 h-5 border-2 border-accent-400/30 border-t-accent-400 rounded-full animate-spin flex-shrink-0" />
+                    <div className="w-5 h-5 border-2 border-accent-400/30 border-t-accent-400 rounded-full animate-spin shrink-0" />
                   ) : (
-                    <Bell size={18} className="flex-shrink-0 group-hover:animate-bounce transition-all" />
+                    <Bell size={18} className="shrink-0 group-hover:animate-bounce transition-all" />
                   )}
                   <div className="text-left">
                     <div>{lang === "id" ? "Kirim Notifikasi" : "Send Notification"}</div>

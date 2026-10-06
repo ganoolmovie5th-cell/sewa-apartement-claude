@@ -119,7 +119,7 @@ export default function Footer() {
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   placeholder={lang === "id" ? "Masukkan email Anda..." : "Enter your email..."}
-                  className="w-full bg-white/5 border border-white/10 text-white placeholder:text-white/30 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-primary-500 transition-all"
+                  className="w-full bg-white/5 border border-white/10 text-white placeholder:text-white/30 rounded-xl px-4 py-3 text-sm focus:outline-hidden focus:border-primary-500 transition-all"
                 />
               </div>
               <button
@@ -163,7 +163,7 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Link href="/" className="flex items-center gap-3 mb-5">
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src="/logo.svg" alt="SewaApartement Logo" width={40} height={40} className="w-10 h-10 flex-shrink-0" />
+              <img src="/logo.svg" alt="SewaApartement Logo" width={40} height={40} className="w-10 h-10 shrink-0" />
               <div>
                 <div className="font-heading font-extrabold text-white text-xl leading-none">
                   Sewa<span className="gradient-text-gold">Apartement</span>
@@ -180,7 +180,7 @@ export default function Footer() {
             {/* Contact */}
             <div className="space-y-2.5">
               <div className="flex items-center gap-2.5 text-white/50 text-sm">
-                <MapPin size={14} className="text-primary-400 flex-shrink-0" />
+                <MapPin size={14} className="text-primary-400 shrink-0" />
                 <span>Binong Permai Blok R-10/14, Tangerang</span>
               </div>
               <a
@@ -189,14 +189,14 @@ export default function Footer() {
                 rel="noopener noreferrer"
                 className="flex items-center gap-2.5 text-white/50 hover:text-green-400 text-sm transition-colors group"
               >
-                <Phone size={14} className="text-primary-400 group-hover:text-green-400 flex-shrink-0 transition-colors" />
+                <Phone size={14} className="text-primary-400 group-hover:text-green-400 shrink-0 transition-colors" />
                 <span>+62 811 8696 940</span>
               </a>
               <a
                 href="mailto:sewa-apartement-jabodetabek@gmail.com"
                 className="flex items-center gap-2.5 text-white/50 hover:text-primary-300 text-sm transition-colors group"
               >
-                <Mail size={14} className="text-primary-400 group-hover:text-primary-300 flex-shrink-0 transition-colors" />
+                <Mail size={14} className="text-primary-400 group-hover:text-primary-300 shrink-0 transition-colors" />
                 <span>sewa-apartement-jabodetabek@gmail.com</span>
               </a>
             </div>

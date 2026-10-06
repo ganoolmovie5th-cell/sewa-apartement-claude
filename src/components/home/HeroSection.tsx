@@ -49,9 +49,9 @@ export default function HeroSection() {
       <HeroScene />
 
       {/* Gradient Overlays */}
-      <div className="absolute inset-0 bg-gradient-to-b from-dark-900/40 via-dark-900/20 to-dark-900/90 z-10" />
-      <div className="absolute inset-0 bg-gradient-to-r from-dark-900/80 via-transparent to-dark-900/80 z-10" />
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-dark-900 to-transparent z-10" />
+      <div className="absolute inset-0 bg-linear-to-b from-dark-900/40 via-dark-900/20 to-dark-900/90 z-10" />
+      <div className="absolute inset-0 bg-linear-to-r from-dark-900/80 via-transparent to-dark-900/80 z-10" />
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-linear-to-t from-dark-900 to-transparent z-10" />
 
       {/* Grid Pattern */}
       <div className="absolute inset-0 grid-pattern opacity-20 z-10" />
@@ -116,7 +116,7 @@ export default function HeroSection() {
             {targetBadges.map((badge) => (
               <div
                 key={badge.label.id}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r ${badge.color} border text-xs font-medium`}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-linear-to-r ${badge.color} border text-xs font-medium`}
               >
                 <badge.icon size={12} />
                 {t(badge.label)}
@@ -135,12 +135,12 @@ export default function HeroSection() {
               <div className="flex flex-col sm:flex-row gap-2 p-2 bg-white/10 backdrop-blur-xl border border-white/15 rounded-2xl shadow-glass">
                 {/* City Select */}
                 <div className="flex items-center gap-2 sm:w-44 px-3 py-2 bg-white/5 rounded-xl border border-white/10">
-                  <MapPin size={16} className="text-primary-400 flex-shrink-0" />
+                  <MapPin size={16} className="text-primary-400 shrink-0" />
                   <select
                     value={selectedCity}
                     onChange={(e) => setSelectedCity(e.target.value)}
                     aria-label={lang === "id" ? "Pilih kota" : "Select city"}
-                    className="bg-transparent text-white/80 text-sm focus:outline-none w-full cursor-pointer"
+                    className="bg-transparent text-white/80 text-sm focus:outline-hidden w-full cursor-pointer"
                   >
                     <option value="" className="bg-dark-800">{lang === "id" ? "Semua Kota" : "All Cities"}</option>
                     {CITIES.map((c) => (
@@ -151,20 +151,20 @@ export default function HeroSection() {
 
                 {/* Text Search */}
                 <div className="flex-1 flex items-center gap-2 px-3">
-                  <Search size={16} className="text-white/40 flex-shrink-0" />
+                  <Search size={16} className="text-white/40 shrink-0" />
                   <input
                     type="text"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder={lang === "id" ? "Cari apartemen, lokasi, fasilitas..." : "Search apartments, location, amenities..."}
-                    className="bg-transparent text-white placeholder:text-white/30 text-sm focus:outline-none w-full"
+                    className="bg-transparent text-white placeholder:text-white/30 text-sm focus:outline-hidden w-full"
                   />
                 </div>
 
                 {/* Search Button */}
                 <button
                   type="submit"
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:shadow-glow-blue whitespace-nowrap"
+                  className="flex items-center justify-center gap-2 bg-linear-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white px-6 py-3 rounded-xl font-semibold text-sm transition-all duration-200 hover:shadow-glow-blue whitespace-nowrap"
                 >
                   <Search size={15} />
                   {lang === "id" ? "Cari Sekarang" : "Search Now"}

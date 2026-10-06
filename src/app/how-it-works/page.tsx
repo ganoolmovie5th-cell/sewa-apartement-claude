@@ -79,7 +79,7 @@ export default function HowItWorksPage() {
             {steps.map((step, i) => (
               <motion.div key={step.step} initial={{ opacity: 0, x: i % 2 === 0 ? -30 : 30 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }}
                 className="flex gap-6 items-start glass rounded-2xl p-6 hover:border-primary-500/20 transition-all group">
-                <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-gradient-to-br from-primary-600 to-primary-800 flex items-center justify-center shadow-glow-blue">
+                <div className="shrink-0 w-14 h-14 rounded-2xl bg-linear-to-br from-primary-600 to-primary-800 flex items-center justify-center shadow-glow-blue">
                   <span className="text-2xl">{step.icon}</span>
                 </div>
                 <div className="flex-1">
@@ -127,7 +127,7 @@ export default function HowItWorksPage() {
                 <button onClick={() => setOpenFaq(openFaq === i ? null : i)}
                   className="w-full flex items-center justify-between gap-4 p-5 text-left hover:bg-white/5 transition-colors">
                   <span className="font-semibold text-white text-sm">{t(faq.q)}</span>
-                  <ChevronDown size={16} className={cn("text-white/40 flex-shrink-0 transition-transform duration-300", openFaq === i ? "rotate-180" : "")} />
+                  <ChevronDown size={16} className={cn("text-white/40 shrink-0 transition-transform duration-300", openFaq === i ? "rotate-180" : "")} />
                 </button>
                 <AnimatePresence initial={false}>
                   {openFaq === i && (

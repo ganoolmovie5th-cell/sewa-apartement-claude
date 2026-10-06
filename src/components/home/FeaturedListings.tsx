@@ -23,7 +23,7 @@ export default function FeaturedListings() {
               viewport={{ once: true }}
               className="flex items-center gap-2 mb-3"
             >
-              <div className="h-1 w-8 bg-gradient-to-r from-primary-500 to-accent-500 rounded-full" />
+              <div className="h-1 w-8 bg-linear-to-r from-primary-500 to-accent-500 rounded-full" />
               <span className="text-primary-400 text-sm font-semibold uppercase tracking-wider">
                 {lang === "id" ? "Pilihan Terbaik" : "Top Picks"}
               </span>
@@ -82,7 +82,7 @@ export default function FeaturedListings() {
         >
           <Link
             href="/listings"
-            className="inline-flex items-center gap-2 bg-gradient-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-glow-blue hover:shadow-glow-blue hover:-translate-y-1 transition-all duration-300"
+            className="inline-flex items-center gap-2 bg-linear-to-r from-primary-600 to-primary-500 hover:from-primary-500 hover:to-primary-400 text-white px-8 py-4 rounded-2xl font-bold text-lg shadow-glow-blue hover:shadow-glow-blue hover:-translate-y-1 transition-all duration-300"
           >
             <Sparkles size={18} />
             {lang === "id" ? "Jelajahi Semua Listing" : "Explore All Listings"}

@@ -267,13 +267,13 @@ export default function DashboardPage() {
         {/* Owner Profile — dari session */}
         <div className="p-5 border-b border-white/5">
           <div className="flex items-center gap-3">
-            <div className="relative w-10 h-10 rounded-xl overflow-hidden flex-shrink-0">
+            <div className="relative w-10 h-10 rounded-xl overflow-hidden shrink-0">
               <Image src={session?.avatar ?? mockOwner.avatar} alt={session?.name ?? mockOwner.name} fill className="object-cover" sizes="40px" />
             </div>
             <div className="min-w-0">
               <div className="flex items-center gap-1.5">
                 <p className="text-white font-semibold text-sm truncate">{session?.name ?? mockOwner.name}</p>
-                {mockOwner.verified && <BadgeCheck size={12} className="text-primary-400 flex-shrink-0" />}
+                {mockOwner.verified && <BadgeCheck size={12} className="text-primary-400 shrink-0" />}
               </div>
               <p className="text-white/40 text-xs truncate">{session?.email ?? mockOwner.email}</p>
             </div>
@@ -312,7 +312,7 @@ export default function DashboardPage() {
         <div className="flex md:hidden gap-1 mb-6 bg-dark-800 border border-white/10 rounded-xl p-1 overflow-x-auto">
           {sidebarItems.map((item) => (
             <button key={item.id} onClick={() => setActiveTab(item.id)}
-              className={cn("flex-shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all",
+              className={cn("shrink-0 flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-medium transition-all",
                 activeTab === item.id ? "bg-primary-600 text-white" : "text-white/50"
               )}>
               {item.icon}
@@ -354,7 +354,7 @@ export default function DashboardPage() {
               <div className="space-y-3">
                 {myListings.slice(0, 3).map((listing) => (
                   <div key={listing.id} className="glass rounded-xl p-4 flex items-center gap-4">
-                    <div className="relative w-14 h-14 rounded-xl overflow-hidden flex-shrink-0">
+                    <div className="relative w-14 h-14 rounded-xl overflow-hidden shrink-0">
                       <Image src={listing.images[0]} alt={listing.title} fill className="object-cover" sizes="56px" />
                     </div>
                     <div className="flex-1 min-w-0">
@@ -376,7 +376,7 @@ export default function DashboardPage() {
 
             {/* Quick Add CTA */}
             <motion.div whileHover={{ scale: 1.01 }}
-              className="relative p-6 rounded-2xl bg-gradient-to-r from-primary-600/20 to-accent-600/10 border border-primary-500/30 cursor-pointer"
+              className="relative p-6 rounded-2xl bg-linear-to-r from-primary-600/20 to-accent-600/10 border border-primary-500/30 cursor-pointer"
               onClick={() => setActiveTab("add")}>
               <div className="flex items-center gap-4">
                 <div className="w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center text-white"><Plus size={24} /></div>
@@ -408,7 +408,7 @@ export default function DashboardPage() {
                 <motion.div key={listing.id} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }}
                   className="glass rounded-2xl p-4 sm:p-5">
                   <div className="flex flex-col sm:flex-row gap-4">
-                    <div className="relative w-full sm:w-28 h-28 rounded-xl overflow-hidden flex-shrink-0">
+                    <div className="relative w-full sm:w-28 h-28 rounded-xl overflow-hidden shrink-0">
                       <Image src={listing.images[0]} alt={listing.title} fill className="object-cover" sizes="112px" />
                       <div className={`absolute top-2 left-2 px-2 py-0.5 rounded-full text-xs font-semibold ${listing.active ? "bg-green-600 text-white" : "bg-dark-800/80 text-white/50"}`}>
                         {listing.active ? (lang === "id" ? "Aktif" : "Active") : (lang === "id" ? "Nonaktif" : "Inactive")}
@@ -417,7 +417,7 @@ export default function DashboardPage() {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-start justify-between gap-2 mb-1">
                         <h3 className="font-bold text-white text-sm sm:text-base leading-snug">{listing.title}</h3>
-                        <div className="flex items-center gap-1 flex-shrink-0">
+                        <div className="flex items-center gap-1 shrink-0">
                           <div className="flex items-center gap-1 text-accent-400 text-xs">
                             <Star size={11} className="fill-accent-400" /> {listing.rating}
                           </div>
@@ -556,7 +556,7 @@ export default function DashboardPage() {
                       <div className="flex gap-2">
                         <input required type="number" min="1" value={newListing.price} onChange={e => setNewListing({ ...newListing, price: e.target.value })}
                           placeholder="5000000" className="input-field flex-1" />
-                        <select value={newListing.priceUnit} onChange={e => setNewListing({ ...newListing, priceUnit: e.target.value })} className="input-field w-28 appearance-none cursor-pointer flex-shrink-0">
+                        <select value={newListing.priceUnit} onChange={e => setNewListing({ ...newListing, priceUnit: e.target.value })} className="input-field w-28 appearance-none cursor-pointer shrink-0">
                           <option value="hari" className="bg-dark-800">/hari</option>
                           <option value="bulan" className="bg-dark-800">/bulan</option>
                           <option value="tahun" className="bg-dark-800">/tahun</option>
@@ -588,7 +588,7 @@ export default function DashboardPage() {
                     onClick={() => fileInputRef.current?.click()}
                     className={cn(
                       "border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-200 hover:border-primary-500/70 hover:bg-primary-600/5",
-                      photoPreviews.length > 0 ? "border-primary-500/40 bg-primary-600/5" : "border-white/15 bg-white/[0.02]"
+                      photoPreviews.length > 0 ? "border-primary-500/40 bg-primary-600/5" : "border-white/15 bg-white/2"
                     )}
                   >
                     <ImagePlus size={32} className="mx-auto mb-3 text-white/30" />
@@ -679,11 +679,11 @@ export default function DashboardPage() {
                                   : "bg-white/3 border-white/8 text-white/50 hover:bg-white/8 hover:text-white/80 hover:border-white/20"
                               )}
                             >
-                              <span className="flex-shrink-0">{item.icon}</span>
+                              <span className="shrink-0">{item.icon}</span>
                               <span className="flex-1 leading-tight">{lang === "id" ? item.label.id : item.label.en}</span>
                               {checked
-                                ? <CheckSquare size={13} className="flex-shrink-0 text-primary-400" />
-                                : <Square size={13} className="flex-shrink-0 text-white/20" />
+                                ? <CheckSquare size={13} className="shrink-0 text-primary-400" />
+                                : <Square size={13} className="shrink-0 text-white/20" />
                               }
                             </button>
                           );
@@ -711,7 +711,7 @@ export default function DashboardPage() {
                     {lang === "id" ? "Deskripsi Tambahan (Opsional)" : "Additional Description (Optional)"}
                   </h2>
                   <p className="flex items-start gap-1.5 text-white/40 text-xs leading-relaxed">
-                    <Info size={11} className="flex-shrink-0 mt-0.5" />
+                    <Info size={11} className="shrink-0 mt-0.5" />
                     {lang === "id"
                       ? "Tulis hanya info yang TIDAK ADA di pilihan fasilitas di atas — cth: view spesifik, kondisi khusus, aturan tambahan, atau keunggulan unik lainnya."
                       : "Only write info NOT covered by the facility checkboxes above — e.g: specific view, special conditions, additional rules, or other unique highlights."}
@@ -766,7 +766,7 @@ export default function DashboardPage() {
             <div className="glass rounded-2xl p-6 sm:p-8">
               {/* Avatar */}
               <div className="flex items-center gap-5 mb-8">
-                <div className="relative flex-shrink-0">
+                <div className="relative shrink-0">
                   <div className="relative w-20 h-20 rounded-2xl overflow-hidden ring-2 ring-primary-500/30">
                     <Image src={session?.avatar ?? mockOwner.avatar} alt={session?.name ?? mockOwner.name} fill className="object-cover" sizes="80px" />
                   </div>
@@ -1069,7 +1069,7 @@ export default function DashboardPage() {
                         <select
                           value={editForm.priceUnit}
                           onChange={e => setEditForm({ ...editForm, priceUnit: e.target.value })}
-                          className="input-field w-24 appearance-none cursor-pointer flex-shrink-0"
+                          className="input-field w-24 appearance-none cursor-pointer shrink-0"
                         >
                           <option value="hari" className="bg-dark-800">/hari</option>
                           <option value="bulan" className="bg-dark-800">/bulan</option>

@@ -29,7 +29,7 @@ export default function LoginPage() {
         <div className="glass rounded-3xl p-8 border border-white/10 text-center">
           <div className="flex items-center justify-center gap-3 mb-6">
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/logo.svg" alt="SewaApartement" width={40} height={40} className="w-10 h-10 flex-shrink-0" />
+            <img src="/logo.svg" alt="SewaApartement" width={40} height={40} className="w-10 h-10 shrink-0" />
             <div className="text-left">
               <div className="font-heading font-extrabold text-white text-lg leading-none">
                 Sewa<span className="gradient-text-gold">Apartement</span>

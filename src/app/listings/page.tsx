@@ -254,7 +254,7 @@ function ListingsContent() {
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
                 aria-label={lang === "id" ? "Urutkan hasil" : "Sort results"}
-                className="bg-white/5 border border-white/10 text-white/70 text-xs rounded-xl pl-8 pr-3 py-2 focus:outline-none cursor-pointer appearance-none"
+                className="bg-white/5 border border-white/10 text-white/70 text-xs rounded-xl pl-8 pr-3 py-2 focus:outline-hidden cursor-pointer appearance-none"
               >
                 <option value="featured">{lang === "id" ? "Unggulan" : "Featured"}</option>
                 <option value="price-asc">{lang === "id" ? "Harga: Terendah" : "Price: Lowest"}</option>
