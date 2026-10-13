@@ -12,6 +12,7 @@ export default function robots(): MetadataRoute.Robots {
           "/admin",
           "/sa-admin-x9q2m",
           "/api/",
+          "/listings?q=",
         ],
       },
     ],
